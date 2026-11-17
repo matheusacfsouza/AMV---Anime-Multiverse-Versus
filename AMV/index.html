@@ -18,8 +18,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 #screen:empty{display:none}
 #modal{position:absolute;inset:0;z-index:10;display:none;background:rgba(0,0,0,.86);align-items:center;justify-content:center;flex-direction:column}
 #modal.on{display:flex}
-#banner{position:absolute;left:0;right:0;top:880px;height:160px;z-index:20;display:none;align-items:center;justify-content:center;
-  background:linear-gradient(90deg,transparent,rgba(230,0,18,.92),transparent);font-size:84px;font-weight:900;letter-spacing:4px;text-shadow:0 4px 0 #000}
+#banner{position:absolute;left:0;right:0;top:905px;height:110px;z-index:20;display:none;align-items:center;justify-content:center;text-align:center;white-space:nowrap;
+  background:linear-gradient(90deg,transparent,rgba(230,0,18,.92) 25%,rgba(230,0,18,.92) 75%,transparent);font-size:52px;font-weight:900;letter-spacing:3px;text-shadow:0 3px 0 #000}
 #banner.on{display:flex;animation:ban .9s ease both}
 @keyframes ban{0%{opacity:0;transform:scaleY(.2)}20%{opacity:1;transform:scaleY(1)}85%{opacity:1}100%{opacity:0}}
 #toast{position:absolute;left:50%;bottom:340px;transform:translateX(-50%);z-index:30;background:#000c;border:3px solid #fff;border-radius:16px;padding:16px 30px;font-size:38px;display:none}
@@ -39,7 +39,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .card.cand::after,.zone.cand::after,.toolico.cand::after{box-shadow:0 0 0 6px var(--gold),0 0 34px 10px var(--gold);animation-duration:.75s}
 @keyframes glowp{from{opacity:.28}to{opacity:1}}
 .card.hit{animation:hit .5s}
-@keyframes hit{0%,100%{filter:none}25%{filter:brightness(3) saturate(0)}50%{transform:translateX(-14px)}75%{transform:translateX(14px)}}
+@keyframes hit{0%,100%{filter:none}20%{filter:brightness(3.2) saturate(0)}55%{filter:brightness(1.6) sepia(1) hue-rotate(-40deg) saturate(4)}}
 .back{background-color:#101418;background-image:repeating-linear-gradient(45deg,#14181d 0 16px,#1d232a 16px 32px);border:6px solid #cdd5df}
 .back::after{content:"AMV";position:absolute;left:50%;top:50%;width:62%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
   background:var(--red);border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:34px;color:#fff}
@@ -50,24 +50,47 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .chip.tag{bottom:auto;top:6px;font-size:24px;border-color:var(--red);color:#fff;background:#b00010}
 .chip.tag2{bottom:auto;top:46px;font-size:24px;border-color:var(--gold);color:var(--gold)}
 .badge{position:absolute;right:-6px;top:-6px;min-width:44px;height:44px;border-radius:22px;background:var(--red);border:3px solid #fff;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
-.hand{position:absolute;width:190px;height:266px}
+.hand{position:absolute;width:190px;height:266px;touch-action:none}
+.hand.lift{z-index:60!important}
+.hand.lift .card{transform:translateY(-120px) scale(1.42);transition:transform .14s ease-out;box-shadow:0 20px 40px #000}
+.hand.dragging{opacity:.25}
+.ghost{position:absolute;z-index:40;width:215px;height:301px;border-radius:12px;background-size:100% 100%;pointer-events:none;box-shadow:0 30px 50px #000;transform:translate(-50%,-60%) rotate(-4deg) scale(1.08)}
+.zone.drop::after{content:"";position:absolute;inset:-12px;border:6px dashed var(--gold);border-radius:12px;pointer-events:none;opacity:.55}
+.zone.drop.over::after{opacity:1;border-style:solid;background:rgba(255,212,0,.15)}
 .hand .card{inset:0}
 
 
 .card.glow{z-index:2}
 .toolico{position:absolute;left:-34px;width:84px;height:74px;border:5px solid #d9c8e8;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 4px 10px #000}
-.card.enterHand{animation:drawIn .55s ease-out both}
-.card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) both}
+.card.enterHand{animation:drawIn .55s ease-out backwards}
+.card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) backwards}
+.card.settle{animation:settle .32s cubic-bezier(.3,1.6,.5,1) backwards}
+@keyframes settle{from{transform:scale(1.18)}}
 @keyframes drawIn{from{transform:translate(var(--ex,300px),var(--ey,-200px)) scale(.5) rotate(18deg);opacity:0}30%{opacity:1}to{transform:none;opacity:1}}
 @keyframes dropIn{0%{transform:translate(var(--ex,0px),var(--ey,-300px)) scale(1.9);opacity:0}30%{opacity:1}100%{transform:none;opacity:1}}
-#atkban{position:absolute;left:-60px;right:-60px;top:860px;height:132px;z-index:26;display:none;align-items:center;
-  background:linear-gradient(100deg,rgba(0,0,0,.9) 0 18%,rgba(230,0,18,.95) 18% 82%,rgba(0,0,0,.9) 82%);transform:rotate(-4deg);padding-left:120px}
-#atkban.on{display:flex;animation:abIn .75s ease both}
-#atkban b{font-size:62px;font-weight:900;text-shadow:0 4px 0 #000;white-space:nowrap}
-#atkban i{font-size:34px;font-style:normal;margin-left:22px;color:var(--gold);font-weight:800}
-@keyframes abIn{0%{opacity:0;transform:rotate(-4deg) translateX(-50%)}25%{opacity:1;transform:rotate(-4deg) translateX(0)}80%{opacity:1}100%{opacity:0}}
-.boom{position:absolute;z-index:27;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0 12%,rgba(255,212,0,.8) 28%,rgba(230,0,18,.5) 52%,transparent 70%);animation:boom .45s ease-out both}
-@keyframes boom{from{transform:translate(-50%,-50%) scale(.2);opacity:1}to{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+.impact{position:absolute;z-index:27;pointer-events:none;overflow:visible}
+.impact .star{animation:istar .5s cubic-bezier(.1,.9,.3,1) both;transform-origin:0 0}
+@keyframes istar{0%{transform:scale(.15) rotate(-20deg);opacity:1}35%{transform:scale(1.15) rotate(4deg);opacity:1}100%{transform:scale(1.35) rotate(10deg);opacity:0}}
+.impact .lines{animation:ilines .42s ease-out both;transform-origin:0 0}
+@keyframes ilines{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.25);opacity:0}}
+.impact .ring{transform-origin:0 0;animation:iring .5s ease-out both}
+.impact .r2{animation-delay:.06s}
+@keyframes iring{0%{transform:scale(.3);opacity:1}100%{transform:scale(3.4);opacity:0}}
+.shard{position:absolute;z-index:27;pointer-events:none;background:#fff;border:2px solid #000;animation:shard .55s cubic-bezier(.1,.8,.3,1) both}
+@keyframes shard{from{transform:translate(-50%,-50%)}to{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) rotate(var(--rot));opacity:0}}
+.speed{position:absolute;z-index:26;height:0;transform-origin:0 0;pointer-events:none}
+.speed i{position:absolute;left:0;width:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95));border-radius:4px;animation:spd .3s ease-out both}
+@keyframes spd{from{transform:scaleX(.1);transform-origin:100% 0;opacity:1}to{transform:scaleX(1);opacity:0}}
+.flashw{position:absolute;inset:0;z-index:29;background:#fff;pointer-events:none;animation:flw .25s ease-out both}
+@keyframes flw{0%{opacity:.85}100%{opacity:0}}
+#board.iframe{filter:invert(1) grayscale(1) contrast(1.8)}
+#board.shake{animation:shk .36s linear}
+@keyframes shk{0%,100%{transform:perspective(2600px) rotateX(4deg)}
+ 15%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-1),calc(var(--sh)*.6))}
+ 30%{transform:perspective(2600px) rotateX(4deg) translate(var(--sh),calc(var(--sh)*-.5))}
+ 45%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-.6),calc(var(--sh)*-.4))}
+ 60%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*.5),calc(var(--sh)*.3))}
+ 80%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-.2),calc(var(--sh)*.1))}}
 .chip.bump{animation:bump .45s ease-out}
 @keyframes bump{40%{transform:translateX(-50%) scale(1.45)}100%{transform:translateX(-50%) scale(1)}}
 #board{transform:perspective(2600px) rotateX(4deg);transform-origin:50% 55%;backface-visibility:hidden}
@@ -75,24 +98,26 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .fly.bk{background-color:#101418;background-image:repeating-linear-gradient(45deg,#14181d 0 16px,#1d232a 16px 32px);border:5px solid #cdd5df}
 .hasback .fly.bk{background-image:var(--backimg);background-size:100% 100%;border:0}
 /* lista de busca estilo Yu-Gi-Oh */
-.slist{width:920px;max-height:1200px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:10px;background:#0d0d0d;border:3px solid #444;border-radius:20px}
-.srow{display:flex;align-items:center;gap:20px;background:#17171a;border:4px solid #555;border-radius:14px;padding:10px 16px;cursor:pointer;text-align:left}
+.slist{width:1000px;max-height:1400px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:10px;background:#0d0d0d;border:3px solid #444;border-radius:20px}
+.srow{display:flex;align-items:center;gap:26px;background:#000;border:4px solid #555;border-radius:14px;padding:10px 16px;cursor:pointer;text-align:left}
 .srow:active{border-color:var(--gold);background:#2a2320}
-.sth{width:104px;height:146px;border-radius:8px;background-size:100% 100%;flex:none;background-color:#222}
+.sth{width:208px;height:292px;border-radius:8px;background-size:100% 100%;flex:none;background-color:#222}
 .sinfo{flex:1;min-width:0}
-.sname{font-size:34px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ssub{font-size:26px;color:#bbb;margin-top:6px}
-.scount{font-size:40px;font-weight:900;color:var(--gold);border:4px solid var(--gold);border-radius:12px;padding:2px 14px;flex:none}
+.sname{font-size:44px;white-space:normal!important;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ssub{font-size:32px;color:#bbb;margin-top:6px}
+.srow.void{background:#df061b;border-color:#ff6b78}
+.srow.void .ssub{color:#fff}
+.scount{font-size:52px;font-weight:900;color:var(--gold);border:4px solid var(--gold);border-radius:12px;padding:2px 14px;flex:none}
 /* hud */
 .zone.life{overflow:hidden;justify-content:flex-start;padding:0}
-.zone.life i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#8a000c,#e60012);transition:width .5s}
+.zone.life i{position:absolute;left:0;top:0;bottom:0}
 .zone.life span{position:relative;z-index:1;width:100%;color:#fff;font-size:30px;font-weight:800;text-shadow:0 2px 0 #000}
 .zone.life.flash span{animation:fl .6s}
 @keyframes fl{50%{color:#ffd400;transform:scale(1.2)}}
 .zone .lbl{display:block}
 .zone .lbl.flip{transform:rotate(180deg)}
 .zone.av{font-size:18px}
-.zone.turn{font-size:20px;line-height:1.15;color:#fff;flex-direction:column}
+.zone.turn{font-size:58px;line-height:1;color:#fff;font-weight:900}
 .zone.turn b{font-size:22px}
 .zone.turn u{font-size:19px;color:var(--gold);text-decoration:none;font-weight:800}
 #msg{position:absolute;left:160px;top:922px;width:760px;height:84px;border:3px solid #444;border-radius:14px;background:#0b0b0b;padding:4px 14px;
@@ -151,7 +176,6 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   <div id="screen"></div>
   <div id="modal"></div>
   <div id="banner"></div>
-  <div id="atkban"></div>
   <div id="toast"></div>
 </div>
 
@@ -273,8 +297,8 @@ function log(m){ G.log.push(m); if(G.log.length>300) G.log.shift(); }
    AÇÕES (usadas pelo jogador e pelo bot)
    ============================================================ */
 const A = {
-  async summon(p, c){
-    const pl=P(p); detach(pl,c); pl.chars[freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
+  async summon(p, c, slot){
+    const pl=P(p); detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
     if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
       const tools=chars(1-p).flatMap(x=>x.equips);
       if(tools.length){
@@ -285,7 +309,7 @@ const A = {
     }
   },
   field(p, c){ const pl=P(p); detach(pl,c); for(const x of [0,1]) if(P(x).field) toVoid(P(x),P(x).field); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
-  support(p, c){ const pl=P(p); detach(pl,c); pl.powers[freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
+  support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); detach(pl,r); pl.hand.push(r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
   tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+1000 ATQ).`); },
   semente(p, c){ const pl=P(p); toVoid(pl,c); pl.life+=1000; log(`${p?'Oponente cura':'Você cura'} 1000 de vida.`); fxFloat(p,'+1000',true); },
@@ -309,7 +333,6 @@ async function doAttack(p, att, tgt){
   const d = tgt ? atkOf(q,tgt) - (tgt.id===7 ? 300 : 0) : 0;       // Yamcha - Autodestruição (-300 ao ser atacado)
   log(`Etapa de dano: ${att.def.name} (${a}) ataca ${tgt?tgt.def.name+' ('+d+')':'diretamente'}!`);
   render();
-  await atkBanner(att.def.name.split(' - ')[0], a);
   if(tgt && att.id===5) await tweenChip(att.uid, atkOf(p,att), a);     // Kikoho: mostra 1600, não "1300 +300"
   if(tgt && tgt.id===7) await tweenChip(tgt.uid, atkOf(q,tgt), d);     // Yamcha: mostra 1000
   await clash(att, tgt, p);
@@ -388,47 +411,107 @@ function handSlot(p, n){                       // onde a n-ésima carta (1..n) f
   const W=190, st=n>1?Math.min(W+12,(930-W)/(n-1)):0, t=(n-1)*st+W;
   return {x:(1080-t)/2+(n-1)*st, y:1674, w:W, h:266};
 }
+function slideCard(a, bx, img, ms, rot){       // desliza em curva, virando no caminho
+  return new Promise(res=>{
+    const d=el('div','fly bk');
+    d.style.left=a.x+'px'; d.style.top=a.y+'px'; d.style.width=a.w+'px'; d.style.height=a.h+'px';
+    d.style.transform='rotateY(180deg) rotate(-8deg)';
+    $('#stage').appendChild(d);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      d.style.transition=`left ${ms}ms cubic-bezier(.15,.75,.3,1),top ${ms}ms cubic-bezier(.55,0,.35,1),width ${ms}ms ease-out,height ${ms}ms ease-out,transform ${ms}ms cubic-bezier(.3,.7,.3,1)`;
+      d.style.left=bx.x+'px'; d.style.top=bx.y+'px'; d.style.width=bx.w+'px'; d.style.height=bx.h+'px';
+      d.style.transform=`rotateY(0deg) rotate(${rot}deg)`;
+    }));
+    if(img) setTimeout(()=>{ d.classList.remove('bk'); d.style.backgroundImage=`url("${img}")`; }, ms*0.42);   // vira no meio do caminho
+    setTimeout(()=>{ d.remove(); res(); }, ms+20);
+  });
+}
 async function drawAnim(p, inst){
   const d=POS[p].deck, from={x:d[0],y:d[1],w:SW,h:SH};
   const slot=handSlot(p, P(p).hand.length+1);
-  if(p===1){ await flyCard(from, slot, null, 430, false); return; }
-  await flyCard(from, {x:300,y:620,w:480,h:672}, inst?inst.def.img:null, 420, true);   // sobe e cresce
-  const d2=el('div','fly'); d2.style.backgroundImage=`url("${inst.def.img}")`;
-  d2.style.cssText+='left:300px;top:620px;width:480px;height:672px';
-  $('#stage').appendChild(d2); await sleep(260);                                       // segura a carta grande
-  d2.remove();
-  await flyCard({x:300,y:620,w:480,h:672}, slot, inst?inst.def.img:null, 380, false);  // entra pela direita da mão
+  await slideCard(from, slot, (p===0&&inst)?inst.def.img:null, p===0?620:480, p===0?4:0);
 }
 async function vanish(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
   const a=stageRect(e), v=POS[owner].void; e.style.visibility='hidden';
   await flyCard(a,{x:v[0],y:v[1],w:SW,h:SH,fade:true}, e.style.backgroundImage.slice(5,-2), 520, false);
 }
-async function atkBanner(name, val){
-  const b=$('#atkban'); b.innerHTML=`<b>${name}</b><i>ATQ ${val}</i>`;
-  b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
-  await sleep(600); b.classList.remove('on');
+/* ---------- golpe estilo anime: antecipação, investida, quadro de impacto ---------- */
+const SVGNS='http://www.w3.org/2000/svg';
+function svgEl(tag, at){ const e=document.createElementNS(SVGNS,tag); for(const k in at) e.setAttribute(k,at[k]); return e; }
+function starPath(n, r1, r2){                  // estrela de choque irregular, gerada a cada golpe
+  let d=''; for(let i=0;i<n*2;i++){ const a=Math.PI*i/n + (Math.random()-.5)*.18, r=(i%2? r2*(.55+Math.random()*.5) : r1*(.75+Math.random()*.5));
+    d+=(i?'L':'M')+(Math.cos(a)*r).toFixed(1)+' '+(Math.sin(a)*r).toFixed(1); }
+  return d+'Z';
 }
-function boom(x,y,size){
-  const f=el('div','boom'); f.style.cssText=`left:${x}px;top:${y}px;width:${size}px;height:${size}px`;
-  $('#stage').appendChild(f); setTimeout(()=>f.remove(),500);
+function impactFx(x, y, dirX, dirY){
+  const st=$('#stage'), S=900;
+  const svg=svgEl('svg',{width:S,height:S,viewBox:`${-S/2} ${-S/2} ${S} ${S}`,class:'impact'});
+  svg.style.left=(x-S/2)+'px'; svg.style.top=(y-S/2)+'px';
+  // linhas de impacto radiais
+  const lines=svgEl('g',{class:'lines'});
+  for(let i=0;i<28;i++){ const a=Math.random()*Math.PI*2, r0=90+Math.random()*60, r1=300+Math.random()*150;
+    lines.appendChild(svgEl('line',{x1:Math.cos(a)*r0,y1:Math.sin(a)*r0,x2:Math.cos(a)*r1,y2:Math.sin(a)*r1,stroke:'#fff','stroke-width':(2+Math.random()*7).toFixed(1),'stroke-linecap':'round'})); }
+  svg.appendChild(lines);
+  // anéis de choque
+  svg.appendChild(svgEl('circle',{class:'ring r1',r:120,fill:'none',stroke:'#fff','stroke-width':14}));
+  svg.appendChild(svgEl('circle',{class:'ring r2',r:120,fill:'none',stroke:'#ffd400','stroke-width':8}));
+  // estrela de choque (contorno preto, branco, núcleo amarelo)
+  const star=svgEl('g',{class:'star'});
+  star.appendChild(svgEl('path',{d:starPath(13,210,95),fill:'#000'}));
+  star.appendChild(svgEl('path',{d:starPath(13,185,85),fill:'#fff'}));
+  star.appendChild(svgEl('path',{d:starPath(11,110,55),fill:'#ffd400'}));
+  star.appendChild(svgEl('path',{d:starPath(9,58,30),fill:'#fff'}));
+  svg.appendChild(star);
+  st.appendChild(svg); setTimeout(()=>svg.remove(),620);
+  // estilhaços voando na direção do golpe
+  for(let k=0;k<14;k++){
+    const f=el('div','shard'); const a=Math.atan2(dirY,dirX)+(Math.random()-.5)*2.2, dist=180+Math.random()*260;
+    f.style.left=x+'px'; f.style.top=y+'px';
+    f.style.setProperty('--tx',(Math.cos(a)*dist).toFixed(0)+'px'); f.style.setProperty('--ty',(Math.sin(a)*dist).toFixed(0)+'px');
+    f.style.setProperty('--rot',(Math.random()*720-360).toFixed(0)+'deg');
+    f.style.width=(8+Math.random()*16)+'px'; f.style.height=(4+Math.random()*8)+'px';
+    st.appendChild(f); setTimeout(()=>f.remove(),560);
+  }
 }
-async function clash(att, tgt, p){                 // a carta sobe, colide e volta
+function speedLines(x0,y0,x1,y1){              // rastro da investida
+  const ang=Math.atan2(y1-y0,x1-x0)*180/Math.PI, len=Math.hypot(x1-x0,y1-y0);
+  const w=el('div','speed'); w.style.cssText=`left:${x0}px;top:${y0}px;width:${len}px;transform:rotate(${ang}deg)`;
+  for(let i=0;i<9;i++){ const l=el('i'); l.style.top=(Math.random()*240-120)+'px'; l.style.height=(3+Math.random()*6)+'px'; l.style.animationDelay=(Math.random()*40)+'ms'; w.appendChild(l); }
+  $('#stage').appendChild(w); setTimeout(()=>w.remove(),320);
+}
+function impactFrame(){                        // quadro de impacto: tela em alto contraste por um instante
+  const b=$('#board'); b.classList.add('iframe'); setTimeout(()=>b.classList.remove('iframe'),70);
+  const f=el('div','flashw'); $('#stage').appendChild(f); setTimeout(()=>f.remove(),260);
+}
+function shake(px){ const b=$('#board'); b.style.setProperty('--sh',px+'px'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),380); }
+async function clash(att, tgt, p){
   const ae=document.querySelector(`[data-uid="${att.uid}"]`);
   if(!ae) { await sleep(200); return; }
-  const a=stageRect(ae);
-  let dx=0, dy=(p===0?-230:230), bx=a.x+a.w/2, by=a.y+(p===0?-40:a.h+40);
+  const a=stageRect(ae), ax=a.x+a.w/2, ay=a.y+a.h/2;
   const te=tgt?document.querySelector(`[data-uid="${tgt.uid}"]`):null;
-  if(te){ const t=stageRect(te); dx=(t.x+t.w/2)-(a.x+a.w/2); dy=(t.y+t.h/2)-(a.y+a.h/2); bx=(a.x+a.w/2+t.x+t.w/2)/2; by=(a.y+a.h/2+t.y+t.h/2)/2; }
+  let tx=540, ty=(p===0?60:1860);              // ataque direto: vai em direção ao oponente
+  if(te){ const t=stageRect(te); tx=t.x+t.w/2; ty=t.y+t.h/2; }
+  const dx=tx-ax, dy=ty-ay, n=Math.hypot(dx,dy)||1, ux=dx/n, uy=dy/n;
   ae.style.zIndex=9;
-  ae.style.transition='transform .2s cubic-bezier(.5,0,1,.55)';
-  ae.style.transform=`translate(${dx*.72}px,${dy*.72}px) scale(1.14)`;
-  await sleep(215);
-  boom(bx,by,300);
-  if(te) te.classList.add('hit');
-  await sleep(160);
-  ae.style.transition='transform .3s cubic-bezier(.2,.8,.3,1)';
-  ae.style.transform='';
-  await sleep(300); ae.style.zIndex='';
+  // 1) antecipação: recua e gira
+  ae.style.transition='transform .16s cubic-bezier(.2,.8,.3,1)';
+  ae.style.transform=`translate(${-ux*50}px,${-uy*50}px) scale(1.06) rotate(${p?4:-4}deg)`;
+  await sleep(180);
+  // 2) investida
+  const hit = te ? .80 : .55;
+  speedLines(ax,ay,ax+dx*hit,ay+dy*hit);
+  ae.style.transition='transform .09s cubic-bezier(.8,0,1,.6)';
+  ae.style.transform=`translate(${dx*hit}px,${dy*hit}px) scale(1.2) rotate(0deg)`;
+  await sleep(90);
+  // 3) impacto + parada no golpe
+  const ix=ax+dx*(te?.9:.6), iy=ay+dy*(te?.9:.6);
+  impactFrame(); impactFx(ix,iy,ux,uy); shake(te?26:18);
+  if(te){ te.style.transition='transform .08s ease-out'; te.style.transform=`translate(${ux*40}px,${uy*40}px) rotate(${(Math.random()<.5?-1:1)*7}deg)`; te.classList.add('hit'); }
+  await sleep(130);
+  // 4) volta
+  ae.style.transition='transform .34s cubic-bezier(.2,.9,.3,1.15)'; ae.style.transform='';
+  if(te){ te.style.transition='transform .4s cubic-bezier(.2,.9,.3,1.3)'; te.style.transform=''; }
+  await sleep(340); ae.style.zIndex='';
 }
 function tweenChip(uid, from, to){                 // o ATQ sobe/desce até o número final
   return new Promise(res=>{
@@ -446,6 +529,24 @@ function tweenChip(uid, from, to){                 // o ATQ sobe/desce até o n�
 function fxFloat(who, text, heal){
   const f=el('div','float'+(heal?' heal':''),text); f.style.left=(who===0?760:60)+'px'; f.style.top='880px'; $('#stage').appendChild(f); setTimeout(()=>f.remove(),1300);
 }
+/* vida mostrada: persegue a vida real aos poucos */
+let LF=[MAX_LIFE,MAX_LIFE];
+function lifeColor(r){ r=Math.max(0,Math.min(1,r)); const h=Math.round(120*r);       // 120 = verde, 0 = vermelho
+  return `linear-gradient(180deg,hsl(${h},85%,58%),hsl(${h},90%,38%))`; }
+function paintLife(z,p){
+  const v=Math.round(LF[p]), r=v/MAX_LIFE;
+  const i=z.querySelector('i'), sp=z.querySelector('span');
+  i.style.width=Math.max(0,Math.min(100,100*r))+'%'; i.style.background=lifeColor(r);
+  sp.textContent=`${p?'Oponente':'Você'} · ${v}`;
+}
+setInterval(()=>{
+  if(!G) return;
+  for(const p of [0,1]){
+    const t=P(p).life, d=t-LF[p]; if(!d) continue;
+    LF[p] = Math.abs(d)<6 ? t : LF[p]+Math.sign(d)*Math.max(6,Math.abs(d)*0.07);
+    const z=document.getElementById('life'+p); if(z) paintLife(z,p);
+  }
+},30);
 function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),1600); }
 async function banner(t){ const b=$('#banner'); b.textContent=t; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); await sleep(950); b.classList.remove('on'); }
 
@@ -564,7 +665,7 @@ function searchList(title, entries){        // lista vertical estilo Yu-Gi-Oh, a
     const groups=new Map();
     entries.forEach(e=>{ const k=e.inst.id+'|'+(e.label||''); if(!groups.has(k)) groups.set(k,{inst:e.inst,label:e.label,n:0}); groups.get(k).n++; });
     groups.forEach(g=>{
-      const d=g.inst.def, r=el('div','srow');
+      const d=g.inst.def, r=el('div','srow'+(g.label==='Vazio'?' void':''));
       const th=el('div','sth'); th.style.backgroundImage=`url("${d.img}")`; r.appendChild(th);
       const info=el('div','sinfo');
       info.appendChild(el('div','sname',d.name));
@@ -694,7 +795,7 @@ function render(){
   for(const p of [1,0]){
     const pl=P(p), pos=POS[p], fl=(p===1);
     for(let i=0;i<3;i++){
-      const z=zone(frag,pos.chars[i][0],pos.chars[i][1],CHAR_W,CHAR_H,'Personagem',false,fl);
+      const z=zone(frag,pos.chars[i][0],pos.chars[i][1],CHAR_W,CHAR_H,'Personagem',false,fl); if(p===0) z.dataset.drop='c'+i;
       const c=pl.chars[i];
       if(c){
         z.textContent=''; const ce=cardEl(c,p,'char'); z.appendChild(ce);
@@ -710,7 +811,7 @@ function render(){
         if(c.attacked && c.uid!==G.atkUid) ce.classList.add('dim');
         if(p===0 && canAct() && G.phase!=='end' && actionsFor(0,c,'field').some(a=>!a.reason)) ce.classList.add('glow');
       }
-      const z2=zone(frag,pos.powers[i][0],pos.powers[i][1],PW,PH,'Poder',false,fl);
+      const z2=zone(frag,pos.powers[i][0],pos.powers[i][1],PW,PH,'Poder',false,fl); if(p===0) z2.dataset.drop='w'+i;
       const w=pl.powers[i];
       if(w){ z2.textContent=''; const ce=cardEl(w,p,'power'); z2.appendChild(ce); if(w.used) ce.classList.add('dim'); if(p===0 && canAct() && actionsFor(0,w,'field').some(a=>!a.reason && a.label!=='Atacar')) ce.classList.add('glow'); }
     }
@@ -724,7 +825,7 @@ function render(){
   }
   // campo (um só, compartilhado)
   const fo = P(0).field ? [0,P(0).field] : (P(1).field ? [1,P(1).field] : null);
-  const zf=zone(frag,FIELD[0],FIELD[1],FIELD_W,FIELD_H,'Poder',true);
+  const zf=zone(frag,FIELD[0],FIELD[1],FIELD_W,FIELD_H,'Poder',true); zf.dataset.drop='f';
   if(fo){ zf.textContent=''; const ce=cardEl(fo[1],fo[0],'field'); zf.appendChild(ce); if(fo[1].used) ce.classList.add('dim'); else if(canAct() && actionsFor(0,fo[1],'field').some(a=>!a.reason)) ce.classList.add('glow'); if(fo[0]===1) ce.appendChild(el('div','chip tag','OPON.')); }
 
   // mão do oponente
@@ -739,7 +840,7 @@ function render(){
   const step=n>1?Math.min(W+12,(930-W)/(n-1)):0, total=(n-1)*step+W, x0=(1080-total)/2;
   const can=canAct();
   h.forEach((inst,i)=>{
-    const m=n>1?(i-(n-1)/2)/((n-1)/2):0; const d=el('div','hand'); d.style.cssText=`left:${x0+i*step}px;top:${1648+m*m*26}px;z-index:${i};transform:rotate(${m*4}deg);transform-origin:50% 150%`;
+    const m=n>1?(i-(n-1)/2)/((n-1)/2):0; const d=el('div','hand'); d.dataset.hi=i; d.style.cssText=`left:${x0+i*step}px;top:${1648+m*m*26}px;z-index:${i};transform:rotate(${m*4}deg);transform-origin:50% 150%`;
     const ce=cardEl(inst,0,'hand'); d.appendChild(ce);
     if(can && actionsFor(0,inst,'hand').some(a=>!a.reason)) d.classList.add('playable');
     frag.appendChild(d);
@@ -749,13 +850,12 @@ function render(){
   for(const p of [1,0]){
     const pl=P(p); const z=el('div','zone life'); z.id='life'+p;
     z.style.cssText=`left:${p?23:689}px;top:25px;width:362px;height:56px`;
-    z.innerHTML=`<i style="width:${Math.max(0,Math.min(100,100*pl.life/MAX_LIFE))}%"></i><span>${p?'Oponente':'Você'} · ${pl.life}</span>`;
+    z.innerHTML=`<i></i><span></span>`; paintLife(z,p);
     frag.appendChild(z);
     zone(frag,p?23:952,95,p?99:98,98,p?'avatar oponente':'Seu avatar',true).classList.add('av');
   }
   const zt=el('div','zone turn'); zt.style.cssText='left:492px;top:25px;width:99px;height:99px';
-  const ph={prep:'Preparação',attack:'Ataque',end:'Final'}[G.phase]||'';
-  zt.innerHTML=`<u>Turno ${G.turnNo}</u><b style="color:${G.turn===0?'#2ee66b':'#e60012'}">${G.turn===0?'Você':'Opon.'}</b><span>${ph}</span>`;
+  zt.textContent=G.turnNo;
   frag.appendChild(zt);
   let lab='Turno do oponente';
   if(G.turn===0) lab=G.phase==='attack'?'Fim da batalha':((G.phase==='prep' && canAttack(0) && P(0).chars.some(Boolean))?'Ir para o ataque':'Fim do turno');
@@ -773,6 +873,7 @@ function render(){
   }
   frag.appendChild(msg);
   b.replaceChildren(frag);
+  if(G.settle){ const se=b.querySelector(`[data-uid="${G.settle}"]`); if(se) se.classList.add('settle'); seen.add(G.settle); G.settle=null; }
   const now=new Set();
   G.index.forEach((r,u)=>{ now.add(u); if(!seen.has(u) && seen.size){ const e=b.querySelector(`[data-uid="${u}"]`); if(!e) return;
     const q=stageRect(e);
@@ -791,10 +892,85 @@ $('#board').addEventListener('click', e=>{
     if(ce){ const u=+ce.dataset.uid; if(G.pick.set.has(u)) endPick({target:G.pick.map.get(u)}); }
     return;
   }
+  if(e.target.closest('.hand')) return;   // a mão usa o gesto de deslizar/arrastar
   if(ce){ const r=G.index.get(+ce.dataset.uid); if(r) cardModal(r.inst,r.p,(r.zone==='hand'||r.zone==='void')?r.zone:'field'); return; }
   if(ve){ voidModal(+ve.dataset.void); return; }
   const de=e.target.closest('[data-deck]'); if(de){ toast(`Baralho ${+de.dataset.deck?'do oponente':'seu'}: ${P(+de.dataset.deck).deck.length} cartas`); }
 });
+
+/* ============================================================
+   MÃO: deslizar o dedo levanta a carta; arrastar para cima leva ao campo
+   ============================================================ */
+const H={on:false};
+function toStage(cx,cy){ const s=$('#stage').getBoundingClientRect(), k=s.width/1080; return {x:(cx-s.left)/k, y:(cy-s.top)/k}; }
+function handAt(cx){                            // carta da mão sob o dedo (a mais à frente)
+  let best=null; document.querySelectorAll('#board .hand').forEach(h=>{ const r=h.getBoundingClientRect(); if(cx>=r.left && cx<=r.right) best=h; });
+  return best;
+}
+function setLift(h){ document.querySelectorAll('#board .hand.lift').forEach(x=>{ if(x!==h) x.classList.remove('lift'); }); if(h) h.classList.add('lift'); }
+function dropTargets(inst){                     // onde essa carta pode ser solta
+  const pl=P(0), k=inst.def.kind, out=[];
+  if(k==='char') pl.chars.forEach((c,i)=>{ if(!c) out.push('c'+i); });
+  else if(k==='support') pl.powers.forEach((c,i)=>{ if(!c) out.push('w'+i); });
+  else if(k==='tool') pl.chars.forEach((c,i)=>{ if(c && c.id===1) out.push('c'+i); });
+  else if(k==='field') out.push('f');
+  return out;   // item: qualquer lugar do campo
+}
+function zoneUnder(cx,cy){ let z=null; document.querySelectorAll('#board .zone.drop').forEach(e=>{ const r=e.getBoundingClientRect(); if(cx>=r.left-20&&cx<=r.right+20&&cy>=r.top-20&&cy<=r.bottom+20) z=e; }); return z; }
+$('#board').addEventListener('pointerdown', e=>{
+  const h=e.target.closest('.hand'); if(!h || !G || G.over || G.pick) return;
+  e.preventDefault();
+  H.on=true; H.id=e.pointerId; H.x0=e.clientX; H.y0=e.clientY; H.moved=false; H.drag=false; H.h=h;
+  H.inst=P(0).hand[+h.dataset.hi]; setLift(h);
+});
+addEventListener('pointermove', e=>{
+  if(!H.on || e.pointerId!==H.id) return;
+  const dx=e.clientX-H.x0, dy=e.clientY-H.y0, k=$('#stage').getBoundingClientRect().width/1080;
+  if(Math.hypot(dx,dy)>10*k) H.moved=true;
+  if(!H.drag){
+    const p=toStage(e.clientX,e.clientY);
+    if(p.y < 1560 && canAct()){                 // saiu da mão para cima: começa a arrastar
+      H.drag=true; H.h.classList.remove('lift'); H.h.classList.add('dragging');
+      H.ghost=el('div','ghost'); H.ghost.style.backgroundImage=`url("${H.inst.def.img}")`; $('#stage').appendChild(H.ghost);
+      H.targets=dropTargets(H.inst);
+      H.targets.forEach(t=>{ const z=document.querySelector(`#board [data-drop="${t}"]`); if(z) z.classList.add('drop'); });
+    } else {                                    // deslizando sobre a mão: levanta a carta sob o dedo
+      if(Math.abs(dx)>Math.abs(dy)){ const h=handAt(e.clientX); if(h && h!==H.h){ H.h=h; H.inst=P(0).hand[+h.dataset.hi]; } }   // só troca deslizando para o lado
+      setLift(H.h);
+    }
+  }
+  if(H.drag){
+    const p=toStage(e.clientX,e.clientY); H.ghost.style.left=p.x+'px'; H.ghost.style.top=p.y+'px';
+    const z=zoneUnder(e.clientX,e.clientY); document.querySelectorAll('#board .zone.over').forEach(x=>{ if(x!==z) x.classList.remove('over'); }); if(z) z.classList.add('over');
+  }
+});
+function endHand(){
+  if(H.ghost) H.ghost.remove();
+  document.querySelectorAll('#board .zone.drop').forEach(z=>z.classList.remove('drop','over'));
+  document.querySelectorAll('#board .hand').forEach(h=>h.classList.remove('lift','dragging'));
+  H.on=false; H.drag=false; H.ghost=null;
+}
+addEventListener('pointerup', e=>{ if(!H.on || e.pointerId!==H.id) return;
+  const inst=H.inst, drag=H.drag, moved=H.moved;
+  const z=drag?zoneUnder(e.clientX,e.clientY):null, p=toStage(e.clientX,e.clientY);
+  endHand();
+  if(!drag){ if(!moved && inst) cardModal(inst,0,'hand'); return; }      // toque simples: abre a carta
+  dropPlay(inst, z?z.dataset.drop:null, p.y);
+});
+addEventListener('pointercancel', ()=>{ if(H.on) endHand(); });
+async function dropPlay(inst, slot, y){
+  if(!canAct() || !P(0).hand.includes(inst)) return;
+  const k=inst.def.kind, a=actionsFor(0,inst,'hand')[0];
+  if(!a) return;
+  if(a.reason){ toast(a.reason); return; }
+  if(k==='item'){ if(y<1560) await runAction(a); return; }               // item: solta em qualquer lugar do campo
+  if(!slot) return;                                                       // fora de um slot válido: volta para a mão
+  const i=+slot.slice(1);
+  if(k==='char')    { G.settle=inst.uid; await runAction({run:()=>A.summon(0,inst,i)}); }
+  if(k==='support') { G.settle=inst.uid; await runAction({run:async()=>A.support(0,inst,i)}); }
+  if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>A.field(0,inst)}); }
+  if(k==='tool')    { await runAction({run:async()=>A.tool(0,inst,P(0).chars[i])}); }
+}
 
 /* ============================================================
    FLUXO DE PARTIDA
@@ -804,7 +980,7 @@ async function draw(p){
   if(!pl.deck.length){ log(`${p?'Oponente':'Você'} não tem cartas para comprar!`); endGame(1-p); return false; }
   const c=pl.deck.shift();
   await drawAnim(p,c);
-  pl.hand.push(c); render(); return true;
+  pl.hand.push(c); seen.add(c.uid); render(); return true;
 }
 async function startTurn(p){
   if(G.over) return;
@@ -814,7 +990,7 @@ async function startTurn(p){
   [...pl.chars,...pl.powers].filter(Boolean).forEach(c=>{c.attacked=false;c.direct=false;c.used=false;});
   [P(0).field,P(1).field].filter(Boolean).forEach(c=>{c.used=false;});   // efeito do campo: 1x por turno, vale para quem estiver jogando
   G.busy=true; render();
-  await banner((p===0?'SEU TURNO':'TURNO DO OPONENTE')+' · TURNO '+G.turnNo);
+  await banner(p===0?'SEU TURNO':'TURNO DO OPONENTE');
   if(G.over) return;
   if(!(await draw(p))) return;
   log(p===0?'Você comprou uma carta.':'Oponente comprou uma carta.');
@@ -859,6 +1035,7 @@ function endGame(winner){
 
 async function beginMatch(first){
   const myDeck=loadDeck();
+  LF=[MAX_LIFE,MAX_LIFE];
   G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0};
   for(const p of [0,1]){
     const pl=P(p);
