@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>AMV - Duelo de Cartas</title>
+<style>
+:root{--red:#e60012;--gold:#ffd400;--green:#2ee66b}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:center center;background:#000;overflow:hidden}
+#board,#screen{position:absolute;inset:0}
+#board{z-index:1}
+#screen{z-index:5}
+#screen:empty{display:none}
+#modal{position:absolute;inset:0;z-index:10;display:none;background:rgba(0,0,0,.86);align-items:center;justify-content:center;flex-direction:column}
+#modal.on{display:flex}
+#banner{position:absolute;left:0;right:0;top:880px;height:160px;z-index:20;display:none;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,transparent,rgba(230,0,18,.92),transparent);font-size:84px;font-weight:900;letter-spacing:4px;text-shadow:0 4px 0 #000}
+#banner.on{display:flex;animation:ban .9s ease both}
+@keyframes ban{0%{opacity:0;transform:scaleY(.2)}20%{opacity:1;transform:scaleY(1)}85%{opacity:1}100%{opacity:0}}
+#toast{position:absolute;left:50%;bottom:340px;transform:translateX(-50%);z-index:30;background:#000c;border:3px solid #fff;border-radius:16px;padding:16px 30px;font-size:38px;display:none}
+#toast.on{display:block}
+
+/* zones */
+.zone{position:absolute;border:8px solid #fff;background:#000;color:var(--red);font-weight:800;text-align:center;
+  display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1.05;padding:4px}
+.zone.small{font-size:26px}
+.zone.cand{box-shadow:0 0 0 7px var(--gold),0 0 40px 10px var(--gold);animation:pulse .8s infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 0 7px #fff,0 0 60px 18px var(--gold)}}
+.card{position:absolute;inset:-8px;border-radius:12px;background-size:100% 100%;background-position:center;background-color:#222;overflow:hidden;cursor:pointer;transition:transform .25s,opacity .25s}
+.card.dim{opacity:.55}
+.card.cand{box-shadow:0 0 0 7px var(--gold),0 0 40px 10px var(--gold);animation:pulse .8s infinite alternate;z-index:3}
+.card.lungeUp{transform:translateY(-70px) scale(1.08);z-index:5}
+.card.lungeDown{transform:translateY(70px) scale(1.08);z-index:5}
+.card.hit{animation:hit .5s}
+@keyframes hit{0%,100%{filter:none}25%{filter:brightness(3) saturate(0)}50%{transform:translateX(-14px)}75%{transform:translateX(14px)}}
+.back{background-color:#101418;background-image:repeating-linear-gradient(45deg,#14181d 0 16px,#1d232a 16px 32px);border:6px solid #cdd5df}
+.back::after{content:"AMV";position:absolute;left:50%;top:50%;width:62%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:var(--red);border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:34px;color:#fff}
+.hasback .back{background-image:var(--backimg);background-size:100% 100%;border:0}
+.hasback .back::after{display:none}
+.chip{position:absolute;left:50%;transform:translateX(-50%);bottom:6px;background:#000d;border:3px solid #fff;border-radius:10px;padding:2px 12px;font-size:32px;font-weight:900;white-space:nowrap}
+.chip.up{border-color:var(--green);color:var(--green)}
+.chip.tag{bottom:auto;top:6px;font-size:24px;border-color:var(--red);color:#fff;background:#b00010}
+.chip.tag2{bottom:auto;top:46px;font-size:24px;border-color:var(--gold);color:var(--gold)}
+.badge{position:absolute;right:-6px;top:-6px;min-width:44px;height:44px;border-radius:22px;background:var(--red);border:3px solid #fff;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
+.hand{position:absolute;width:190px;height:266px}
+.hand .card{inset:0}
+.hand.playable .card{animation:glowp .7s infinite alternate}
+
+@keyframes glowp{from{box-shadow:0 0 0 4px #7df,0 0 20px 4px #7df}to{box-shadow:0 0 0 6px #fff,0 0 46px 14px #4cf}}
+.card.glow{animation:glowp .7s infinite alternate;z-index:2}
+.toolico{position:absolute;left:-34px;width:84px;height:74px;border:5px solid #d9c8e8;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 4px 10px #000}
+.card.enterHand{animation:drawIn .55s ease-out both}
+.card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes drawIn{from{transform:translate(var(--ex,300px),var(--ey,-200px)) scale(.5) rotate(18deg);opacity:0}30%{opacity:1}to{transform:none;opacity:1}}
+@keyframes dropIn{0%{transform:translate(var(--ex,0px),var(--ey,-300px)) scale(1.9);opacity:0}30%{opacity:1}100%{transform:none;opacity:1}}
+.statfx{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:30;font-size:70px;font-weight:900;text-shadow:0 4px 0 #000,0 0 18px #000;pointer-events:none;animation:flt 1.1s ease-out both}
+.statfx.up{color:#2ee66b}.statfx.down{color:#ff3b30}
+#board{transform:perspective(2600px) rotateX(4deg);transform-origin:50% 55%;backface-visibility:hidden}
+.fly{position:absolute;z-index:28;border-radius:12px;background-size:100% 100%;background-color:#111;box-shadow:0 14px 30px #000;pointer-events:none;transform-style:preserve-3d}
+.fly.bk{background-color:#101418;background-image:repeating-linear-gradient(45deg,#14181d 0 16px,#1d232a 16px 32px);border:5px solid #cdd5df}
+.hasback .fly.bk{background-image:var(--backimg);background-size:100% 100%;border:0}
+/* lista de busca estilo Yu-Gi-Oh */
+.slist{width:920px;max-height:1200px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:10px;background:#0d0d0d;border:3px solid #444;border-radius:20px}
+.srow{display:flex;align-items:center;gap:20px;background:#17171a;border:4px solid #555;border-radius:14px;padding:10px 16px;cursor:pointer;text-align:left}
+.srow:active{border-color:var(--gold);background:#2a2320}
+.sth{width:104px;height:146px;border-radius:8px;background-size:100% 100%;flex:none;background-color:#222}
+.sinfo{flex:1;min-width:0}
+.sname{font-size:34px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ssub{font-size:26px;color:#bbb;margin-top:6px}
+.scount{font-size:40px;font-weight:900;color:var(--gold);border:4px solid var(--gold);border-radius:12px;padding:2px 14px;flex:none}
+/* hud */
+.zone.life{overflow:hidden;justify-content:flex-start;padding:0}
+.zone.life i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#8a000c,#e60012);transition:width .5s}
+.zone.life span{position:relative;z-index:1;width:100%;color:#fff;font-size:30px;font-weight:800;text-shadow:0 2px 0 #000}
+.zone.life.flash span{animation:fl .6s}
+@keyframes fl{50%{color:#ffd400;transform:scale(1.2)}}
+.zone .lbl{display:block}
+.zone .lbl.flip{transform:rotate(180deg)}
+.zone.av{font-size:18px}
+.zone.turn{font-size:20px;line-height:1.15;color:#fff;flex-direction:column}
+.zone.turn b{font-size:22px}
+.zone.turn u{font-size:19px;color:var(--gold);text-decoration:none;font-weight:800}
+#msg{position:absolute;left:160px;top:922px;width:760px;height:84px;border:3px solid #444;border-radius:14px;background:#0b0b0b;padding:4px 14px;
+  font-size:24px;line-height:1.15;color:#ddd;overflow:hidden;display:flex;flex-direction:column;justify-content:center;z-index:2}
+#msg .l:last-child{color:#fff;font-weight:700}
+#msg .l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#msg.pick{border-color:var(--gold);flex-direction:row;align-items:center;gap:10px}
+#msg.pick .t{flex:1;font-size:23px;font-weight:700;color:var(--gold);line-height:1.1}
+.btn{font-family:inherit;font-weight:800;color:#fff;background:var(--red);border:4px solid #fff;border-radius:20px;font-size:42px;padding:16px 30px;cursor:pointer}
+.btn:active{transform:scale(.97)}
+.btn.sec{background:#2a2a2a}
+.btn.sm{font-size:24px;padding:6px 12px;border-radius:12px}
+.btn[disabled]{opacity:.35;pointer-events:none}
+#endbtn{position:absolute;left:933px;top:886px;width:112px;height:157px;font-size:24px;padding:4px;line-height:1.1;border-width:6px;border-radius:8px;z-index:2}
+#menubtn{position:absolute;left:22px;top:1475px;width:124px;height:142px;font-size:32px;padding:4px;border-width:6px;border-radius:8px;z-index:4;color:var(--red);background:#000}
+.hist{font-size:28px;line-height:1.3;text-align:left;width:900px;max-height:1400px;overflow:auto;background:#0d0d0d;border:3px solid #444;border-radius:20px;padding:20px 30px}
+
+/* screens */
+.scr{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:60px 40px;background:radial-gradient(ellipse at 50% 30%,#2a0006 0,#000 70%)}
+.scr h1{font-size:150px;margin:40px 0 0;letter-spacing:10px;color:var(--red);text-shadow:0 6px 0 #fff;font-weight:900}
+.scr h2{font-size:54px;margin:0 0 30px;font-weight:700;letter-spacing:6px;color:#fff}
+.scr .row{display:flex;gap:30px}
+.menu{display:flex;flex-direction:column;gap:30px;width:760px;margin-top:40px}
+.menu .btn{font-size:50px;padding:30px}
+.fan{position:relative;width:1000px;height:520px;margin-top:40px}
+.fan div{position:absolute;width:300px;height:420px;border-radius:14px;background-size:100% 100%;box-shadow:0 20px 40px #000}
+.rpsb{font-size:130px;width:300px;height:300px;padding:0}
+.big{font-size:60px;font-weight:800;text-align:center;margin:30px}
+.grid{display:grid;grid-template-columns:repeat(4,236px);gap:10px 22px;padding:6px 4px}
+.gridwrap{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;width:100%;display:flex;justify-content:center;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.tile{display:flex;flex-direction:column;align-items:center}
+.tile .im{width:236px;height:330px;border-radius:12px;background-size:100% 100%;cursor:pointer}
+.tile .ctl{display:flex;align-items:center;gap:18px;height:72px}
+.tile .ctl b{font-size:48px;min-width:44px;text-align:center}
+.tile .ctl .btn{width:76px;height:64px;padding:0;font-size:44px;border-radius:14px}
+
+/* modal bits */
+.mbox{display:flex;flex-direction:column;align-items:center;gap:16px;max-width:1000px}
+.mbox .bigcard{width:760px;height:1064px;border-radius:16px;background-size:100% 100%;box-shadow:0 0 50px #000}
+.acts{display:flex;flex-direction:column;gap:12px;width:760px}
+.acts .btn{font-size:40px;padding:14px}
+.why{font-size:27px;color:#ffb347;text-align:center;margin-top:-6px}
+.list{display:grid;grid-template-columns:repeat(4,220px);gap:16px;max-height:1300px;overflow:auto;padding:10px}
+.list .c{width:220px;height:308px;border-radius:10px;background-size:100% 100%;cursor:pointer;position:relative}
+.rules{font-size:32px;line-height:1.35;text-align:left;width:900px;max-height:1450px;overflow:auto;background:#0d0d0d;border:3px solid #444;border-radius:20px;padding:26px 36px}
+.rules h3{margin:14px 0 6px;color:var(--red);font-size:38px}
+.rules li{margin:4px 0}
+.float{position:absolute;z-index:25;font-size:84px;font-weight:900;color:#ff3b30;text-shadow:0 5px 0 #000,0 0 20px #000;pointer-events:none;animation:flt 1.2s ease-out both}
+.float.heal{color:var(--green)}
+@keyframes flt{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-140px)}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="board"></div>
+  <div id="screen"></div>
+  <div id="modal"></div>
+  <div id="banner"></div>
+  <div id="toast"></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* ============================================================
+   CONFIGURAÇÃO (fácil de mexer quando suas regras chegarem)
+   ============================================================ */
+const MAX_LIFE = 4000;     // vida inicial e máxima
+const DECK_MIN = 20, DECK_MAX = 30, COPY_MAX = 3;
+const HAND_START = 5;      // cartas iniciais
+const DEFAULT_DECK = {1:3,2:2,3:3,4:2,5:3,6:2,7:2,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:1,16:1,17:2};  // 30 cartas
+const BOT_DECK = DEFAULT_DECK;   // baralho do bot
+
+const DEFS = {
+  1:{id:1,name:'Goku - Guerreiros Z',kind:'char',atk:1600,img:'Cartas/1.png'},
+  2:{id:2,name:'Gohan - Guerreiros Z',kind:'char',atk:800,img:'Cartas/2.png'},
+  3:{id:3,name:'Piccolo - Guerreiros Z',kind:'char',atk:1500,img:'Cartas/3.png'},
+  4:{id:4,name:'Kuririn - Guerreiros Z',kind:'char',atk:1200,img:'Cartas/4.png'},
+  5:{id:5,name:'Tenshinhan - Guerreiros Z',kind:'char',atk:1300,img:'Cartas/5.png'},
+  6:{id:6,name:'Chaos - Guerreiros Z',kind:'char',atk:300,img:'Cartas/6.png'},
+  7:{id:7,name:'Yamcha - Guerreiros Z',kind:'char',atk:1300,img:'Cartas/7.png'},
+  8:{id:8,name:'Casa do Kame',kind:'field',img:'Cartas/8.png'},
+  9:{id:9,name:'Yajirobe',kind:'support',img:'Cartas/9.png'},
+  10:{id:10,name:'Bulma',kind:'support',img:'Cartas/10.png'},
+  11:{id:11,name:'Semente dos deuses',kind:'item',img:'Cartas/11.png'},
+  12:{id:12,name:'Disparo de Ki',kind:'item',img:'Cartas/12.png'},
+  13:{id:13,name:'Radar do dragão',kind:'item',img:'Cartas/13.png'},
+  14:{id:14,name:'Esferas do dragão',kind:'item',img:'Cartas/14.png'},
+  15:{id:15,name:'Caminho da serpente',kind:'item',img:'Cartas/15.png'},
+  16:{id:16,name:'Goku e Piccolo na Autoescola',kind:'item',img:'Cartas/16.png'},
+  17:{id:17,name:'Kaioken',kind:'tool',img:'Cartas/17.png'}
+};
+const ELEM = {terra:{n:'Terra',c:'#410e00',adv:['fogo','ar','raio']},planta:{n:'Planta',c:'#32bf0b',adv:['agua','terra']},agua:{n:'Água',c:'#0725de',adv:['terra','fogo']},fogo:{n:'Fogo',c:'#ff0803',adv:['ar','planta','metal','escuridao']},ar:{n:'Ar',c:'#f2efe9',adv:['planta']},raio:{n:'Raio',c:'#fdcd00',adv:['agua','ar','escuridao']},metal:{n:'Metal',c:'#57808a',adv:['terra','raio','planta']},escuridao:{n:'Escuridão',c:'#450066',adv:['ar','planta']},divino:{n:'Divino',c:'#fb9e20',adv:['divino']}};
+for(const i in DEFS) if(DEFS[i].kind==='char') DEFS[i].el = (i==3?'planta':'terra');
+const hasAdv=(a,b)=>a.def.el&&b.def.el&&ELEM[a.def.el].adv.includes(b.def.el);
+const KIND = {char:'Personagem',field:'Campo',support:'Apoiador',item:'Item',tool:'Ferramenta'};
+
+/* posições (extraídas do esboço 1080x1920) */
+const CHAR_W=215, CHAR_H=301, PW=182, PH=255, SW=112, SH=157, FIELD_W=125, FIELD_H=174, FIELD=[23,873];
+const POS = {
+  1:{ chars:[[182,616],[432,616],[682,616]], powers:[[238,341],[448,341],[659,341]], deck:[34,418], void:[34,618] },
+  0:{ chars:[[182,1012],[432,1012],[682,1012]], powers:[[238,1333],[449,1333],[660,1333]], deck:[933,1354], void:[933,1155] }
+};
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+function btn(label, cls, fn){ const b=el('button','btn '+(cls||''),label); b.addEventListener('click',fn); return b; }
+let uidN = 1;
+const mk = id => ({uid:uidN++, id, def:DEFS[id], attacked:false, direct:false, used:false, equips:[], equipTo:null, tmp:null});
+
+const MUSIC=new Audio('Músicas/Música de batalha - Pokémon Sword Shield OST - Gym Leader Battle.mp3'); MUSIC.loop=true; MUSIC.volume=.4;
+let musicOn=true;
+function musicStart(){ if(musicOn) MUSIC.play().catch(()=>{}); }
+function musicStop(){ MUSIC.pause(); try{MUSIC.currentTime=0;}catch(e){} }
+addEventListener('pointerdown',()=>{ if(G && !G.over && musicOn && MUSIC.paused) musicStart(); });
+function fitStage(){
+  const s = Math.min(innerWidth/1080, innerHeight/1920);
+  $('#stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fitStage); fitStage();
+
+for(const k in DEFS){ const im=new Image(); im.src=DEFS[k].img; }   /* pré-carrega as artes: evita piscadas */
+/* verso opcional: se existir Cartas/verso.png ele é usado */
+(() => { const im=new Image(); im.onload=()=>{document.documentElement.style.setProperty('--backimg','url("Cartas/verso.png")');document.body.classList.add('hasback');}; im.src='Cartas/verso.png'; })();
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let G = null;
+const P = p => G.p[p];
+const freeIdx = a => a.indexOf(null);
+const chars = p => P(p).chars.filter(Boolean);
+const supports = p => P(p).powers.filter(c => c && c.def.kind==='support');
+
+function newPlayer(counts){
+  const ids=[]; for(const id in counts) for(let i=0;i<counts[id];i++) ids.push(+id);
+  return {life:MAX_LIFE, deck:shuffle(ids.map(mk)), hand:[], chars:[null,null,null], powers:[null,null,null], field:null, void:[], turns:0, esf:false};
+}
+function atkOf(p, inst){
+  if(inst.tmp!=null) return inst.tmp;                                            // Autoescola: ATQ final até o fim do turno
+  let a;
+  {
+    a = inst.def.atk;
+    const v = P(p).void;
+    if(inst.id===1) a += 200 * v.filter(c=>c.def.kind==='char').length;          // Goku: +200 por Guerreiro Z no vazio
+    if(inst.id===2) a += 600 * v.filter(c=>c.id===3).length;                     // Gohan: +600 por Piccolo no vazio
+  }
+  a += 1000 * inst.equips.length;                                                // Kaioken (pode ter vários)
+  return a;
+}
+function canAttack(p){ return !(p===G.first && P(p).turns===1); }   // quem começa não ataca no 1º turno
+
+function detach(pl, inst){
+  let i;
+  if((i=pl.hand.indexOf(inst))>=0) pl.hand.splice(i,1);
+  else if((i=pl.deck.indexOf(inst))>=0) pl.deck.splice(i,1);
+  else if((i=pl.void.indexOf(inst))>=0) pl.void.splice(i,1);
+  else if((i=pl.chars.indexOf(inst))>=0) pl.chars[i]=null;
+  else if((i=pl.powers.indexOf(inst))>=0) pl.powers[i]=null;
+  else if(pl.field===inst) pl.field=null;
+}
+function toVoid(pl, inst){
+  detach(pl, inst);
+  if(inst.equips.length){ inst.equips.forEach(k=>{ k.equipTo=null; detach(pl,k); pl.void.push(k); }); inst.equips=[]; }
+  if(inst.equipTo){ const g=inst.equipTo; g.equips=g.equips.filter(k=>k!==inst); inst.equipTo=null; }
+  inst.direct=false; inst.attacked=false; inst.tmp=null;
+  pl.void.push(inst);
+}
+function log(m){ G.log.push(m); if(G.log.length>300) G.log.shift(); }
+
+/* ============================================================
+   AÇÕES (usadas pelo jogador e pelo bot)
+   ============================================================ */
+const A = {
+  async summon(p, c){
+    const pl=P(p); detach(pl,c); pl.chars[freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
+    if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
+      const tools=chars(1-p).flatMap(x=>x.equips);
+      if(tools.length){
+        let t=tools[0];
+        if(p===0){ render(); const r=await pickTarget(tools,{prompt:'Kienzan: escolha a Ferramenta a destruir.'}); t=r?r.target:null; }
+        if(t){ const g=t.equipTo; if(g) g.equips=g.equips.filter(k=>k!==t); t.equipTo=null; P(1-p).void.push(t); log(`Kienzan! ${t.def.name} é destruída.`); }
+      }
+    }
+  },
+  field(p, c){ const pl=P(p); detach(pl,c); for(const x of [0,1]) if(P(x).field) toVoid(P(x),P(x).field); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
+  support(p, c){ const pl=P(p); detach(pl,c); pl.powers[freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
+  bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); detach(pl,r); pl.hand.push(r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
+  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+1000 ATQ).`); },
+  semente(p, c){ const pl=P(p); toVoid(pl,c); pl.life+=1000; log(`${p?'Oponente cura':'Você cura'} 1000 de vida.`); fxFloat(p,'+1000',true); },
+  disparo(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Disparo de Ki destrói ${t.def.name}!`); },
+  caminho(p, c){ const pl=P(p); const g=pl.void.find(x=>x.id===1); detach(pl,g); pl.chars[freeIdx(pl.chars)]=g; toVoid(pl,c); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
+  radar(p, c, e){ const pl=P(p); toVoid(pl,c); detach(pl,e); pl.hand.push(e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
+  esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; detach(pl,e); pl.hand.push(e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
+  auto(p, c, g, pc){ const pl=P(p); const v=Math.round((atkOf(p,g)+atkOf(p,pc))/2); toVoid(pl,c); g.tmp=v; pc.tmp=v; log(`Autoescola! Goku e Piccolo ficam com ATQ ${v} até o fim do turno.`); },
+  casa(p, chosen, fld){ const pl=P(p); fld.used=true; detach(pl,chosen); pl.hand.push(chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
+  yaji(p, c){ const pl=P(p); const ch=chars(p)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
+  picc(p, picc, g){ const pl=P(p); toVoid(pl,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
+};
+
+/* ============================================================
+   COMBATE
+   ============================================================ */
+async function doAttack(p, att, tgt){
+  const q=1-p;
+  att.attacked = true;
+  const a = atkOf(p,att) + (tgt && att.id===5 ? 300 : 0);          // Tenshinhan - Kikoho (+300 ao atacar personagem)
+  const d = tgt ? atkOf(q,tgt) - (tgt.id===7 ? 300 : 0) : 0;       // Yamcha - Autodestruição (-300 ao ser atacado)
+  log(`Etapa de dano: ${att.def.name} (${a}) ataca ${tgt?tgt.def.name+' ('+d+')':'diretamente'}!`);
+  render();
+  if(tgt && att.id===5){ statFx(att.uid,'+300 ATQ',true); }
+  if(tgt && tgt.id===7){ statFx(tgt.uid,'-300 ATQ',false); }
+  await lunge(att.uid, p);
+  if(!tgt){ await damage(q, a); render(); return; }
+  await hitFx(tgt.uid);
+  if(a>d){
+    await vanish(tgt.uid,q); toVoid(P(q),tgt); render();
+    await damage(q, a-d);
+    if(G.over) return;
+    await afterBattle(p,att,q,tgt,false,true);
+  } else if(a===d){
+    if(hasAdv(att,tgt)){
+      log(`Empate anulado! ${att.def.name} tem vantagem elemental: ${tgt.def.name} vai para o vazio.`);
+      await vanish(tgt.uid,q); toVoid(P(q),tgt); render(); await afterBattle(p,att,q,tgt,false,false);
+    } else { log('Empate! Nenhum personagem é destruído.'); toast('Empate: ninguém é destruído'); }
+  } else {
+    await vanish(att.uid,p); toVoid(P(p),att); render();
+    await damage(p, d-a);
+    if(G.over) return;
+    await afterBattle(q,tgt,p,att,false,false);
+  }
+  render();
+}
+// w/winner = quem destruiu; l/loser = quem foi destruído. tie: os dois foram destruídos.
+async function afterBattle(w, winner, l, loser, tie, attackerWon){
+  const sides=tie?[[w,winner,l,loser],[l,loser,w,winner]]:[[w,winner,l,loser]];
+  for(const [pw,cw,pl_,cl] of sides){
+    if(cl.id===6) await chaosFx(pl_,cl,pw,cw);          // Chaos foi destruído em batalha
+  }
+  if(!tie && attackerWon){   // Kaioken e Kikoho só valem quando o personagem vence ATACANDO
+    const onField=P(w).chars.includes(winner);
+    if(onField && winner.equips.length){ log('Kaioken: Goku e Kaioken vão para o vazio.'); toVoid(P(w),winner); }
+    else if(onField && winner.id===5){ log('Kikoho: Tenshinhan vai para o vazio.'); toVoid(P(w),winner); }
+  }
+  render(); await sleep(350);
+}
+async function chaosFx(owner, chaos, killerOwner, killer){
+  if(P(killerOwner).chars.includes(killer) && atkOf(killerOwner,killer)<=1000){
+    log(`Adeus, Senhor Tenshinhan! ${killer.def.name} é destruído.`); toVoid(P(killerOwner),killer);
+  }
+  const pl=P(owner), t=pl.deck.find(x=>x.id===5);
+  if(t && freeIdx(pl.chars)>=0){ detach(pl,t); pl.chars[freeIdx(pl.chars)]=t; shuffle(pl.deck); log(`${owner?'Oponente invoca':'Você invoca'} Tenshinhan do baralho!`); }
+  render(); await sleep(700);
+}
+async function damage(who, n){
+  const pl=P(who); pl.life=Math.max(0,pl.life-n);
+  if(n>0){ fxFloat(who,'-'+n,false); const lb=$('#life'+who); if(lb){lb.classList.remove('flash');void lb.offsetWidth;lb.classList.add('flash');} }
+  render(); await sleep(650);
+  checkWin();
+}
+function checkWin(){
+  if(G.over) return;
+  if(P(0).life<=0) endGame(1); else if(P(1).life<=0) endGame(0);
+}
+function stageRect(e){
+  const st=$('#stage'), s=st.getBoundingClientRect(), r=e.getBoundingClientRect(), k=(s.width/1080)||1;
+  return {x:(r.left-s.left)/k, y:(r.top-s.top)/k, w:r.width/k, h:r.height/k};
+}
+function flyCard(a, bx, img, ms, spin){
+  return new Promise(res=>{
+    const d=el('div','fly'+(img?'':' bk'));
+    if(img) d.style.backgroundImage=`url("${img}")`;
+    d.style.left=a.x+'px'; d.style.top=a.y+'px'; d.style.width=a.w+'px'; d.style.height=a.h+'px';
+    if(spin) d.style.transform='rotateY(180deg)';
+    $('#stage').appendChild(d);
+    requestAnimationFrame(()=>{
+      d.style.transition=`left ${ms}ms cubic-bezier(.25,.9,.3,1),top ${ms}ms cubic-bezier(.25,.9,.3,1),width ${ms}ms ease,height ${ms}ms ease,transform ${ms}ms ease,opacity ${Math.round(ms*.35)}ms ease ${Math.round(ms*.65)}ms`;
+      d.style.left=bx.x+'px'; d.style.top=bx.y+'px'; d.style.width=bx.w+'px'; d.style.height=bx.h+'px';
+      if(spin) d.style.transform='rotateY(0deg)';
+      if(bx.fade) d.style.opacity='0';
+    });
+    setTimeout(()=>{ d.remove(); res(); }, ms+40);
+  });
+}
+async function drawAnim(p, inst){
+  const d=POS[p].deck, from={x:d[0],y:d[1],w:SW,h:SH};
+  const to = p===0 ? {x:470,y:1660,w:170,h:238} : {x:495,y:215,w:80,h:112};
+  await flyCard(from, to, (p===0&&inst)?inst.def.img:null, 460, p===0);
+}
+function statFx(uid,text,up){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return; const f=el('div','statfx '+(up?'up':'down'),text); e.parentNode.appendChild(f); setTimeout(()=>f.remove(),1200); const ch=e.querySelector('.chip:not(.tag):not(.tag2)'); if(ch){ if(up) ch.classList.add('up'); ch.style.transform='translateX(-50%) scale(1.35)'; } }
+async function vanish(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
+  const a=stageRect(e), v=POS[owner].void; e.style.visibility='hidden';
+  await flyCard(a,{x:v[0],y:v[1],w:SW,h:SH,fade:true}, e.style.backgroundImage.slice(5,-2), 520, false);
+}
+async function lunge(uid, p){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return; e.classList.add(p===0?'lungeUp':'lungeDown'); await sleep(380); }
+async function hitFx(uid){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return; e.classList.add('hit'); await sleep(450); }
+function fxFloat(who, text, heal){
+  const f=el('div','float'+(heal?' heal':''),text); f.style.left=(who===0?760:60)+'px'; f.style.top='880px'; $('#stage').appendChild(f); setTimeout(()=>f.remove(),1300);
+}
+function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),1600); }
+async function banner(t){ const b=$('#banner'); b.textContent=t; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); await sleep(950); b.classList.remove('on'); }
+
+/* ============================================================
+   REGRAS POR CARTA -> lista de ações disponíveis
+   ============================================================ */
+function actionsFor(p, inst, where){
+  const pl=P(p), q=1-p, d=inst.def, L=[];
+  const add=(label,reason,run)=>L.push({label,reason,run});
+  const slotsP = freeIdx(pl.powers)>=0;
+  if(where==='hand'){
+    if(d.kind==='char') add('Invocar', freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null, async()=>{ await A.summon(p,inst); });
+    if(d.kind==='field') add('Ativar no campo', null, async()=>A.field(p,inst));
+    if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>A.support(p,inst));
+    if(d.kind==='tool'){
+      const gs=chars(p).filter(c=>c.id===1);
+      add('Equipar', gs.length?null:'Precisa de um "Goku - Guerreiros Z" em campo.', async()=>{
+        let g=gs[0];
+        if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Escolha o Goku que receberá o Kaioken.'}); if(!r) return; g=r.target; }
+        A.tool(p,inst,g);
+      });
+    }
+    if(d.kind==='item'){
+      const noChar = chars(p).length===0 ? 'Precisa de um Personagem "Guerreiro Z" em campo.' : null;
+      if(inst.id===11) add('Usar', noChar, async()=>A.semente(p,inst));
+      if(inst.id===12){
+        const sups=supports(q);
+        add('Usar', noChar || (sups.length?null:'O oponente não controla nenhum Apoiador.'), async()=>{
+          let t=sups[0];
+          if(sups.length>1){ const r=await pickTarget(sups,{prompt:'Escolha o Apoiador a destruir.'}); if(!r) return; t=r.target; }
+          A.disparo(p,inst,t);
+        });
+      }
+      if(inst.id===13){
+        const cs=zoneCands(pl,x=>x.id===14,inst);
+        add('Usar', cs.length?null:'Não há "Esferas do dragão" no baralho nem no vazio.', async()=>{
+          const e=await chooseCards('Escolha as Esferas do dragão',cs); if(!e) return;
+          A.radar(p,inst,e);
+        });
+      }
+      if(inst.id===14){
+        const cc=zoneCands(pl,x=>x.def.kind==='char',inst), pc=zoneCands(pl,x=>x.def.kind!=='char',inst);
+        add('Usar', pl.esf?'Só pode ativar 1 "Esferas do dragão" por turno.':((cc.length||pc.length)?null:'Não há cartas para buscar no baralho nem no vazio.'), async()=>{
+          const m=await chooseMode('Esferas do dragão: escolha um efeito',[{label:'1. Adicionar um Personagem à mão',off:!cc.length},{label:'2. Adicionar um Poder à mão',off:!pc.length}]);
+          if(m===null) return;
+          const e=await chooseCards(m===0?'Escolha o Personagem':'Escolha o Poder',m===0?cc:pc); if(!e) return;
+          A.esferas(p,inst,e);
+        });
+      }
+      if(inst.id===16){
+        const gs=chars(p).filter(c=>c.id===1), pcs=chars(p).filter(c=>c.id===3);
+        add('Usar', (gs.length&&pcs.length)?null:'Precisa de "Goku" e "Piccolo" em campo ao mesmo tempo.', async()=>{
+          let g=gs[0], pc=pcs[0];
+          if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Autoescola: escolha o Goku.'}); if(!r) return; g=r.target; }
+          if(pcs.length>1){ const r=await pickTarget(pcs,{prompt:'Autoescola: escolha o Piccolo.'}); if(!r) return; pc=r.target; }
+          A.auto(p,inst,g,pc);
+        });
+      }
+      if(inst.id===15) add('Usar', !pl.void.some(c=>c.id===1)?'"Goku - Guerreiros Z" não está no seu vazio.':(freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null), async()=>A.caminho(p,inst));
+    }
+  }
+  if(where==='field'){
+    if(d.kind==='char'){
+      add('Atacar', !canAttack(p)?'Quem começa a partida só ataca no 2º turno.':(inst.attacked?'Já atacou neste turno.':null), async()=>{
+        const tg=chars(q);
+        if(tg.length===0){ await doAttack(p,inst,null); return; }
+        const r=await pickTarget(tg,{prompt:`Escolha o alvo de ${d.name}.`, direct:inst.direct});
+        if(!r) return;
+        await doAttack(p,inst,r.direct?null:r.target);
+      });
+      if(inst.id===3){
+        const goku=chars(p).find(c=>c.id===1);
+        add('Efeito: enviar Goku ao vazio',
+          inst.used?'Já usado neste turno.':(inst.attacked?'Piccolo já atacou neste turno.':(goku?null:'Precisa de "Goku - Guerreiros Z" em campo.')),
+          async()=>{
+            const gs=chars(p).filter(c=>c.id===1); let g=gs[0];
+            if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Escolha o Goku a enviar ao vazio.'}); if(!r) return; g=r.target; }
+            A.picc(p,inst,g);
+          });
+      }
+    }
+    if(d.kind==='field') add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(c=>c.def.kind==='char')?null:'Não há Personagens no baralho.'), async()=>{
+      const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(c=>c.def.kind==='char')); if(!r) return;
+      A.casa(p,r,inst);
+    });
+    if(inst.id===10) add('Efeito: buscar Radar do dragão', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===13)?null:'Não há "Radar do dragão" no baralho.'), async()=>A.bulma(p,inst));
+    if(inst.id===9){
+      const ch=chars(p);
+      add('Efeito: ataque direto', pl.life>500?'Precisa estar com 500 pontos de vida ou menos.':(ch.length!==1?'Precisa de exatamente 1 Personagem em campo.':(ch[0].attacked?'Seu Personagem já atacou neste turno.':(canAttack(p)?null:'Você ainda não pode atacar.'))), async()=>A.yaji(p,inst));
+    }
+  }
+  L.forEach(a=>{   // cada ação só vale na sua fase
+    if(a.label==='Atacar'){ if(G.phase!=='attack') a.reason='Só na fase de ataque.'; }
+    else if(inst.def.kind==='item' && where==='hand'){ if(G.phase!=='prep' && G.phase!=='attack') a.reason='Itens só nas fases de preparação e ataque.'; }
+    else if(inst.id===3 && where==='field'){ if(G.phase!=='prep' && G.phase!=='attack') a.reason='Só nas fases de preparação e ataque.'; }   // Piccolo: preparação ou batalha
+    else if(G.phase!=='prep') a.reason='Só na fase de preparação.';
+  });
+  return L;
+}
+
+/* ============================================================
+   ESCOLHA DE ALVO / LISTA
+   ============================================================ */
+function pickTarget(cands, opt){
+  closeModal();
+  return new Promise(res=>{
+    G.pick={set:new Set(cands.map(c=>c.uid)),map:new Map(cands.map(c=>[c.uid,c])),prompt:opt.prompt,direct:!!opt.direct,res};
+    render();
+  });
+}
+function endPick(v){ const r=G.pick.res; G.pick=null; render(); r(v); }
+function searchList(title, entries){        // lista vertical estilo Yu-Gi-Oh, agrupada com "x2"
+  return new Promise(res=>{
+    const box=el('div','mbox'); box.appendChild(el('div','big',title));
+    const list=el('div','slist');
+    const groups=new Map();
+    entries.forEach(e=>{ const k=e.inst.id+'|'+(e.label||''); if(!groups.has(k)) groups.set(k,{inst:e.inst,label:e.label,n:0}); groups.get(k).n++; });
+    groups.forEach(g=>{
+      const d=g.inst.def, r=el('div','srow');
+      const th=el('div','sth'); th.style.backgroundImage=`url("${d.img}")`; r.appendChild(th);
+      const info=el('div','sinfo');
+      info.appendChild(el('div','sname',d.name));
+      let sub=KIND[d.kind];
+      if(d.kind==='char') sub+=` · ${ELEM[d.el].n} · ATQ ${d.atk}`;
+      if(g.label) sub+=` · ${g.label}`;
+      info.appendChild(el('div','ssub',sub));
+      r.appendChild(info);
+      if(g.n>1) r.appendChild(el('div','scount','x'+g.n));
+      r.addEventListener('click',()=>{ closeModal(); res(g.inst); });
+      list.appendChild(r);
+    });
+    box.appendChild(list); box.appendChild(btn('Cancelar','sec',()=>{closeModal();res(null);}));
+    showModal(box);
+  });
+}
+const chooseFromList = (title, insts) => searchList(title, insts.map(i=>({inst:i,label:null})));
+const chooseCards = (title, cands) => searchList(title, cands);
+
+function zoneCands(pl, pred, exclude){   // todas as cópias: a lista agrupa e mostra o "xN"
+  const out=[];
+  pl.deck.forEach(i=>{ if(i!==exclude&&pred(i)) out.push({inst:i,label:'Baralho'}); });
+  pl.void.forEach(i=>{ if(i!==exclude&&pred(i)) out.push({inst:i,label:'Vazio'}); });
+  return out;
+}
+function chooseMode(title, opts){
+  return new Promise(res=>{
+    const box=el('div','mbox'); box.appendChild(el('div','big',title));
+    const acts=el('div','acts');
+    opts.forEach((o,i)=>{ const b=btn(o.label,'',()=>{closeModal();res(i);}); if(o.off) b.disabled=true; acts.appendChild(b); });
+    box.appendChild(acts); box.appendChild(btn('Cancelar','sec',()=>{closeModal();res(null);}));
+    showModal(box);
+  });
+}
+
+/* ============================================================
+   MODAIS
+   ============================================================ */
+function showModal(node){ const m=$('#modal'); m.innerHTML=''; m.appendChild(node); m.classList.add('on'); }
+function closeModal(){ const m=$('#modal'); m.classList.remove('on'); m.innerHTML=''; }
+function canAct(){ return G && !G.over && !G.busy && G.turn===0 && !G.pick; }
+
+function cardModal(inst, p, where){
+  const box=el('div','mbox');
+  const big=el('div','bigcard'); big.style.backgroundImage=`url("${inst.def.img}")`; box.appendChild(big);
+  let info = KIND[inst.def.kind];
+  if(inst.def.kind==='char') info += ` — ${ELEM[inst.def.el].n} — ATQ atual ${atkOf(p,inst)}`;
+  box.appendChild(el('div','',`<span style="font-size:32px;color:#bbb">${info}</span>`));
+  const acts=el('div','acts');
+  if(canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || inst.def.kind==='field')))){
+    actionsFor(0,inst,where).forEach(a=>{
+      const b=btn(a.label,'',()=>runAction(a)); if(a.reason) b.disabled=true; acts.appendChild(b);
+      if(a.reason) acts.appendChild(el('div','why',a.reason));
+    });
+  }
+  box.appendChild(acts);
+  box.appendChild(btn('Fechar','sec',closeModal));
+  showModal(box);
+}
+function voidModal(p){
+  const pl=P(p); const box=el('div','mbox');
+  box.appendChild(el('div','big',`Vazio ${p?'do oponente':'seu'} (${pl.void.length})`));
+  const list=el('div','list');
+  if(!pl.void.length) list.appendChild(el('div','',`<span style="font-size:34px;color:#aaa">Nenhuma carta no vazio.</span>`));
+  pl.void.slice().reverse().forEach(i=>{ const c=el('div','c'); c.style.backgroundImage=`url("${i.def.img}")`; c.onclick=()=>cardModal(i,p,'void'); list.appendChild(c); });
+  box.appendChild(list); box.appendChild(btn('Fechar','sec',closeModal));
+  showModal(box);
+}
+async function runAction(a){
+  closeModal(); G.busy=true; render();
+  try{ await a.run(); } finally { if(!G.over && G.turn===0) G.busy=false; render(); checkWin(); }
+}
+function rulesModal(){
+  const box=el('div','mbox');
+  box.appendChild(el('div','rules',`
+  <h3>Objetivo</h3><ul><li>Cada jogador começa com ${MAX_LIFE} de vida. Zerou a vida do oponente, você vence. Quem não puder comprar carta perde.</li></ul>
+  <h3>Início</h3><ul><li>Pedra, papel e tesoura decide quem começa. Cada um compra ${HAND_START} cartas (com pelo menos 1 Personagem garantido).</li>
+  <li>Quem começa só pode atacar a partir do seu 2º turno. Quem joga em segundo já pode atacar no 1º.</li></ul>
+  <h3>Turno</h3><ul><li><b>Fase de preparação:</b> compre 1 carta e jogue quantas couberem nos slots (3 Personagens, 3 Poderes, 1 Campo compartilhado). Ferramentas, Campos e Apoiadores só entram em jogo nesta fase, mas o efeito do Campo e os efeitos das Ferramentas seguem ativos na batalha; Itens também valem na fase de ataque.</li>
+  <li><b>Fase de ataque:</b> ataques (etapa de dano) e Itens. Quando o último Personagem atacar, a fase final começa sozinha.</li>
+  <li><b>Fase final:</b> automática. Efeitos "até o fim do turno" terminam.</li>
+  <li>Toque em qualquer carta para ver em tamanho grande e ver as ações possíveis.</li>
+  <li>Cada Personagem ataca 1 vez por turno. Itens vão para o vazio depois de usados.</li>
+  <li>Efeitos "até o fim do turno" (Autoescola) e "durante a fase de dano" (Tenshinhan, Yamcha) já são aplicados automaticamente.</li></ul>
+  <h3>Combate</h3><ul><li>ATQ maior destrói o menor e a diferença é tirada da vida de quem perdeu. Empate: nenhum é destruído (exceto se o atacante tem vantagem elemental: o defensor vai ao vazio). A fase de batalha só termina ao apertar "Finalizar batalha".</li>
+  <li>Só dá para atacar direto se o oponente não tiver Personagens, ou por efeito (Piccolo, Yajirobe).</li></ul>
+  <h3>Baralho</h3><ul><li>${DECK_MIN} a ${DECK_MAX} cartas, no máximo ${COPY_MAX} cópias de cada.</li></ul>`));
+  box.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+}
+function histModal(){
+  const box=el('div','mbox'); box.appendChild(el('div','big','Histórico da partida'));
+  const h=el('div','hist'); h.innerHTML=G.log.slice().reverse().map(l=>`<div>${l}</div>`).join('')||'Nada ainda.';
+  box.appendChild(h); box.appendChild(btn('Voltar','sec',menuModal)); showModal(box);
+}
+function menuModal(){
+  const box=el('div','mbox'); box.appendChild(el('div','big','Menu'));
+  const acts=el('div','acts');
+  acts.appendChild(btn('Continuar','',closeModal));
+  acts.appendChild(btn('Histórico da partida','sec',histModal));
+  acts.appendChild(btn(musicOn?'Música: ligada':'Música: desligada','sec',()=>{ musicOn=!musicOn; if(musicOn) musicStart(); else MUSIC.pause(); menuModal(); }));
+  acts.appendChild(btn('Regras desta versão','sec',rulesModal));
+  acts.appendChild(btn('Desistir (voltar ao início)','sec',()=>{ closeModal(); musicStop(); G.over=true; G=null; $('#board').innerHTML=''; titleScreen(); }));
+  box.appendChild(acts); showModal(box);
+}
+
+/* ============================================================
+   RENDER DO CAMPO
+   ============================================================ */
+function zone(parent, x,y,w,h,label,small,flip){
+  const z=el('div','zone'+(small?' small':'')); z.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
+  if(label){ const sp=el('span','lbl'+(flip?' flip':''),label); z.appendChild(sp); }
+  parent.appendChild(z); return z;
+}
+function cardEl(inst, p, zname){
+  const c=el('div','card'); c.style.backgroundImage=`url("${inst.def.img}")`; c.dataset.uid=inst.uid;
+  G.index.set(inst.uid,{inst,p,zone:zname});
+  if(G.pick && G.pick.set.has(inst.uid)) c.classList.add('cand');
+  return c;
+}
+let seen=new Set();
+function render(){
+  const b=$('#board');
+  if(!G){ b.innerHTML=''; return; }
+  G.index=new Map();
+  const frag=document.createDocumentFragment();
+
+  for(const p of [1,0]){
+    const pl=P(p), pos=POS[p], fl=(p===1);
+    for(let i=0;i<3;i++){
+      const z=zone(frag,pos.chars[i][0],pos.chars[i][1],CHAR_W,CHAR_H,'Personagem',false,fl);
+      const c=pl.chars[i];
+      if(c){
+        z.textContent=''; const ce=cardEl(c,p,'char'); z.appendChild(ce);
+        const a=atkOf(p,c), base=c.def.atk;
+        ce.appendChild(el('div','chip'+(a>base?' up':''),'ATQ '+a));
+        c.equips.forEach((k,ki)=>{
+          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${k.def.img}")`; ti.style.top=(70+ki*84)+'px'; ti.dataset.uid=k.uid;
+          G.index.set(k.uid,{inst:k,p,zone:'tool'});
+          if(G.pick && G.pick.set.has(k.uid)) ti.classList.add('cand');
+          z.appendChild(ti);
+        });
+        if(c.direct) ce.appendChild(el('div','chip tag2','DIRETO'));
+        if(c.attacked) ce.classList.add('dim');
+        if(p===0 && canAct() && G.phase!=='end' && actionsFor(0,c,'field').some(a=>!a.reason)) ce.classList.add('glow');
+      }
+      const z2=zone(frag,pos.powers[i][0],pos.powers[i][1],PW,PH,'Poder',false,fl);
+      const w=pl.powers[i];
+      if(w){ z2.textContent=''; const ce=cardEl(w,p,'power'); z2.appendChild(ce); if(w.used) ce.classList.add('dim'); if(p===0 && canAct() && actionsFor(0,w,'field').some(a=>!a.reason && a.label!=='Atacar')) ce.classList.add('glow'); }
+    }
+    const zd=zone(frag,pos.deck[0],pos.deck[1],SW,SH,'Baralho',true,fl);
+    if(pl.deck.length){ zd.textContent=''; const bk=el('div','card back'); bk.dataset.deck=p; zd.appendChild(bk); }
+    zd.appendChild(el('div','badge',pl.deck.length));
+    const zv=zone(frag,pos.void[0],pos.void[1],SW,SH,'Vazio',true,fl);
+    if(pl.void.length){ zv.textContent=''; const top=pl.void[pl.void.length-1]; const ce=el('div','card'); ce.style.backgroundImage=`url("${top.def.img}")`; ce.dataset.void=p; zv.appendChild(ce); }
+    zv.dataset.void=p;
+    zv.appendChild(el('div','badge',pl.void.length));
+  }
+  // campo (um só, compartilhado)
+  const fo = P(0).field ? [0,P(0).field] : (P(1).field ? [1,P(1).field] : null);
+  const zf=zone(frag,FIELD[0],FIELD[1],FIELD_W,FIELD_H,'Poder',true);
+  if(fo){ zf.textContent=''; const ce=cardEl(fo[1],fo[0],'field'); zf.appendChild(ce); if(fo[1].used) ce.classList.add('dim'); else if(canAct() && actionsFor(0,fo[1],'field').some(a=>!a.reason)) ce.classList.add('glow'); if(fo[0]===1) ce.appendChild(el('div','chip tag','OPON.')); }
+
+  // mão do oponente
+  const oh=P(1).hand.length;
+  for(let i=0;i<oh;i++){
+    const step=oh>1?Math.min(70,(810-90)/(oh-1)):0; const total=(oh-1)*step+90;
+    const x=(1080-total)/2+i*step;
+    const c=el('div','card back'); c.style.cssText=`inset:auto;left:${x}px;top:205px;width:90px;height:126px;cursor:default`; frag.appendChild(c);
+  }
+  // mão do jogador
+  const h=P(0).hand, n=h.length, W=190;
+  const step=n>1?Math.min(W+12,(980-W)/(n-1)):0, total=(n-1)*step+W, x0=(1080-total)/2;
+  const can=canAct();
+  h.forEach((inst,i)=>{
+    const m=n>1?(i-(n-1)/2)/((n-1)/2):0; const d=el('div','hand'); d.style.cssText=`left:${x0+i*step}px;top:${1648+m*m*26}px;z-index:${i};transform:rotate(${m*4}deg);transform-origin:50% 150%`;
+    const ce=cardEl(inst,0,'hand'); d.appendChild(ce);
+    if(can && actionsFor(0,inst,'hand').some(a=>!a.reason)) d.classList.add('playable');
+    frag.appendChild(d);
+  });
+
+  // HUD: vida, avatares, turno
+  for(const p of [1,0]){
+    const pl=P(p); const z=el('div','zone life'); z.id='life'+p;
+    z.style.cssText=`left:${p?23:689}px;top:25px;width:362px;height:56px`;
+    z.innerHTML=`<i style="width:${Math.max(0,Math.min(100,100*pl.life/MAX_LIFE))}%"></i><span>${p?'Oponente':'Você'} · ${pl.life}</span>`;
+    frag.appendChild(z);
+    zone(frag,p?23:952,95,p?99:98,98,p?'avatar oponente':'Seu avatar',true).classList.add('av');
+  }
+  const zt=el('div','zone turn'); zt.style.cssText='left:492px;top:25px;width:99px;height:99px';
+  const ph={prep:'Preparação',attack:'Ataque',end:'Final'}[G.phase]||'';
+  zt.innerHTML=`<u>Turno ${G.turnNo}</u><b style="color:${G.turn===0?'#2ee66b':'#e60012'}">${G.turn===0?'Você':'Opon.'}</b><span>${ph}</span>`;
+  frag.appendChild(zt);
+  let lab='Turno do oponente';
+  if(G.turn===0) lab=G.phase==='attack'?'Finalizar batalha':((G.phase==='prep' && canAttack(0) && P(0).chars.some(Boolean))?'Ir para o ataque':'Fim do turno');
+  const eb=btn(lab,'',()=>endTurnHuman()); eb.id='endbtn'; if(!can) eb.disabled=true; if(G.turn!==0) eb.classList.add('sec'); frag.appendChild(eb);
+  const mb=btn('Menu','sec',menuModal); mb.id='menubtn'; frag.appendChild(mb);
+
+  // mensagens / prompt
+  const msg=el('div'); msg.id='msg';
+  if(G.pick){
+    msg.className='pick'; msg.appendChild(el('div','t',G.pick.prompt));
+    if(G.pick.direct) msg.appendChild(btn('Direto','sm',()=>endPick({direct:true})));
+    msg.appendChild(btn('Cancelar','sm sec',()=>endPick(null)));
+  } else {
+    msg.style.display='none';
+  }
+  frag.appendChild(msg);
+  b.replaceChildren(frag);
+  const now=new Set();
+  G.index.forEach((r,u)=>{ now.add(u); if(!seen.has(u) && seen.size){ const e=b.querySelector(`[data-uid="${u}"]`); if(!e) return;
+    const q=stageRect(e);
+    if(r.zone==='hand'&&r.p===0){ const d=POS[0].deck; e.style.setProperty('--ex',(d[0]-q.x)+'px'); e.style.setProperty('--ey',(d[1]-q.y)+'px'); e.classList.add('enterHand'); }
+    else if(r.zone==='char'||r.zone==='power'||r.zone==='field'){ e.style.setProperty('--ex',(540-q.x-q.w/2)+'px'); e.style.setProperty('--ey',(700-q.y-q.h/2)+'px'); e.classList.add('enterField'); }
+  } });
+  seen=now;
+}
+
+/* clique no campo */
+$('#board').addEventListener('click', e=>{
+  if(!G || G.over) return;
+  const ce=e.target.closest('[data-uid]');
+  const ve=e.target.closest('[data-void]');
+  if(G.pick){
+    if(ce){ const u=+ce.dataset.uid; if(G.pick.set.has(u)) endPick({target:G.pick.map.get(u)}); }
+    return;
+  }
+  if(ce){ const r=G.index.get(+ce.dataset.uid); if(r) cardModal(r.inst,r.p,(r.zone==='hand'||r.zone==='void')?r.zone:'field'); return; }
+  if(ve){ voidModal(+ve.dataset.void); return; }
+  const de=e.target.closest('[data-deck]'); if(de){ toast(`Baralho ${+de.dataset.deck?'do oponente':'seu'}: ${P(+de.dataset.deck).deck.length} cartas`); }
+});
+
+/* ============================================================
+   FLUXO DE PARTIDA
+   ============================================================ */
+async function draw(p){
+  const pl=P(p);
+  if(!pl.deck.length){ log(`${p?'Oponente':'Você'} não tem cartas para comprar!`); endGame(1-p); return false; }
+  const c=pl.deck.shift();
+  await drawAnim(p,c);
+  pl.hand.push(c); render(); return true;
+}
+async function startTurn(p){
+  if(G.over) return;
+  G.turn=p; G.phase='prep'; G.turnNo++; const pl=P(p); pl.turns++;
+  pl.esf=false;
+  [...P(0).chars,...P(1).chars].filter(Boolean).forEach(c=>{c.tmp=null;});   // efeitos 'até o fim do turno' terminam
+  [...pl.chars,...pl.powers].filter(Boolean).forEach(c=>{c.attacked=false;c.direct=false;c.used=false;});
+  [P(0).field,P(1).field].filter(Boolean).forEach(c=>{c.used=false;});   // efeito do campo: 1x por turno, vale para quem estiver jogando
+  G.busy=true; render();
+  await banner((p===0?'SEU TURNO':'TURNO DO OPONENTE')+' · TURNO '+G.turnNo);
+  if(G.over) return;
+  if(!(await draw(p))) return;
+  log(p===0?'Você comprou uma carta.':'Oponente comprou uma carta.');
+  if(!canAttack(p)) log(p===0?'Primeiro turno: você ainda não pode atacar.':'Primeiro turno do oponente: ele não pode atacar.');
+  render();
+  if(p===1){ await botTurn(); }
+  else { G.busy=false; render(); }
+}
+async function banner2(t){ render(); await banner(t); }
+async function goAttack(p){
+  G.phase='attack'; render(); await banner('FASE DE ATAQUE');
+}
+async function finalPhase(p){
+  if(G.over) return;
+  G.busy=true; G.phase='end';
+  [...P(0).chars,...P(1).chars].filter(Boolean).forEach(c=>{c.tmp=null;});   // 'até o fim do turno' acaba aqui
+  render(); await banner('FASE FINAL');
+  await startTurn(1-p);
+}
+async function endTurnHuman(){            // botão da direita: preparação -> ataque -> fim
+  if(!canAct()) return;
+  closeModal();
+  G.busy=true; render();
+  if(G.phase==='prep' && canAttack(0) && P(0).chars.some(Boolean)){
+    await goAttack(0);
+    if(G.over) return;
+    G.busy=false; render();
+  } else {
+    await finalPhase(0);
+  }
+}
+function endGame(winner){
+  if(G.over) return; G.over=true; G.busy=true; musicStop(); render();
+  setTimeout(()=>{
+    const box=el('div','mbox');
+    box.appendChild(el('div','big',`<span style="font-size:130px;font-weight:900;color:${winner===0?'#2ee66b':'#e60012'}">${winner===0?'VITÓRIA!':'DERROTA'}</span>`));
+    box.appendChild(btn('Jogar de novo','',()=>{closeModal(); G=null; $('#board').innerHTML=''; startFlow();}));
+    box.appendChild(btn('Menu inicial','sec',()=>{closeModal(); G=null; $('#board').innerHTML=''; titleScreen();}));
+    showModal(box);
+  },900);
+}
+
+async function beginMatch(first){
+  const myDeck=loadDeck();
+  G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0};
+  for(const p of [0,1]){
+    const pl=P(p);
+    for(let i=0;i<HAND_START;i++) pl.hand.push(pl.deck.shift());
+    if(!pl.hand.some(c=>c.def.kind==='char')){            // garante 1 Personagem na mão inicial
+      const k=pl.deck.findIndex(c=>c.def.kind==='char');
+      if(k>=0){ const ch=pl.deck.splice(k,1)[0]; const out=pl.hand.pop(); pl.deck.push(out); pl.hand.push(ch); shuffle(pl.deck); }
+    }
+  }
+  $('#screen').innerHTML=''; musicStart();
+  log(first===0?'Você começou! (não ataca no 1º turno)':'O oponente começa. Você pode atacar no seu 1º turno.');
+  render();
+  await sleep(300);
+  await startTurn(first);
+}
+
+/* ============================================================
+   IA SIMPLES
+   ============================================================ */
+async function botTurn(){
+  const p=1,q=0,pl=P(p),ql=P(q);
+  const pause=async ms=>{ await sleep(ms); render(); return !G.over; };
+  const hand=id=>pl.hand.find(c=>c.id===id);
+  const freeC=()=>freeIdx(pl.chars)>=0, freeP=()=>freeIdx(pl.powers)>=0;
+  const projAtk=c=>atkOf(p,c);
+  const bAtk=a=>atkOf(p,a)+(a.id===5?300:0);
+  const bDef=t=>atkOf(q,t)-(t.id===7?300:0);
+  await sleep(500);
+  const summonAll=async()=>{
+    while(freeC()){
+      const cs=pl.hand.filter(x=>x.def.kind==='char').sort((a,b)=>projAtk(b)-projAtk(a));
+      if(!cs.length) return true;
+      await A.summon(p,cs[0]); if(!await pause(800)) return false;
+    }
+    return true;
+  };
+
+  // 1) Casa do Kame
+  let c=hand(8);
+  if(c && !P(0).field && !pl.field){ A.field(p,c); if(!await pause(800)) return; }
+  const fld=P(0).field||P(1).field;
+  if(fld && fld.id===8 && !fld.used){
+    const opts=pl.deck.filter(x=>x.def.kind==='char').sort((a,b)=>projAtk(b)-projAtk(a));
+    if(opts.length){ A.casa(p,opts[0],fld); if(!await pause(800)) return; }
+  }
+  // 2) Bulma -> Radar -> Esferas
+  c=hand(10);
+  if(c && freeP() && pl.deck.some(x=>x.id===13)){ A.support(p,c); if(!await pause(800)) return; }
+  const bu=pl.powers.find(x=>x&&x.id===10&&!x.used);
+  if(bu && pl.deck.some(x=>x.id===13)){ A.bulma(p,bu); if(!await pause(800)) return; }
+  c=hand(13);
+  if(c){ const e=pl.deck.find(x=>x.id===14)||pl.void.find(x=>x.id===14); if(e){ A.radar(p,c,e); if(!await pause(800)) return; } }
+  // 3) Caminho da serpente (traz Goku do vazio)
+  c=hand(15);
+  if(c && pl.void.some(x=>x.id===1) && freeC()){ A.caminho(p,c); if(!await pause(900)) return; }
+  // 4) Invocar Personagens
+  if(!await summonAll()) return;
+  // 5) Esferas do dragão: busca o melhor Personagem se ainda houver espaço
+  c=hand(14);
+  if(c && !pl.esf && freeC()){
+    const cand=[...pl.deck,...pl.void].filter(x=>x.def.kind==='char'&&x!==c).sort((a,b)=>projAtk(b)-projAtk(a))[0];
+    if(cand){ A.esferas(p,c,cand); if(!await pause(900)) return; if(!await summonAll()) return; }
+  }
+  c=hand(15);
+  if(c && pl.void.some(x=>x.id===1) && freeC()){ A.caminho(p,c); if(!await pause(900)) return; }
+  // 6) Semente
+  c=hand(11);
+  if(c && chars(p).length && pl.life<=2500){ A.semente(p,c); if(!await pause(900)) return; }
+  // 7) Disparo de Ki
+  c=hand(12);
+  if(c && chars(p).length && supports(q).length){ A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
+  // 8) Yajirobe
+  c=hand(9);
+  if(c && freeP()){ A.support(p,c); if(!await pause(700)) return; }
+  // 9) Kaioken
+  c=hand(17);
+  const goku=chars(p).filter(x=>x.id===1).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
+  if(c && goku){
+    const strongest=Math.max(0,...chars(q).map(t=>atkOf(q,t)));
+    if(chars(q).length===0 || atkOf(p,goku)+1000>strongest){ A.tool(p,c,goku); if(!await pause(900)) return; }
+  }
+  // 10) Autoescola: só se transformar um ataque perdedor em vencedor
+  c=hand(16);
+  const ag=chars(p).find(x=>x.id===1&&!x.attacked), ap=chars(p).find(x=>x.id===3&&!x.attacked);
+  if(c && ag && ap && canAttack(p) && chars(q).length){
+    const avg=Math.round((atkOf(p,ag)+atkOf(p,ap))/2), top=Math.max(...chars(q).map(bDef));
+    if(avg>top && Math.min(atkOf(p,ag),atkOf(p,ap))<=top){ A.auto(p,c,ag,ap); if(!await pause(900)) return; }
+  }
+  // 11) Yajirobe (efeito)
+  const yaji=pl.powers.find(x=>x&&x.id===9);
+  if(yaji && canAttack(p) && pl.life<=500 && chars(p).length===1 && !chars(p)[0].attacked){ A.yaji(p,yaji); if(!await pause(900)) return; }
+  // 12) Piccolo (ataque direto) só se for letal ou ajudar muito
+  const picc=chars(p).find(x=>x.id===3&&!x.used&&!x.attacked), g2=chars(p).filter(x=>x.id===1).sort((a,b)=>atkOf(p,a)-atkOf(p,b))[0];
+  if(picc && g2 && canAttack(p)){
+    const pa=atkOf(p,picc), tg=chars(q);
+    if(pa>=ql.life || (ql.life<=pa*2 && tg.length && tg.every(t=>bDef(t)>=pa))){ A.picc(p,picc,g2); if(!await pause(900)) return; }
+  }
+  // 13) Ataques
+  if(canAttack(p) && pl.chars.some(Boolean)){
+    await goAttack(p); if(G.over) return;
+    const skipped=new Set();
+    while(!G.over){
+      const atts=pl.chars.filter(x=>x&&!x.attacked&&!skipped.has(x.uid)).sort((a,b)=>atkOf(p,b)-atkOf(p,a));
+      if(!atts.length) break;
+      const a=atts[0], tg=chars(q);
+      let choice=null;
+      if(!tg.length) choice={direct:true};
+      else if(a.direct && (atkOf(p,a)>=ql.life || !tg.some(t=>bDef(t)<bAtk(a)))) choice={direct:true};
+      else { const w=tg.filter(t=>bDef(t)<bAtk(a)||(bDef(t)===bAtk(a)&&hasAdv(a,t))).sort((x,y)=>bDef(y)-bDef(x)); if(w.length) choice={target:w[0]}; }
+      if(!choice){ skipped.add(a.uid); continue; }
+      await doAttack(p,a,choice.direct?null:choice.target);
+      if(G.over) return;
+      await sleep(350);
+    }
+  }
+  if(G.over) return;
+  await sleep(400);
+  await finalPhase(1);
+}
+
+/* ============================================================
+   TELAS: título, baralho, pedra-papel-tesoura
+   ============================================================ */
+function loadDeck(){
+  try{
+    const s=JSON.parse(localStorage.getItem('amv_deck2')||'null');
+    if(s && validDeck(s)===null) return s;
+  }catch(e){}
+  return Object.assign({},DEFAULT_DECK);
+}
+function saveDeck(c){ try{localStorage.setItem('amv_deck2',JSON.stringify(c));}catch(e){} }
+function validDeck(c){
+  let t=0, ch=0;
+  for(const id in c){ const n=c[id]|0; if(n<0||n>COPY_MAX) return 'Máximo de '+COPY_MAX+' cópias por carta.'; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
+  if(t<DECK_MIN) return `Faltam ${DECK_MIN-t} cartas (mínimo ${DECK_MIN}).`;
+  if(t>DECK_MAX) return `Sobram ${t-DECK_MAX} cartas (máximo ${DECK_MAX}).`;
+  if(ch<1) return 'O baralho precisa de pelo menos 1 Personagem.';
+  return null;
+}
+function setScreen(node){ const s=$('#screen'); s.innerHTML=''; s.appendChild(node); }
+
+function titleScreen(){
+  const s=el('div','scr');
+  s.appendChild(el('h1','','AMV'));
+  s.appendChild(el('h2','','DUELO DE CARTAS'));
+  const fan=el('div','fan');
+  [[1,60,40,-12],[2,350,10,0],[3,640,40,12]].forEach(([id,x,y,r])=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[id].img}")`; fan.appendChild(d); });
+  s.appendChild(fan);
+  const m=el('div','menu');
+  m.appendChild(btn('Jogar contra o bot','',startFlow));
+  m.appendChild(btn('Montar baralho','sec',deckScreen));
+  m.appendChild(btn('Regras desta versão','sec',rulesModal));
+  s.appendChild(m); setScreen(s);
+}
+
+function deckScreen(){
+  const counts=loadDeck(); for(const id in DEFS) counts[id]=counts[id]|0;
+  const s=el('div','scr'); s.style.padding='30px 30px';
+  s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">MONTAR BARALHO</div>`));
+  const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; s.appendChild(info);
+  const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
+  const nums={};
+  Object.values(DEFS).forEach(d=>{
+    const t=el('div','tile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.img}")`; im.onclick=()=>cardModalView(d);
+    const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
+    ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
+    ctl.appendChild(nb);
+    ctl.appendChild(btn('+','',()=>{ if(counts[d.id]<COPY_MAX){counts[d.id]++;upd();} }));
+    t.appendChild(im); t.appendChild(ctl); grid.appendChild(t);
+  });
+  const foot=el('div','row'); foot.style.marginTop='18px';
+  const save=btn('Salvar e voltar','',()=>{ saveDeck(counts); titleScreen(); });
+  foot.appendChild(btn('Baralho padrão','sec',()=>{ for(const id in DEFS) counts[id]=DEFAULT_DECK[id]|0; upd(); }));
+  foot.appendChild(save); s.appendChild(foot);
+  function upd(){
+    let t=0; for(const id in DEFS){ nums[id].textContent=counts[id]; t+=counts[id]; }
+    const v=validDeck(counts);
+    info.innerHTML=`${t} / ${DECK_MAX} cartas (mín. ${DECK_MIN})` + (v?`<br><span style="color:#ffb347;font-size:34px">${v}</span>`:'<br><span style="color:#2ee66b;font-size:34px">Baralho válido</span>');
+    save.disabled=!!v;
+  }
+  upd(); setScreen(s);
+}
+function cardModalView(d){
+  const box=el('div','mbox'); const big=el('div','bigcard'); big.style.backgroundImage=`url("${d.img}")`; box.appendChild(big);
+  box.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+}
+
+function startFlow(){
+  const err=validDeck(loadDeck());
+  if(err){ toast('Baralho inválido: '+err); deckScreen(); return; }
+  rps();
+}
+function rps(msg){
+  const s=el('div','scr');
+  s.appendChild(el('h2','','QUEM COMEÇA?'));
+  s.appendChild(el('div','big',msg||'Pedra, papel ou tesoura!'));
+  const row=el('div','row'); row.style.marginTop='40px';
+  const opts=[['✊','pedra'],['✋','papel'],['✌️','tesoura']];
+  const res=el('div','big'); res.style.fontSize='80px';
+  opts.forEach(([ic,nm],i)=>{
+    row.appendChild(btn(ic,'rpsb',async()=>{
+      const bot=Math.floor(Math.random()*3);
+      row.querySelectorAll('button').forEach(b=>b.disabled=true);
+      res.innerHTML=`Você ${opts[i][0]} × ${opts[bot][0]} Oponente`;
+      await sleep(900);
+      if(i===bot){ rps('Empate! Jogue de novo.'); return; }
+      const win=(i-bot+3)%3===1;
+      res.innerHTML+=`<div style="margin-top:30px;color:${win?'#2ee66b':'#e60012'}">${win?'Você começa!':'O oponente começa!'}</div>`;
+      await sleep(1300);
+      beginMatch(win?0:1);
+    }));
+  });
+  s.appendChild(row); s.appendChild(res);
+  setScreen(s);
+}
+
+titleScreen();
+window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList};   // útil para depurar
+})();
+</script>
+</body>
+</html>
