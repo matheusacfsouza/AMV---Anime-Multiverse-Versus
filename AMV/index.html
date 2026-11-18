@@ -240,6 +240,10 @@ let musicOn=true;
 function musicStart(){ if(musicOn) MUSIC.play().catch(()=>{}); }
 function musicStop(){ MUSIC.pause(); try{MUSIC.currentTime=0;}catch(e){} }
 addEventListener('pointerdown',()=>{ if(G && !G.over && musicOn && MUSIC.paused) musicStart(); });
+document.addEventListener('visibilitychange',()=>{               // pausa a música quando a aba fica em segundo plano
+  if(document.hidden) MUSIC.pause();
+  else if(G && !G.over && musicOn) musicStart();
+});
 function fitStage(){
   const s = Math.min(innerWidth/1080, innerHeight/1920);
   $('#stage').style.transform = `translate(-50%,-50%) scale(${s})`;
