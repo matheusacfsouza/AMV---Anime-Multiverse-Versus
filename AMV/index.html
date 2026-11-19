@@ -215,7 +215,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   background:rgba(255,212,0,.16);box-shadow:inset 0 0 0 6px rgba(255,212,0,.55),0 0 40px rgba(255,212,0,.25);transition:background .15s}
 .itemzone.over{background:rgba(255,212,0,.28);box-shadow:inset 0 0 0 8px var(--gold),0 0 60px rgba(255,212,0,.45)}
 /* carta grande ao segurar o dedo sobre ela na mão */
-.peek{position:absolute;left:90px;top:330px;width:900px;height:1260px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
+.peek{position:absolute;left:250px;top:560px;width:580px;height:812px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
   box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
 @keyframes peekIn{from{transform:scale(.85);opacity:0}}
 .lifefx{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:150px;font-weight:900;line-height:1;white-space:nowrap;pointer-events:none;
@@ -572,7 +572,7 @@ async function activateFx_raw(p, card){
   const e=document.querySelector(`[data-uid="${card.uid}"]`);
   if(!from) from = e ? stageRect(e) : (p===1 ? {x:498,y:150,w:84,h:118} : {x:445,y:1660,w:190,h:266});
   if(e) e.style.visibility='hidden';
-  const big={x:90,y:330,w:900,h:1260};
+  const big={x:250,y:440,w:580,h:812};
   const wrap=el('div','actfx'); wrap.style.cssText=`left:${from.x}px;top:${from.y}px;width:${from.w}px;height:${from.h}px`;
   const face=el('div','face'); face.style.backgroundImage=`url("${mini(card)}")`; wrap.appendChild(face);
   const ring=el('div','ring'); wrap.appendChild(ring);
