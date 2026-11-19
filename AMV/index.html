@@ -75,7 +75,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 
 
 .card.glow{z-index:2}
-.toolico{position:absolute;left:-22px;width:74px;height:66px;border:4px solid #ff9a1f;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 0 0 2px #ffcf6b,0 0 16px 5px #ff8a00,0 4px 10px #000}
+.toolico{position:absolute;left:calc(6.765% - 37px);width:74px;height:66px;border:4px solid #ff9a1f;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 0 0 2px #ffcf6b,0 0 16px 5px #ff8a00,0 4px 10px #000}
 .card.enterHand{animation:drawIn .55s ease-out backwards}
 .card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) backwards}
 .card.settle{animation:settle .32s cubic-bezier(.3,1.6,.5,1) backwards}
@@ -938,7 +938,7 @@ function render(){
         const a=atkOf(p,c), base=c.def.atk;
         ce.appendChild(chipAtq(a, base));
         c.equips.forEach((k,ki)=>{
-          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${mini(k)}")`; ti.style.top=(38+ki*74)+'px'; ti.dataset.uid=k.uid;
+          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${mini(k)}")`; const nT=Math.min(c.equips.length,2); ti.style.top=`calc(38.845% - ${(nT*66+(nT-1)*10)/2 - ki*76}px)`; ti.dataset.uid=k.uid;   // grupo centralizado na área marcada
           G.index.set(k.uid,{inst:k,p,zone:'tool'});
           if(G.pick && G.pick.set.has(k.uid)) ti.classList.add('cand');
           ce.appendChild(ti);                      // dentro da carta: vai junto no ataque
