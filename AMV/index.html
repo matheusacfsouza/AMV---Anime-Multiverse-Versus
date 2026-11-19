@@ -20,8 +20,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 #screen:empty{display:none}
 #modal{position:absolute;inset:0;z-index:10;display:none;background:rgba(0,0,0,.86);align-items:center;justify-content:center;flex-direction:column}
 #modal.on{display:flex}
-#banner{position:absolute;left:0;right:0;top:905px;height:110px;z-index:20;display:none;align-items:center;justify-content:center;text-align:center;white-space:nowrap;
-  background:linear-gradient(90deg,transparent,rgba(230,0,18,.92) 25%,rgba(230,0,18,.92) 75%,transparent);font-size:52px;font-weight:900;letter-spacing:3px;text-shadow:0 3px 0 #000}
+#banner{position:absolute;left:0;right:0;top:920px;height:80px;z-index:20;display:none;align-items:center;justify-content:center;text-align:center;white-space:nowrap;
+  background:linear-gradient(90deg,transparent,rgba(230,0,18,.92) 25%,rgba(230,0,18,.92) 75%,transparent);font-size:42px;font-weight:900;letter-spacing:3px;text-shadow:0 3px 0 #000}
 #banner.on{display:flex;animation:ban .9s ease both}
 @keyframes ban{0%{opacity:0;transform:scaleY(.2)}20%{opacity:1;transform:scaleY(1)}85%{opacity:1}100%{opacity:0}}
 #toast{position:absolute;left:50%;bottom:340px;transform:translateX(-50%);z-index:30;background:#000c;border:3px solid #fff;border-radius:16px;padding:16px 30px;font-size:38px;display:none}
@@ -75,7 +75,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 
 
 .card.glow{z-index:2}
-.toolico{position:absolute;left:-30px;width:74px;height:66px;border:4px solid #d9c8e8;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 4px 10px #000}
+.toolico{position:absolute;left:-22px;width:74px;height:66px;border:4px solid #ff9a1f;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 0 0 2px #ffcf6b,0 0 16px 5px #ff8a00,0 4px 10px #000}
 .card.enterHand{animation:drawIn .55s ease-out backwards}
 .card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) backwards}
 .card.settle{animation:settle .32s cubic-bezier(.3,1.6,.5,1) backwards}
@@ -138,7 +138,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   font-size:24px;line-height:1.15;color:#ddd;overflow:hidden;display:flex;flex-direction:column;justify-content:center;z-index:2}
 #msg .l:last-child{color:#fff;font-weight:700}
 #msg .l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#msg.pick{border-color:var(--gold);flex-direction:row;align-items:center;gap:10px}
+#msg.pick{border-color:var(--gold);flex-direction:row;align-items:center;gap:10px;height:60px;top:934px;padding:2px 12px}
+#msg.pick .btn.sm{font-size:21px;padding:3px 12px;border-width:3px}
 #msg.pick .t{flex:1;font-size:23px;font-weight:700;color:var(--gold);line-height:1.1}
 .btn{font-family:inherit;font-weight:800;color:#fff;background:var(--red);border:4px solid #fff;border-radius:20px;font-size:42px;padding:16px 30px;cursor:pointer}
 .btn:active{transform:scale(.97)}
@@ -219,26 +220,26 @@ const DEFAULT_DECK = {1:3,2:2,3:2,4:2,5:2,6:2,7:2,8:1,9:1,10:1,11:2,12:1,13:1,14
 const BOT_DECK = DEFAULT_DECK;   // baralho do bot
 
 const DEFS = {   // arquivos com nome, pasta Cartas
-  1:{id:1,name:'Goku - Guerreiros Z',kind:'char',atk:1600,arq:['Guerreiro','Espacial'],kame:true,img:'Cartas/Personagem - Goku - Guerreiros Z.png'},
-  2:{id:2,name:'Gohan - Guerreiros Z',kind:'char',atk:800,arq:['Guerreiro'],img:'Cartas/Personagem - Gohan - Guerreiros Z.png'},
-  3:{id:3,name:'Piccolo - Guerreiros Z',kind:'char',atk:1500,arq:['Guerreiro','Espacial'],img:'Cartas/Personagem - Piccolo - Guerreiros Z.png'},
-  4:{id:4,name:'Kuririn - Guerreiros Z',kind:'char',atk:1200,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Kuririn - Guerreiros Z.png'},
-  5:{id:5,name:'Tenshinhan - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],img:'Cartas/Personagem - Tenshinhan - Guerreiros Z.png'},
-  6:{id:6,name:'Chaos - Guerreiros Z',kind:'char',atk:300,arq:['Guerreiro'],img:'Cartas/Personagem - Chaos - Guerreiros Z.png'},
-  7:{id:7,name:'Yamcha - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Yamcha - Guerreiros Z.png'},
-  8:{id:8,name:'Casa do Kame',kind:'field',img:'Cartas/Campo - Casa do Kame.png'},
-  9:{id:9,name:'Yajirobe',kind:'item',img:'Cartas/Item - Yajirobe.png'},
-  10:{id:10,name:'Bulma',kind:'support',img:'Cartas/Apoiador - Bulma.png'},
-  11:{id:11,name:'Semente dos deuses',kind:'item',img:'Cartas/Item - Semente dos deuses.png'},
-  12:{id:12,name:'Disparo de Ki',kind:'item',img:'Cartas/Item - Disparo de Ki.png'},
-  13:{id:13,name:'Radar do dragão',kind:'item',img:'Cartas/Item - Radar do dragão.png'},
-  14:{id:14,name:'Esferas do dragão',kind:'item',img:'Cartas/Item - Esferas do dragão.png'},
-  15:{id:15,name:'Caminho da serpente',kind:'item',img:'Cartas/Item - Caminho da serpente.png'},
-  16:{id:16,name:'Goku e Piccolo na Autoescola',kind:'item',img:'Cartas/Item - Goku e Piccolo na Autoescola.png'},
-  17:{id:17,name:'Kaioken',kind:'tool',img:'Cartas/Ferramenta - Kaioken.png'},
-  18:{id:18,name:'Senhor Kaioh',kind:'support',img:'Cartas/Apoiador - Senhor Kaioh.png'},
-  19:{id:19,name:'Kaioken aumentado 4x',kind:'item',img:'Cartas/Item - Kaioken aumentado 4x.png'},
-  20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.png'}
+  1:{id:1,name:'Goku - Guerreiros Z',kind:'char',atk:1600,arq:['Guerreiro','Espacial'],kame:true,img:'Cartas/Personagem - Goku - Guerreiros Z.jpg'},
+  2:{id:2,name:'Gohan - Guerreiros Z',kind:'char',atk:800,arq:['Guerreiro'],img:'Cartas/Personagem - Gohan - Guerreiros Z.jpg'},
+  3:{id:3,name:'Piccolo - Guerreiros Z',kind:'char',atk:1500,arq:['Guerreiro','Espacial'],img:'Cartas/Personagem - Piccolo - Guerreiros Z.jpg'},
+  4:{id:4,name:'Kuririn - Guerreiros Z',kind:'char',atk:1200,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Kuririn - Guerreiros Z.jpg'},
+  5:{id:5,name:'Tenshinhan - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],img:'Cartas/Personagem - Tenshinhan - Guerreiros Z.jpg'},
+  6:{id:6,name:'Chaos - Guerreiros Z',kind:'char',atk:300,arq:['Guerreiro'],img:'Cartas/Personagem - Chaos - Guerreiros Z.jpg'},
+  7:{id:7,name:'Yamcha - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Yamcha - Guerreiros Z.jpg'},
+  8:{id:8,name:'Casa do Kame',kind:'field',img:'Cartas/Campo - Casa do Kame.jpg'},
+  9:{id:9,name:'Yajirobe',kind:'item',img:'Cartas/Item - Yajirobe.jpg'},
+  10:{id:10,name:'Bulma',kind:'support',img:'Cartas/Apoiador - Bulma.jpg'},
+  11:{id:11,name:'Semente dos deuses',kind:'item',img:'Cartas/Item - Semente dos deuses.jpg'},
+  12:{id:12,name:'Disparo de Ki',kind:'item',img:'Cartas/Item - Disparo de Ki.jpg'},
+  13:{id:13,name:'Radar do dragão',kind:'item',img:'Cartas/Item - Radar do dragão.jpg'},
+  14:{id:14,name:'Esferas do dragão',kind:'item',img:'Cartas/Item - Esferas do dragão.jpg'},
+  15:{id:15,name:'Caminho da serpente',kind:'item',img:'Cartas/Item - Caminho da serpente.jpg'},
+  16:{id:16,name:'Goku e Piccolo na Autoescola',kind:'item',img:'Cartas/Item - Goku e Piccolo na Autoescola.jpg'},
+  17:{id:17,name:'Kaioken',kind:'tool',img:'Cartas/Ferramenta - Kaioken.jpg'},
+  18:{id:18,name:'Senhor Kaioh',kind:'support',img:'Cartas/Apoiador - Senhor Kaioh.jpg'},
+  19:{id:19,name:'Kaioken aumentado 4x',kind:'item',img:'Cartas/Item - Kaioken aumentado 4x.jpg'},
+  20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.jpg'}
 };
 const ELEM = {terra:{n:'Terra',c:'#410e00',adv:['fogo','ar','raio']},planta:{n:'Planta',c:'#32bf0b',adv:['agua','terra']},agua:{n:'Água',c:'#0725de',adv:['terra','fogo']},fogo:{n:'Fogo',c:'#ff0803',adv:['ar','planta','metal','escuridao']},ar:{n:'Ar',c:'#f2efe9',adv:['planta']},raio:{n:'Raio',c:'#fdcd00',adv:['agua','ar','escuridao']},metal:{n:'Metal',c:'#57808a',adv:['terra','raio','planta']},escuridao:{n:'Escuridão',c:'#450066',adv:['ar','planta']},divino:{n:'Divino',c:'#fb9e20',adv:['divino']}};
 for(const i in DEFS) if(DEFS[i].kind==='char') DEFS[i].el = (i==3?'planta':'terra');
@@ -279,12 +280,11 @@ function fitStage(){
 addEventListener('resize', fitStage); fitStage();
 
 /* verso opcional: se existir Cartas/verso.png ele é usado */
-const SCENARIOS=['Campos/Campo - Batalha contra os saiyajins.jpg','Campos/Campo - Casa do Kame.jpg'];   // novos cenários: só acrescentar o nome aqui
-/* versões leves (pasta Cartas/Mini) no tabuleiro; a arte grande só no zoom. Se a leve faltar, usa a grande. */
+const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenários/Cenário - Casa do Kame.jpg'];   // novos cenários: só acrescentar o nome aqui
+/* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
-function miniOf(path){ return path.replace(/^Cartas\//,'Cartas/Mini/').replace(/\.png$/,'.jpg'); }
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-for(const k in DEFS){ const d=DEFS[k]; d.mini=miniOf(d.img); preload(d.mini, ()=>{ d.mini=d.img; preload(d.img); }); }
+for(const k in DEFS){ const d=DEFS[k]; d.mini=d.img; preload(d.img); }
 const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
 const mini=inst=>(inst.def||inst).mini;
 function setScenario(on){
@@ -292,8 +292,8 @@ function setScenario(on){
   if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; return; }
   st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen');
 }
-const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.png'},{n:'Azul',img:'Cartas/Verso da carta Azul.png'},{n:'Verde',img:'Cartas/Verso da carta Verde.png'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.png'}];
-BACKS.forEach(b=>{ b.full=b.img; b.img=miniOf(b.img); preload(b.img,()=>{ b.img=b.full; preload(b.full); }); });
+const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}];
+BACKS.forEach(b=>preload(b.img));
 function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return BACKS[i]?i:0; }catch(e){ return 0; } }
 function backOf(p){ return BACKS[p===0?myBack():0].img; }    // o oponente usa o verso padrão
 
@@ -319,8 +319,8 @@ function atkOf(p, inst){
     if(inst.id===1) a += 100 * v.filter(c=>c.def.kind==='char').length;          // Goku: +100 por Guerreiro Z no vazio
     if(inst.id===2) a += 600 * v.filter(c=>c.id===3).length;                     // Gohan: +600 por Piccolo no vazio
   }
-  a += 500 * inst.equips.length;                                                 // Kaioken: +500 cada (pode ter vários)
-  a += inst.boost||0;                                                            // Kaioken aumentado 4x: +1500 até o fim do turno
+  a += 400 * inst.equips.length;                                                 // Kaioken: +400 cada (pode ter vários)
+  a += inst.boost||0;                                                            // Kaioken aumentado 4x: +1000 até o fim do turno
   return a;
 }
 function canAttack(p){ return !(p===G.first && P(p).turns===1); }   // quem começa não ataca no 1º turno
@@ -361,7 +361,7 @@ const A = {
   field(p, c){ const pl=P(p); detach(pl,c); for(const x of [0,1]) if(P(x).field) toVoid(P(x),P(x).field); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
-  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+500 ATQ).`); },
+  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+400 ATQ).`); },
   semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); pl.life+=v; log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); fxFloat(p,'+'+v,true); },
   disparo(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Disparo de Ki destrói ${t.def.name}!`); },
   async caminho(p, c, slot){ const pl=P(p); const g=pl.void.find(x=>x.id===1); toVoid(pl,c); await voidToField(p,g,slot); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
@@ -371,7 +371,7 @@ const A = {
   async casa(p, chosen, fld){ const pl=P(p); fld.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
   yaji(p, c){ const pl=P(p); const ch=chars(p)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
   async kaioh(p, c, chosen){ const pl=P(p); c.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
-  kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1500; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1500 de ATQ e vai para o vazio na Fase Final.`); },
+  kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1000; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1000 de ATQ e vai para o vazio na Fase Final.`); },
   kame(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Kamehameha destrói ${t.def.name}!`); },
   picc(p, picc, g){ const pl=P(p); toVoid(pl,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
 };
@@ -632,15 +632,15 @@ setInterval(()=>{
   }
 },30);
 /* ---------- cronômetro de 60 s por turno ---------- */
-const TURN_MS=60000;
-const TMR=document.createElement('div'); TMR.className='tmr'; TMR.innerHTML='<b>60</b>';
+const TURN_MS=90000;
+const TMR=document.createElement('div'); TMR.className='tmr'; TMR.innerHTML='<b>90</b>';
 setTimeout(()=>$('#stage').appendChild(TMR),0);
 function timerStart(){ if(G){ G.tEnd=Date.now()+TURN_MS; G.tOut=false; } }
 setInterval(()=>{
   if(!G || G.over || !G.tEnd){ TMR.classList.remove('on'); return; }
   const left=Math.max(0,G.tEnd-Date.now()), sec=Math.ceil(left/1000), r=left/TURN_MS;
   TMR.classList.add('on'); TMR.firstChild.textContent=sec;
-  TMR.style.setProperty('--tp',r.toFixed(3)); TMR.style.setProperty('--tc', sec>20?'#2ee66b':sec>10?'#fdcd00':'#ff0803');
+  TMR.style.setProperty('--tp',r.toFixed(3)); TMR.style.setProperty('--tc', `hsl(${Math.round(120*r)},85%,50%)`);   // verde -> amarelo -> laranja -> vermelho, como a vida
   TMR.classList.toggle('low', sec<=10);
   if(left<=0 && G.turn===0 && !G.tOut && G.phase!=='end') timeUp();
 },200);
@@ -670,9 +670,10 @@ function actionsFor(p, inst, where){
     if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>A.support(p,inst));
     if(d.kind==='tool'){
       const gs=chars(p).filter(c=>c.id===1);
-      add('Equipar', gs.length?null:'Precisa de um "Goku - Guerreiros Z" em campo.', async()=>{
-        let g=gs[0];
-        if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Escolha o Goku que receberá o Kaioken.'}); if(!r) return; g=r.target; }
+      const gf=gs.filter(g=>g.equips.length<2);       // no máximo 2 Ferramentas por Personagem
+      add('Equipar', !gs.length?'Precisa de um "Goku - Guerreiros Z" em campo.':(gf.length?null:'Cada Personagem pode ter no máximo 2 Ferramentas.'), async()=>{
+        let g=gf[0];
+        if(gf.length>1){ const r=await pickTarget(gf,{prompt:'Escolha o Goku que receberá o Kaioken.'}); if(!r) return; g=r.target; }
         A.tool(p,inst,g);
       });
     }
@@ -937,10 +938,10 @@ function render(){
         const a=atkOf(p,c), base=c.def.atk;
         ce.appendChild(chipAtq(a, base));
         c.equips.forEach((k,ki)=>{
-          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${mini(k)}")`; ti.style.top=(42+ki*76)+'px'; ti.dataset.uid=k.uid;
+          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${mini(k)}")`; ti.style.top=(38+ki*74)+'px'; ti.dataset.uid=k.uid;
           G.index.set(k.uid,{inst:k,p,zone:'tool'});
           if(G.pick && G.pick.set.has(k.uid)) ti.classList.add('cand');
-          z.appendChild(ti);
+          ce.appendChild(ti);                      // dentro da carta: vai junto no ataque
         });
         if(c.direct) ce.appendChild(el('div','chip tag2','DIRETO'));
         if(c.attacked && c.uid!==G.atkUid) ce.classList.add('dim');
@@ -1046,7 +1047,7 @@ function dropTargets(inst){                     // onde essa carta pode ser solt
   const pl=P(0), k=inst.def.kind, out=[];
   if(k==='char') pl.chars.forEach((c,i)=>{ if(!c) out.push('c'+i); });
   else if(k==='support') pl.powers.forEach((c,i)=>{ if(!c) out.push('w'+i); });
-  else if(k==='tool') pl.chars.forEach((c,i)=>{ if(c && c.id===1) out.push('c'+i); });
+  else if(k==='tool') pl.chars.forEach((c,i)=>{ if(c && c.id===1 && c.equips.length<2) out.push('c'+i); });
   else if(k==='field') out.push('f');
   return out;   // item: qualquer lugar do campo
 }
@@ -1103,7 +1104,7 @@ async function dropPlay(inst, slot, y){
   if(k==='char')    { G.settle=inst.uid; await runAction({run:()=>A.summon(0,inst,i)}); }
   if(k==='support') { G.settle=inst.uid; await runAction({run:async()=>A.support(0,inst,i)}); }
   if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>A.field(0,inst)}); }
-  if(k==='tool')    { await runAction({run:async()=>A.tool(0,inst,P(0).chars[i])}); }
+  if(k==='tool')    { const g=P(0).chars[i]; if(!g || g.equips.length>=2){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>A.tool(0,inst,g)}); }
 }
 
 /* ============================================================
@@ -1260,10 +1261,10 @@ async function botTurn(){
   if(c && chars(p).length && supports(q).length){ A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
   // 9) Kaioken
   c=hand(17);
-  const goku=chars(p).filter(x=>x.id===1).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
+  const goku=chars(p).filter(x=>x.id===1&&x.equips.length<2).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
   if(c && goku){
     const strongest=Math.max(0,...chars(q).map(t=>atkOf(q,t)));
-    if(chars(q).length===0 || atkOf(p,goku)+500>strongest){ A.tool(p,c,goku); if(!await pause(900)) return; }
+    if(chars(q).length===0 || atkOf(p,goku)+400>strongest){ A.tool(p,c,goku); if(!await pause(900)) return; }
   }
   // 10) Autoescola: só se transformar um ataque perdedor em vencedor
   c=hand(16);
@@ -1277,8 +1278,8 @@ async function botTurn(){
   const gk=chars(p).find(x=>x.id===1&&x.equips.some(k=>k.id===17)&&!x.attacked&&!x.doom);
   if(c && gk && canAttack(p)){
     const now=atkOf(p,gk), tg=chars(q);
-    const lethal = !tg.length && now<ql.life && now+1500>=ql.life;
-    const turns  = tg.length && !tg.some(t=>bDef(t)<now) && tg.some(t=>bDef(t)<now+1500);
+    const lethal = !tg.length && now<ql.life && now+1000>=ql.life;
+    const turns  = tg.length && !tg.some(t=>bDef(t)<now) && tg.some(t=>bDef(t)<now+1000);
     if(lethal||turns){ A.kaio4(p,c,gk); if(!await pause(900)) return; }
   }
   // 11) Yajirobe (item)
