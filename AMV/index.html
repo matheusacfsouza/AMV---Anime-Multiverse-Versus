@@ -195,6 +195,36 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rules li{margin:4px 0}
 .float{position:absolute;z-index:25;font-size:84px;font-weight:900;color:#ff3b30;text-shadow:0 5px 0 #000,0 0 20px #000;pointer-events:none;animation:flt 1.2s ease-out both}
 .float.heal{color:var(--green)}
+.actfx{position:absolute;z-index:31;pointer-events:none}
+.actfx .face{position:absolute;inset:0;border-radius:18px;background-size:100% 100%;box-shadow:0 26px 60px rgba(0,0,0,.7)}
+.actfx .ring{position:absolute;inset:-10px;border-radius:24px;opacity:0}
+.actfx.snap .ring{opacity:1;box-shadow:0 0 0 5px #7df,0 0 30px 10px #4cf}
+.actfx.hold .face{animation:actHold .62s ease-in-out}
+.actfx.hold .ring{opacity:1;box-shadow:0 0 0 6px #7df,0 0 50px 18px #4cf;animation:glowp .31s infinite alternate}
+@keyframes actHold{50%{transform:scale(1.03)}}
+.actfx.burst .face{animation:actWhite .48s ease-out forwards}
+.actfx.burst .ring{animation:actRing .48s ease-out forwards;box-shadow:0 0 0 18px rgba(220,245,255,.95),0 0 120px 50px rgba(68,204,255,.85)}
+@keyframes actWhite{0%{filter:brightness(1)}35%{filter:brightness(3) saturate(0);opacity:1}100%{filter:brightness(4) saturate(0);opacity:0;transform:scale(1.08)}}
+@keyframes actRing{0%{transform:scale(1);opacity:1}100%{transform:scale(1.45);opacity:0}}
+.spark{position:absolute;z-index:32;width:14px;height:14px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0 30%,#5fd4ff 60%,transparent 70%);
+  animation:spark .7s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes spark{from{transform:translate(-50%,-50%) scale(1.4)}to{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(.2);opacity:0}}
+/* área amarela para soltar Itens (como no TCG Pocket) */
+.itemzone{position:absolute;left:150px;top:560px;width:780px;height:770px;z-index:24;border-radius:30px;pointer-events:none;
+  background:rgba(255,212,0,.16);box-shadow:inset 0 0 0 6px rgba(255,212,0,.55),0 0 40px rgba(255,212,0,.25);transition:background .15s}
+.itemzone.over{background:rgba(255,212,0,.28);box-shadow:inset 0 0 0 8px var(--gold),0 0 60px rgba(255,212,0,.45)}
+/* carta grande ao segurar o dedo sobre ela na mão */
+.peek{position:absolute;left:250px;top:560px;width:580px;height:812px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
+  box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
+@keyframes peekIn{from{transform:scale(.85);opacity:0}}
+.lifefx{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:150px;font-weight:900;line-height:1;white-space:nowrap;pointer-events:none;
+  text-shadow:0 7px 0 #000,0 0 28px rgba(0,0,0,.9);-webkit-text-stroke:5px #000;paint-order:stroke fill;animation:lfIn .32s cubic-bezier(.2,1.6,.4,1) both}
+.lifefx.dmg{color:#ff0803}
+.lifefx.heal{color:#32bf0b}
+.lifefx.go{transition:left .42s cubic-bezier(.6,0,.4,1),top .42s cubic-bezier(.6,0,.4,1),font-size .42s ease-in;font-size:96px}
+.lifefx.hit{animation:lfHit .26s ease-out both}
+@keyframes lfIn{from{transform:translate(-50%,-50%) scale(.2);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes lfHit{to{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
 @keyframes flt{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-140px)}}
 </style>
 </head>
@@ -362,7 +392,7 @@ const A = {
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
   tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+400 ATQ).`); },
-  semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); pl.life+=v; log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); fxFloat(p,'+'+v,true); },
+  async semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
   disparo(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Disparo de Ki destrói ${t.def.name}!`); },
   async caminho(p, c, slot){ const pl=P(p); const g=pl.void.find(x=>x.id===1); toVoid(pl,c); await voidToField(p,g,slot); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
   async radar(p, c, e){ const pl=P(p); toVoid(pl,c); await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
@@ -429,10 +459,27 @@ async function chaosFx(owner, chaos, killerOwner, killer){
   render(); await sleep(700);
 }
 async function damage(who, n){
-  const pl=P(who); pl.life=Math.max(0,pl.life-n);
-  if(n>0){ fxFloat(who,'-'+n,false); const lb=$('#life'+who); if(lb){lb.classList.remove('flash');void lb.offsetWidth;lb.classList.add('flash');} }
-  render(); await sleep(650);
-  checkWin();
+  const pl=P(who);
+  if(n>0) await lifeFx(who, -n, ()=>{ pl.life=Math.max(0,pl.life-n); });
+  else pl.life=Math.max(0,pl.life-n);
+  render(); checkWin();
+}
+/* vida: o número aparece no meio da tela, viaja até a barra de quem ganhou/perdeu e só então a barra mexe */
+async function lifeFx(who, delta, apply){
+  const st=$('#stage');
+  const f=el('div','lifefx '+(delta<0?'dmg':'heal'),(delta<0?'−':'+')+Math.abs(delta));
+  f.style.left='540px'; f.style.top='960px'; st.appendChild(f);
+  await sleep(620);                                      // surge e fica um instante parado
+  const lb=document.getElementById('life'+who);
+  const t=lb?stageRect(lb):{x:who?23:689,y:25,w:362,h:56};
+  f.classList.add('go');
+  f.style.left=(t.x+t.w/2)+'px'; f.style.top=(t.y+t.h/2)+'px';
+  await sleep(420);                                      // desliza rápido até a barra
+  f.classList.add('hit'); setTimeout(()=>f.remove(),260);
+  if(lb){ lb.classList.remove('flash'); void lb.offsetWidth; lb.classList.add('flash'); }
+  apply();                                               // agora a barra começa a descer/subir
+  const target=P(who).life, t0=Date.now();
+  while(Math.round(LF[who])!==target && Date.now()-t0<1800) await sleep(40);
 }
 function checkWin(){
   if(G.over) return;
@@ -513,6 +560,46 @@ async function drawAnim(p, inst){
 async function vanish(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
   const a=stageRect(e), v=POS[owner].void; e.style.visibility='hidden';
   await flyCard(a,{x:v[0],y:v[1],w:SW,h:SH,fade:true}, e.style.backgroundImage.slice(5,-2), 520, false);
+}
+/* ---------- ativação de efeito (Item, Apoiador, Campo, Ferramenta): a carta cresce, brilha e explode em luz ---------- */
+async function activateFx(p, card){
+  if(window.__NOFX || !card) return;
+  const st=$('#stage');
+  let from=G.fxFrom; G.fxFrom=null; const dropped=!!from;
+  const e=document.querySelector(`[data-uid="${card.uid}"]`);
+  if(!from) from = e ? stageRect(e) : (p===1 ? {x:498,y:150,w:84,h:118} : {x:445,y:1660,w:190,h:266});
+  if(e) e.style.visibility='hidden';
+  const big={x:250,y:440,w:580,h:812};
+  const wrap=el('div','actfx'); wrap.style.cssText=`left:${from.x}px;top:${from.y}px;width:${from.w}px;height:${from.h}px`;
+  const face=el('div','face'); face.style.backgroundImage=`url("${mini(card)}")`; wrap.appendChild(face);
+  const ring=el('div','ring'); wrap.appendChild(ring);
+  st.appendChild(wrap);
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  if(dropped){                                            // solto na área amarela: assenta no centro dela, brilhando, antes de crescer
+    const z=el('div','itemzone over'); st.insertBefore(z,wrap);
+    wrap.classList.add('snap');
+    wrap.style.transition='left .2s ease-out,top .2s ease-out,width .2s ease-out,height .2s ease-out';
+    wrap.style.left='465px'; wrap.style.top='840px'; wrap.style.width='150px'; wrap.style.height='210px';
+    await sleep(520); z.remove(); wrap.classList.remove('snap');
+  }
+  wrap.style.transition='left .38s cubic-bezier(.2,.9,.3,1),top .38s cubic-bezier(.2,.9,.3,1),width .38s cubic-bezier(.2,.9,.3,1),height .38s cubic-bezier(.2,.9,.3,1)';
+  wrap.style.left=big.x+'px'; wrap.style.top=big.y+'px'; wrap.style.width=big.w+'px'; wrap.style.height=big.h+'px';
+  await sleep(380);
+  wrap.classList.add('hold'); await sleep(620);           // mostra a carta grande
+  wrap.classList.add('burst');                            // vira luz e se expande
+  for(let i=0;i<22;i++){ const sp=el('div','spark'); const a=Math.random()*Math.PI*2, d=260+Math.random()*260;
+    sp.style.left=(big.x+big.w/2)+'px'; sp.style.top=(big.y+big.h/2)+'px';
+    sp.style.setProperty('--tx',(Math.cos(a)*d).toFixed(0)+'px'); sp.style.setProperty('--ty',(Math.sin(a)*d).toFixed(0)+'px');
+    st.appendChild(sp); setTimeout(()=>sp.remove(),700); }
+  await sleep(480);
+  wrap.remove();
+}
+const FX_CARD_ARG={semente:1,yaji:1,kaio4:1,kame:1,disparo:1,radar:1,esferas:1,caminho:1,auto:1,tool:1,bulma:1,kaioh:1,casa:2};
+for(const n in FX_CARD_ARG){ const orig=A[n];
+  A[n]=function(...args){
+    if(window.__NOFX) return orig.apply(A,args);
+    return (async()=>{ await activateFx(args[0], args[FX_CARD_ARG[n]]); return orig.apply(A,args); })();
+  };
 }
 /* ---------- golpe estilo anime: antecipação, investida, quadro de impacto ---------- */
 const SVGNS='http://www.w3.org/2000/svg';
@@ -627,7 +714,7 @@ setInterval(()=>{
   if(!G) return;
   for(const p of [0,1]){
     const t=P(p).life, d=t-LF[p]; if(!d) continue;
-    LF[p] = Math.abs(d)<6 ? t : LF[p]+Math.sign(d)*Math.max(6,Math.abs(d)*0.07);
+    LF[p] = Math.abs(d)<6 ? t : LF[p]+Math.sign(d)*Math.max(6,Math.abs(d)*0.09);   // contador corre como no Yu-Gi-Oh
     const z=document.getElementById('life'+p); if(z) paintLife(z,p);
   }
 },30);
@@ -674,29 +761,29 @@ function actionsFor(p, inst, where){
       add('Equipar', !gs.length?'Precisa de um "Goku - Guerreiros Z" em campo.':(gf.length?null:'Cada Personagem pode ter no máximo 2 Ferramentas.'), async()=>{
         let g=gf[0];
         if(gf.length>1){ const r=await pickTarget(gf,{prompt:'Escolha o Goku que receberá o Kaioken.'}); if(!r) return; g=r.target; }
-        A.tool(p,inst,g);
+        await A.tool(p,inst,g);
       });
     }
     if(d.kind==='item'){
       const noChar = chars(p).length===0 ? 'Precisa de um Personagem "Guerreiros Z" em campo.' : null;
-      if(inst.id===11) add('Usar', noChar, async()=>A.semente(p,inst));
+      if(inst.id===11) add('Usar', noChar, async()=>await A.semente(p,inst));
       if(inst.id===9){
         const ch=chars(p);
-        add('Usar', pl.life>500?'Precisa estar com 500 pontos de vida ou menos.':(ch.length!==1?'Precisa ter exatamente 1 Personagem "Guerreiros Z" em campo.':(ch[0].attacked?'Seu Personagem já atacou neste turno.':(canAttack(p)?null:'Você ainda não pode atacar.'))), async()=>A.yaji(p,inst));
+        add('Usar', pl.life>500?'Precisa estar com 500 pontos de vida ou menos.':(ch.length!==1?'Precisa ter exatamente 1 Personagem "Guerreiros Z" em campo.':(ch[0].attacked?'Seu Personagem já atacou neste turno.':(canAttack(p)?null:'Você ainda não pode atacar.'))), async()=>await A.yaji(p,inst));
       }
       if(inst.id===19){
         const gs=chars(p).filter(c=>c.id===1&&c.equips.some(k=>k.id===17));
         add('Usar', gs.length?null:'Precisa de um "Goku - Guerreiros Z" equipado com "Kaioken".', async()=>{
           let g=gs[0];
           if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Kaioken aumentado 4x: escolha o Goku.'}); if(!r) return; g=r.target; }
-          A.kaio4(p,inst,g);
+          await A.kaio4(p,inst,g);
         });
       }
       if(inst.id===20){
         const tg=chars(q).filter(t=>atkOf(q,t)<=2000);
         add('Usar', !chars(p).some(c=>c.def.kame)?'Um dos seus Personagens precisa ter a habilidade "Kamehameha".':(tg.length?null:'O oponente não tem Personagem com 2000 de ATQ ou menos.'), async()=>{
           const r=await pickTarget(tg,{prompt:'Kamehameha: escolha o Personagem a destruir.'}); if(!r) return;
-          A.kame(p,inst,r.target);
+          await A.kame(p,inst,r.target);
         });
       }
       if(inst.id===12){
@@ -704,7 +791,7 @@ function actionsFor(p, inst, where){
         add('Usar', noChar || (sups.length?null:'O oponente não controla nenhum Apoiador.'), async()=>{
           let t=sups[0];
           if(sups.length>1){ const r=await pickTarget(sups,{prompt:'Escolha o Apoiador a destruir.'}); if(!r) return; t=r.target; }
-          A.disparo(p,inst,t);
+          await A.disparo(p,inst,t);
         });
       }
       if(inst.id===13){
@@ -729,7 +816,7 @@ function actionsFor(p, inst, where){
           let g=gs[0], pc=pcs[0];
           if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Autoescola: escolha o Goku.'}); if(!r) return; g=r.target; }
           if(pcs.length>1){ const r=await pickTarget(pcs,{prompt:'Autoescola: escolha o Piccolo.'}); if(!r) return; pc=r.target; }
-          A.auto(p,inst,g,pc);
+          await A.auto(p,inst,g,pc);
         });
       }
       if(inst.id===15) add('Usar', !pl.void.some(c=>c.id===1)?'"Goku - Guerreiros Z" não está no seu vazio.':(freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null), async()=>{ let sl=null; if(p===0){ const r=await pickSlot('Caminho da serpente: escolha onde o Goku vai entrar.'); if(!r) return; sl=r.slot; } await A.caminho(p,inst,sl); });
@@ -759,7 +846,7 @@ function actionsFor(p, inst, where){
       const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(c=>c.def.kind==='char')); if(!r) return;
       await A.casa(p,r,inst);
     });
-    if(inst.id===10) add('Efeito: buscar Radar do dragão', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===13)?null:'Não há "Radar do dragão" no baralho.'), async()=>A.bulma(p,inst));
+    if(inst.id===10) add('Efeito: buscar Radar do dragão', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===13)?null:'Não há "Radar do dragão" no baralho.'), async()=>await A.bulma(p,inst));
     if(inst.id===18){
       const cs=pl.deck.filter(x=>x.id===15||x.id===17||x.id===19);
       add('Efeito: buscar carta', inst.used?'Já usado neste turno.':(!chars(p).some(c=>c.id===1)?'Precisa de "Goku - Guerreiros Z" em campo.':(cs.length?null:'Não há "Caminho da serpente", "Kaioken" ou "Kaioken aumentado 4x" no baralho.')), async()=>{
@@ -1055,9 +1142,14 @@ function zoneUnder(cx,cy){ let z=null; document.querySelectorAll('#board .zone.d
 $('#board').addEventListener('pointerdown', e=>{
   const h=e.target.closest('.hand'); if(!h || !G || G.over || G.pick) return;
   e.preventDefault();
-  H.on=true; H.id=e.pointerId; H.x0=e.clientX; H.y0=e.clientY; H.moved=false; H.drag=false; H.h=h;
-  H.inst=P(0).hand[+h.dataset.hi]; setLift(h);
+  H.on=true; H.id=e.pointerId; H.x0=e.clientX; H.y0=e.clientY; H.moved=false; H.drag=false; H.h=h; H.peeked=false;
+  H.inst=P(0).hand[+h.dataset.hi]; setLift(h); peekArm();
 });
+const PEEK_MS=550;                                 // tempo com o dedo parado sobre a carta até ela aparecer grande
+function peekHide(){ clearTimeout(H.pt); if(H.peek){ H.peek.remove(); H.peek=null; } }
+function peekArm(){ peekHide(); H.pt=setTimeout(()=>{ if(!H.on || H.drag || !H.inst) return;
+  H.peek=el('div','peek'); H.peek.style.backgroundImage=`url("${H.inst.def.img}")`; $('#stage').appendChild(H.peek); H.peeked=true; }, PEEK_MS); }
+function inItemZone(cx,cy){ const z=document.querySelector('.itemzone'); if(!z) return false; const r=z.getBoundingClientRect(); return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom; }
 addEventListener('pointermove', e=>{
   if(!H.on || e.pointerId!==H.id) return;
   const dx=e.clientX-H.x0, dy=e.clientY-H.y0, k=$('#stage').getBoundingClientRect().width/1080;
@@ -1065,46 +1157,52 @@ addEventListener('pointermove', e=>{
   if(!H.drag){
     const p=toStage(e.clientX,e.clientY);
     if(p.y < 1560 && canAct()){                 // saiu da mão para cima: começa a arrastar
-      H.drag=true; H.h.classList.remove('lift'); H.h.classList.add('dragging');
+      H.drag=true; peekHide(); H.h.classList.remove('lift'); H.h.classList.add('dragging');
+      if(H.inst.def.kind==='item'){ H.zone=el('div','itemzone'); $('#stage').appendChild(H.zone); }
       H.ghost=el('div','ghost'); H.ghost.style.backgroundImage=`url("${mini(H.inst)}")`; $('#stage').appendChild(H.ghost);
       H.targets=dropTargets(H.inst);
       H.targets.forEach(t=>{ const z=document.querySelector(`#board [data-drop="${t}"]`); if(z) z.classList.add('drop'); });
     } else {                                    // deslizando sobre a mão: levanta a carta sob o dedo
-      if(Math.abs(dx)>Math.abs(dy)){ const h=handAt(e.clientX); if(h && h!==H.h){ H.h=h; H.inst=P(0).hand[+h.dataset.hi]; } }   // só troca deslizando para o lado
+      if(Math.abs(dx)>Math.abs(dy)){ const h=handAt(e.clientX); if(h && h!==H.h){ H.h=h; H.inst=P(0).hand[+h.dataset.hi]; peekArm(); } }   // só troca deslizando para o lado
       setLift(H.h);
     }
   }
   if(H.drag){
     const p=toStage(e.clientX,e.clientY); H.ghost.style.left=p.x+'px'; H.ghost.style.top=p.y+'px';
     const z=zoneUnder(e.clientX,e.clientY); document.querySelectorAll('#board .zone.over').forEach(x=>{ if(x!==z) x.classList.remove('over'); }); if(z) z.classList.add('over');
+    if(H.zone) H.zone.classList.toggle('over', inItemZone(e.clientX,e.clientY));
   }
 });
 function endHand(){
+  peekHide(); if(H.zone){ H.zone.remove(); H.zone=null; }
   if(H.ghost) H.ghost.remove();
   document.querySelectorAll('#board .zone.drop').forEach(z=>z.classList.remove('drop','over'));
   document.querySelectorAll('#board .hand').forEach(h=>h.classList.remove('lift','dragging'));
   H.on=false; H.drag=false; H.ghost=null;
 }
 addEventListener('pointerup', e=>{ if(!H.on || e.pointerId!==H.id) return;
-  const inst=H.inst, drag=H.drag, moved=H.moved;
+  const inst=H.inst, drag=H.drag, moved=H.moved, peeked=H.peeked;
   const z=drag?zoneUnder(e.clientX,e.clientY):null, p=toStage(e.clientX,e.clientY);
+  const okItem = drag && inst && inst.def.kind==='item' && inItemZone(e.clientX,e.clientY);
+  const gr = H.ghost ? stageRect(H.ghost) : null;
   endHand();
-  if(!drag){ if(!moved && inst) cardModal(inst,0,'hand'); return; }      // toque simples: abre a carta
-  dropPlay(inst, z?z.dataset.drop:null, p.y);
+  if(!drag){ if(!moved && !peeked && inst) cardModal(inst,0,'hand'); return; }      // toque simples: abre a carta
+  if(okItem && gr) G.fxFrom=gr;                                                     // a ativação começa de onde a carta foi solta
+  dropPlay(inst, z?z.dataset.drop:null, p.y, okItem);
 });
 addEventListener('pointercancel', ()=>{ if(H.on) endHand(); });
-async function dropPlay(inst, slot, y){
+async function dropPlay(inst, slot, y, okItem){
   if(!canAct() || !P(0).hand.includes(inst)) return;
   const k=inst.def.kind, a=actionsFor(0,inst,'hand')[0];
   if(!a) return;
   if(a.reason){ toast(a.reason); return; }
-  if(k==='item'){ if(y<1560) await runAction(a); return; }               // item: solta em qualquer lugar do campo
+  if(k==='item'){ if(okItem) await runAction(a); else G.fxFrom=null; return; }   // item: solta dentro da área amarela
   if(!slot) return;                                                       // fora de um slot válido: volta para a mão
   const i=+slot.slice(1);
   if(k==='char')    { G.settle=inst.uid; await runAction({run:()=>A.summon(0,inst,i)}); }
   if(k==='support') { G.settle=inst.uid; await runAction({run:async()=>A.support(0,inst,i)}); }
   if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>A.field(0,inst)}); }
-  if(k==='tool')    { const g=P(0).chars[i]; if(!g || g.equips.length>=2){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>A.tool(0,inst,g)}); }
+  if(k==='tool')    { const g=P(0).chars[i]; if(!g || g.equips.length>=2){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>await A.tool(0,inst,g)}); }
 }
 
 /* ============================================================
@@ -1252,26 +1350,26 @@ async function botTurn(){
   if(c && pl.void.some(x=>x.id===1) && freeC()){ await A.caminho(p,c); if(!await pause(900)) return; }
   // 6) Semente
   c=hand(11);
-  if(c && chars(p).length && pl.life<=2500){ A.semente(p,c); if(!await pause(900)) return; }
+  if(c && chars(p).length && pl.life<=2500){ await A.semente(p,c); if(!await pause(900)) return; }
   // 6b) Kamehameha: destrói o Personagem mais forte com até 2000 de ATQ
   c=hand(20);
-  if(c && chars(p).some(x=>x.def.kame)){ const t=chars(q).filter(x=>atkOf(q,x)<=2000).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ A.kame(p,c,t); if(!await pause(900)) return; } }
+  if(c && chars(p).some(x=>x.def.kame)){ const t=chars(q).filter(x=>atkOf(q,x)<=2000).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.kame(p,c,t); if(!await pause(900)) return; } }
   // 7) Disparo de Ki
   c=hand(12);
-  if(c && chars(p).length && supports(q).length){ A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
+  if(c && chars(p).length && supports(q).length){ await A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
   // 9) Kaioken
   c=hand(17);
   const goku=chars(p).filter(x=>x.id===1&&x.equips.length<2).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
   if(c && goku){
     const strongest=Math.max(0,...chars(q).map(t=>atkOf(q,t)));
-    if(chars(q).length===0 || atkOf(p,goku)+400>strongest){ A.tool(p,c,goku); if(!await pause(900)) return; }
+    if(chars(q).length===0 || atkOf(p,goku)+400>strongest){ await A.tool(p,c,goku); if(!await pause(900)) return; }
   }
   // 10) Autoescola: só se transformar um ataque perdedor em vencedor
   c=hand(16);
   const ag=chars(p).find(x=>x.id===1&&!x.attacked), ap=chars(p).find(x=>x.id===3&&!x.attacked);
   if(c && ag && ap && canAttack(p) && chars(q).length){
     const avg=Math.round((atkOf(p,ag)+atkOf(p,ap))/2), top=Math.max(...chars(q).map(bDef));
-    if(avg>top && Math.min(atkOf(p,ag),atkOf(p,ap))<=top){ A.auto(p,c,ag,ap); if(!await pause(900)) return; }
+    if(avg>top && Math.min(atkOf(p,ag),atkOf(p,ap))<=top){ await A.auto(p,c,ag,ap); if(!await pause(900)) return; }
   }
   // 9b) Kaioken aumentado 4x: só se virar um ataque vencedor ou for letal
   c=hand(19);
@@ -1280,11 +1378,11 @@ async function botTurn(){
     const now=atkOf(p,gk), tg=chars(q);
     const lethal = !tg.length && now<ql.life && now+1000>=ql.life;
     const turns  = tg.length && !tg.some(t=>bDef(t)<now) && tg.some(t=>bDef(t)<now+1000);
-    if(lethal||turns){ A.kaio4(p,c,gk); if(!await pause(900)) return; }
+    if(lethal||turns){ await A.kaio4(p,c,gk); if(!await pause(900)) return; }
   }
   // 11) Yajirobe (item)
   c=hand(9);
-  if(c && canAttack(p) && pl.life<=500 && chars(p).length===1 && !chars(p)[0].attacked){ A.yaji(p,c); if(!await pause(900)) return; }
+  if(c && canAttack(p) && pl.life<=500 && chars(p).length===1 && !chars(p)[0].attacked){ await A.yaji(p,c); if(!await pause(900)) return; }
   // 12) Piccolo (ataque direto) só se for letal ou ajudar muito
   const picc=chars(p).find(x=>x.id===3&&!x.used&&!x.attacked), g2=chars(p).filter(x=>x.id===1).sort((a,b)=>atkOf(p,a)-atkOf(p,b))[0];
   if(picc && g2 && canAttack(p)){
