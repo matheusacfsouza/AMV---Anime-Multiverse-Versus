@@ -10,6 +10,7 @@
 <style>
 :root{--red:#e60012;--gold:#ffd400;--green:#2ee66b}
 *{box-sizing:border-box}
+body.locked #board,body.locked #board *{pointer-events:none!important}
 html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:manipulation;
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
   font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
@@ -204,7 +205,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 @keyframes actHold{50%{transform:scale(1.03)}}
 .actfx.burst .face{animation:actWhite .48s ease-out forwards}
 .actfx.burst .ring{animation:actRing .48s ease-out forwards;box-shadow:0 0 0 18px rgba(220,245,255,.95),0 0 120px 50px rgba(68,204,255,.85)}
-@keyframes actWhite{0%{filter:brightness(1)}35%{filter:brightness(3) saturate(0);opacity:1}100%{filter:brightness(4) saturate(0);opacity:0;transform:scale(1.08)}}
+@keyframes actWhite{0%{filter:brightness(1)}35%{filter:brightness(1.9);opacity:1}100%{filter:brightness(2.3);opacity:0;transform:scale(1.08)}}
 @keyframes actRing{0%{transform:scale(1);opacity:1}100%{transform:scale(1.45);opacity:0}}
 .spark{position:absolute;z-index:32;width:14px;height:14px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0 30%,#5fd4ff 60%,transparent 70%);
   animation:spark .7s cubic-bezier(.1,.8,.3,1) forwards}
@@ -214,7 +215,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   background:rgba(255,212,0,.16);box-shadow:inset 0 0 0 6px rgba(255,212,0,.55),0 0 40px rgba(255,212,0,.25);transition:background .15s}
 .itemzone.over{background:rgba(255,212,0,.28);box-shadow:inset 0 0 0 8px var(--gold),0 0 60px rgba(255,212,0,.45)}
 /* carta grande ao segurar o dedo sobre ela na mão */
-.peek{position:absolute;left:250px;top:560px;width:580px;height:812px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
+.peek{position:absolute;left:90px;top:330px;width:900px;height:1260px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
   box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
 @keyframes peekIn{from{transform:scale(.85);opacity:0}}
 .lifefx{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:150px;font-weight:900;line-height:1;white-space:nowrap;pointer-events:none;
@@ -388,12 +389,12 @@ const A = {
       }
     }
   },
-  field(p, c){ const pl=P(p); detach(pl,c); for(const x of [0,1]) if(P(x).field) toVoid(P(x),P(x).field); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
+  async field(p, c){ const pl=P(p); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
   tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+400 ATQ).`); },
   async semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
-  disparo(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Disparo de Ki destrói ${t.def.name}!`); },
+  async disparo(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Disparo de Ki destrói ${t.def.name}!`); },
   async caminho(p, c, slot){ const pl=P(p); const g=pl.void.find(x=>x.id===1); toVoid(pl,c); await voidToField(p,g,slot); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
   async radar(p, c, e){ const pl=P(p); toVoid(pl,c); await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
   async esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
@@ -402,8 +403,8 @@ const A = {
   yaji(p, c){ const pl=P(p); const ch=chars(p)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
   async kaioh(p, c, chosen){ const pl=P(p); c.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
   kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1000; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1000 de ATQ e vai para o vazio na Fase Final.`); },
-  kame(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Kamehameha destrói ${t.def.name}!`); },
-  picc(p, picc, g){ const pl=P(p); toVoid(pl,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
+  async kame(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Kamehameha destrói ${t.def.name}!`); },
+  async picc(p, picc, g){ const pl=P(p); await sendVoid(p,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
 };
 
 /* ============================================================
@@ -446,13 +447,13 @@ async function afterBattle(w, winner, l, loser, tie, attackerWon){
   }
   if(!tie && attackerWon){   // Kaioken e Kikoho só valem quando o personagem vence ATACANDO
     const onField=P(w).chars.includes(winner);
-    if(onField && winner.id===5){ log('Kikoho: Tenshinhan vai para o vazio.'); toVoid(P(w),winner); }
+    if(onField && winner.id===5){ log('Kikoho: Tenshinhan vai para o vazio.'); await sendVoid(w,winner); }
   }
   render(); await sleep(350);
 }
 async function chaosFx(owner, chaos, killerOwner, killer){
   if(P(killerOwner).chars.includes(killer) && atkOf(killerOwner,killer)<=1000){
-    log(`Adeus, Senhor Tenshinhan! ${killer.def.name} é destruído.`); toVoid(P(killerOwner),killer);
+    log(`Adeus, Senhor Tenshinhan! ${killer.def.name} é destruído.`); await sendVoid(killerOwner,killer);
   }
   const pl=P(owner), t=pl.deck.find(x=>x.id===5);
   if(t && freeIdx(pl.chars)>=0){ detach(pl,t); pl.chars[freeIdx(pl.chars)]=t; shuffle(pl.deck); log(`${owner?'Oponente invoca':'Você invoca'} Tenshinhan do baralho!`); }
@@ -465,7 +466,7 @@ async function damage(who, n){
   render(); checkWin();
 }
 /* vida: o número aparece no meio da tela, viaja até a barra de quem ganhou/perdeu e só então a barra mexe */
-async function lifeFx(who, delta, apply){
+async function lifeFx_raw(who, delta, apply){
   const st=$('#stage');
   const f=el('div','lifefx '+(delta<0?'dmg':'heal'),(delta<0?'−':'+')+Math.abs(delta));
   f.style.left='540px'; f.style.top='960px'; st.appendChild(f);
@@ -557,19 +558,21 @@ async function drawAnim(p, inst){
   const slot=handSlot(p, P(p).hand.length+1);
   await slideCard(from, slot, (p===0&&inst)?mini(inst):null, p===0?620:480, p===0?4:0, backOf(p));
 }
-async function vanish(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
-  const a=stageRect(e), v=POS[owner].void; e.style.visibility='hidden';
-  await flyCard(a,{x:v[0],y:v[1],w:SW,h:SH,fade:true}, e.style.backgroundImage.slice(5,-2), 520, false);
+async function vanish_raw(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
+  const r=G.index.get(uid), inst=r&&r.inst; const img=inst?mini(inst):e.style.backgroundImage.slice(5,-2);
+  const a=stageRect(e); e.style.visibility='hidden';
+  await slideCard(a, pileRect(owner,'void'), img, 560, 0, null, true);   // mesmo caminho da volta do vazio, ao contrário
 }
+async function sendVoid(owner, inst){ if(!inst) return; await vanish(inst.uid, owner); toVoid(P(owner),inst); render(); }
 /* ---------- ativação de efeito (Item, Apoiador, Campo, Ferramenta): a carta cresce, brilha e explode em luz ---------- */
-async function activateFx(p, card){
+async function activateFx_raw(p, card){
   if(window.__NOFX || !card) return;
   const st=$('#stage');
   let from=G.fxFrom; G.fxFrom=null; const dropped=!!from;
   const e=document.querySelector(`[data-uid="${card.uid}"]`);
   if(!from) from = e ? stageRect(e) : (p===1 ? {x:498,y:150,w:84,h:118} : {x:445,y:1660,w:190,h:266});
   if(e) e.style.visibility='hidden';
-  const big={x:250,y:440,w:580,h:812};
+  const big={x:90,y:330,w:900,h:1260};
   const wrap=el('div','actfx'); wrap.style.cssText=`left:${from.x}px;top:${from.y}px;width:${from.w}px;height:${from.h}px`;
   const face=el('div','face'); face.style.backgroundImage=`url("${mini(card)}")`; wrap.appendChild(face);
   const ring=el('div','ring'); wrap.appendChild(ring);
@@ -650,7 +653,7 @@ function impactFrame(){                        // quadro de impacto: tela em alt
   const f=el('div','flashw'); $('#stage').appendChild(f); setTimeout(()=>f.remove(),260);
 }
 function shake(px){ const b=$('#board'); b.style.setProperty('--sh',px+'px'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),380); }
-async function clash(att, tgt, p){
+async function clash_raw(att, tgt, p){
   const ae=document.querySelector(`[data-uid="${att.uid}"]`);
   if(!ae) { await sleep(200); return; }
   const a=stageRect(ae), ax=a.x+a.w/2, ay=a.y+a.h/2;
@@ -735,12 +738,24 @@ async function timeUp(){                           // acabou o tempo: o turno te
   G.tOut=true; const g=G;
   if(H.on) endHand();
   if(G.pick) endPick(null);
-  closeModal();
+  if(G.modalRes){ const f=G.modalRes; G.modalRes=null; closeModal(); f(); } else closeModal();   // cancela escolhas abertas
   toast('Tempo esgotado!');
-  while(G===g && !G.over && G.busy && G.phase!=='end') await sleep(120);   // espera a animação em andamento
+  const t0=Date.now();
+  while(G===g && !G.over && G.busy && G.phase!=='end' && Date.now()-t0<9000){   // espera a animação em andamento
+    if(G.pick) endPick(null);
+    if(G.modalRes){ const f=G.modalRes; G.modalRes=null; closeModal(); f(); }
+    await sleep(120);
+  }
   if(G!==g || G.over || G.turn!==0 || G.phase==='end') return;
   G.busy=true; render(); await finalPhase(0);
 }
+/* trava de toque: enquanto uma animação (efeito, vida, golpe, carta voando) roda, nenhuma carta responde */
+let LOCKN=0;
+function lockOn(){ LOCKN++; document.body.classList.add('locked'); }
+function lockOff(){ LOCKN=Math.max(0,LOCKN-1); if(!LOCKN) document.body.classList.remove('locked'); }
+const blocked=()=> LOCKN>0 || (G && G.busy && G.turn===0 && !G.pick);
+const withLock=f=>async(...a)=>{ lockOn(); try{ return await f(...a); } finally{ lockOff(); } };
+const activateFx=(...a)=>withLock(activateFx_raw)(...a), lifeFx=(...a)=>withLock(lifeFx_raw)(...a), clash=(...a)=>withLock(clash_raw)(...a), vanish=(...a)=>withLock(vanish_raw)(...a);
 function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),1600); }
 async function banner(t){ const b=$('#banner'); b.textContent=t; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); await sleep(950); b.classList.remove('on'); }
 
@@ -753,7 +768,7 @@ function actionsFor(p, inst, where){
   const slotsP = freeIdx(pl.powers)>=0;
   if(where==='hand'){
     if(d.kind==='char') add('Invocar', freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null, async()=>{ await A.summon(p,inst); });
-    if(d.kind==='field') add('Ativar no campo', null, async()=>A.field(p,inst));
+    if(d.kind==='field') add('Ativar no campo', null, async()=>await A.field(p,inst));
     if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>A.support(p,inst));
     if(d.kind==='tool'){
       const gs=chars(p).filter(c=>c.id===1);
@@ -838,7 +853,7 @@ function actionsFor(p, inst, where){
           async()=>{
             const gs=chars(p).filter(c=>c.id===1); let g=gs[0];
             if(gs.length>1){ const r=await pickTarget(gs,{prompt:'Escolha o Goku a enviar ao vazio.'}); if(!r) return; g=r.target; }
-            A.picc(p,inst,g);
+            await A.picc(p,inst,g);
           });
       }
     }
@@ -896,7 +911,7 @@ function searchList(title, entries){        // lista vertical estilo Yu-Gi-Oh, a
       list.appendChild(r);
     });
     box.appendChild(list); box.appendChild(btn('Cancelar','sec',()=>{closeModal();res(null);}));
-    showModal(box);
+    G.modalRes=()=>res(null); showModal(box);
   });
 }
 const chooseFromList = (title, insts) => searchList(title, insts.map(i=>({inst:i,label:null})));
@@ -914,7 +929,7 @@ function chooseMode(title, opts){
     const acts=el('div','acts');
     opts.forEach((o,i)=>{ const b=btn(o.label,'',()=>{closeModal();res(i);}); if(o.off) b.disabled=true; acts.appendChild(b); });
     box.appendChild(acts); box.appendChild(btn('Cancelar','sec',()=>{closeModal();res(null);}));
-    showModal(box);
+    G.modalRes=()=>res(null); showModal(box);
   });
 }
 
@@ -1031,7 +1046,7 @@ function render(){
           ce.appendChild(ti);                      // dentro da carta: vai junto no ataque
         });
         if(c.direct) ce.appendChild(el('div','chip tag2','DIRETO'));
-        if(c.attacked && c.uid!==G.atkUid) ce.classList.add('dim');
+        if(c.attacked && p===G.turn && c.uid!==G.atkUid) ce.classList.add('dim');   // só apaga quem já atacou NESTE turno
         if(p===0 && canAct() && G.phase!=='end' && actionsFor(0,c,'field').some(a=>!a.reason)) ce.classList.add('glow');
       }
       const z2=zone(frag,pos.powers[i][0],pos.powers[i][1],PW,PH,'Poder',false,fl); if(p===0) z2.dataset.drop='w'+i;
@@ -1106,7 +1121,7 @@ function render(){
 
 /* clique no campo */
 $('#board').addEventListener('click', e=>{
-  if(!G || G.over) return;
+  if(!G || G.over || blocked()) return;   // durante animações/ações nenhuma carta abre
   const ce=e.target.closest('[data-uid]');
   const ve=e.target.closest('[data-void]');
   if(G.pick){
@@ -1140,7 +1155,7 @@ function dropTargets(inst){                     // onde essa carta pode ser solt
 }
 function zoneUnder(cx,cy){ let z=null; document.querySelectorAll('#board .zone.drop').forEach(e=>{ const r=e.getBoundingClientRect(); if(cx>=r.left-20&&cx<=r.right+20&&cy>=r.top-20&&cy<=r.bottom+20) z=e; }); return z; }
 $('#board').addEventListener('pointerdown', e=>{
-  const h=e.target.closest('.hand'); if(!h || !G || G.over || G.pick) return;
+  const h=e.target.closest('.hand'); if(!h || !G || G.over || G.pick || blocked()) return;
   e.preventDefault();
   H.on=true; H.id=e.pointerId; H.x0=e.clientX; H.y0=e.clientY; H.moved=false; H.drag=false; H.h=h; H.peeked=false;
   H.inst=P(0).hand[+h.dataset.hi]; setLift(h); peekArm();
@@ -1201,7 +1216,7 @@ async function dropPlay(inst, slot, y, okItem){
   const i=+slot.slice(1);
   if(k==='char')    { G.settle=inst.uid; await runAction({run:()=>A.summon(0,inst,i)}); }
   if(k==='support') { G.settle=inst.uid; await runAction({run:async()=>A.support(0,inst,i)}); }
-  if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>A.field(0,inst)}); }
+  if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>await A.field(0,inst)}); }
   if(k==='tool')    { const g=P(0).chars[i]; if(!g || g.equips.length>=2){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>await A.tool(0,inst,g)}); }
 }
 
@@ -1313,7 +1328,7 @@ async function botTurn(){
 
   // 1) Casa do Kame
   let c=hand(8);
-  if(c && !P(0).field && !pl.field){ A.field(p,c); if(!await pause(800)) return; }
+  if(c && !P(0).field && !pl.field){ await A.field(p,c); if(!await pause(800)) return; }
   const fld=P(0).field||P(1).field;
   if(fld && fld.id===8 && !fld.used){
     const opts=pl.deck.filter(x=>x.def.kind==='char').sort((a,b)=>projAtk(b)-projAtk(a));
@@ -1387,7 +1402,7 @@ async function botTurn(){
   const picc=chars(p).find(x=>x.id===3&&!x.used&&!x.attacked), g2=chars(p).filter(x=>x.id===1).sort((a,b)=>atkOf(p,a)-atkOf(p,b))[0];
   if(picc && g2 && canAttack(p)){
     const pa=atkOf(p,picc), tg=chars(q);
-    if(pa>=ql.life || (ql.life<=pa*2 && tg.length && tg.every(t=>bDef(t)>=pa))){ A.picc(p,picc,g2); if(!await pause(900)) return; }
+    if(pa>=ql.life || (ql.life<=pa*2 && tg.length && tg.every(t=>bDef(t)>=pa))){ await A.picc(p,picc,g2); if(!await pause(900)) return; }
   }
   // 13) Ataques
   if(canAttack(p) && pl.chars.some(Boolean)){
