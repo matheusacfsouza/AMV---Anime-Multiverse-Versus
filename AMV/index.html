@@ -35,7 +35,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 #stage.scen .zone.slot{background:transparent;border-color:transparent}
 #stage.scen .zone.slot>.lbl{opacity:0}
 #stage.scen .zone.life,#stage.scen .zone.turn,#stage.scen .zone.av{background:rgba(0,0,0,.72)}
-.card{position:absolute;inset:-8px;border-radius:12px;background-size:100% 100%;background-position:center;background-color:#222;cursor:pointer;transition:transform .25s,opacity .25s}
+.card{position:absolute;inset:-8px;border-radius:12px;background-size:100% 100%;background-position:center;background-color:transparent;cursor:pointer;transition:transform .25s,opacity .25s}
 .card.dim{opacity:.55}
 /* brilhos: só a opacidade anima (o navegador não redesenha a tela toda) */
 .card.cand,.zone.cand{z-index:3}
@@ -75,7 +75,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 
 
 .card.glow{z-index:2}
-.toolico{position:absolute;left:-34px;width:84px;height:74px;border:5px solid #d9c8e8;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 4px 10px #000}
+.toolico{position:absolute;left:-30px;width:74px;height:66px;border:4px solid #d9c8e8;border-radius:10px;background-size:230% auto;background-position:50% 24%;background-color:#222;z-index:6;cursor:pointer;box-shadow:0 4px 10px #000}
 .card.enterHand{animation:drawIn .55s ease-out backwards}
 .card.enterField{animation:dropIn .5s cubic-bezier(.22,1,.36,1) backwards}
 .card.settle{animation:settle .32s cubic-bezier(.3,1.6,.5,1) backwards}
@@ -99,16 +99,16 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 @keyframes flw{0%{opacity:.85}100%{opacity:0}}
 #board.iframe{filter:invert(1) grayscale(1) contrast(1.8)}
 #board.shake{animation:shk .36s linear}
-@keyframes shk{0%,100%{transform:perspective(2600px) rotateX(4deg)}
- 15%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-1),calc(var(--sh)*.6))}
- 30%{transform:perspective(2600px) rotateX(4deg) translate(var(--sh),calc(var(--sh)*-.5))}
- 45%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-.6),calc(var(--sh)*-.4))}
- 60%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*.5),calc(var(--sh)*.3))}
- 80%{transform:perspective(2600px) rotateX(4deg) translate(calc(var(--sh)*-.2),calc(var(--sh)*.1))}}
+@keyframes shk{0%,100%{transform:none}
+ 15%{transform:translate(calc(var(--sh)*-1),calc(var(--sh)*.6))}
+ 30%{transform:translate(var(--sh),calc(var(--sh)*-.5))}
+ 45%{transform:translate(calc(var(--sh)*-.6),calc(var(--sh)*-.4))}
+ 60%{transform:translate(calc(var(--sh)*.5),calc(var(--sh)*.3))}
+ 80%{transform:translate(calc(var(--sh)*-.2),calc(var(--sh)*.1))}}
 .chip.bump{animation:bump .45s ease-out}
 @keyframes bump{40%{transform:translateX(-50%) scale(1.45)}100%{transform:translateX(-50%) scale(1)}}
-#board{transform:perspective(2600px) rotateX(4deg);transform-origin:50% 55%;backface-visibility:hidden}
-.fly{position:absolute;z-index:28;border-radius:12px;background-size:100% 100%;background-color:#111;box-shadow:0 14px 30px #000;pointer-events:none;transform-style:preserve-3d}
+#board{backface-visibility:hidden}
+.fly{position:absolute;z-index:28;border-radius:12px;background-size:100% 100%;background-color:transparent;box-shadow:0 14px 30px #000;pointer-events:none;transform-style:preserve-3d}
 .fly.bk{background-color:#101418;background-image:repeating-linear-gradient(45deg,#14181d 0 16px,#1d232a 16px 32px);border:5px solid #cdd5df}
 .hasback .fly.bk{background-image:var(--backimg);background-size:100% 100%;border:0}
 /* lista de busca estilo Yu-Gi-Oh */
@@ -145,6 +145,12 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .btn.sec{background:#2a2a2a}
 .btn.sm{font-size:24px;padding:6px 12px;border-radius:12px}
 .btn[disabled]{opacity:.35;pointer-events:none}
+.tmr{position:absolute;left:937px;top:740px;width:104px;height:104px;border-radius:50%;z-index:3;display:none;align-items:center;justify-content:center;pointer-events:none;
+  background:conic-gradient(var(--tc,#2ee66b) calc(var(--tp,1)*360deg), rgba(255,255,255,.18) 0);box-shadow:0 4px 14px #000}
+.tmr.on{display:flex}
+.tmr b{width:80px;height:80px;border-radius:50%;background:#000;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900;color:#fff}
+.tmr.low b{color:#ff0803;animation:tlow .5s infinite alternate}
+@keyframes tlow{to{transform:scale(1.12)}}
 #endbtn{position:absolute;left:933px;top:886px;width:112px;height:157px;font-size:24px;padding:4px;line-height:1.1;border-width:6px;border-radius:8px;z-index:2}
 #menubtn{position:absolute;left:22px;top:1475px;width:124px;height:142px;font-size:32px;padding:4px;border-width:6px;border-radius:8px;z-index:4;color:var(--red);background:#000}
 .hist{font-size:28px;line-height:1.3;text-align:left;width:900px;max-height:1400px;overflow:auto;background:#0d0d0d;border:3px solid #444;border-radius:20px;padding:20px 30px}
@@ -272,17 +278,22 @@ function fitStage(){
 }
 addEventListener('resize', fitStage); fitStage();
 
-for(const k in DEFS){ const im=new Image(); im.src=DEFS[k].img; }   /* pré-carrega as artes: evita piscadas */
 /* verso opcional: se existir Cartas/verso.png ele é usado */
-const SCENARIOS=['Campos/Campo - Batalha contra os saiyajins.png','Campos/Campo - Casa do Kame.png'];   // novos cenários: só acrescentar o nome aqui
+const SCENARIOS=['Campos/Campo - Batalha contra os saiyajins.jpg','Campos/Campo - Casa do Kame.jpg'];   // novos cenários: só acrescentar o nome aqui
+/* versões leves (pasta Cartas/Mini) no tabuleiro; a arte grande só no zoom. Se a leve faltar, usa a grande. */
+const KEEP=[];
+function miniOf(path){ return path.replace(/^Cartas\//,'Cartas/Mini/').replace(/\.png$/,'.jpg'); }
+function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
+for(const k in DEFS){ const d=DEFS[k]; d.mini=miniOf(d.img); preload(d.mini, ()=>{ d.mini=d.img; preload(d.img); }); }
+const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
+const mini=inst=>(inst.def||inst).mini;
 function setScenario(on){
   const st=$('#stage');
   if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; return; }
-  const f=SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)];
-  st.style.backgroundImage=`url("${f}")`; st.classList.add('scen');
+  st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen');
 }
 const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.png'},{n:'Azul',img:'Cartas/Verso da carta Azul.png'},{n:'Verde',img:'Cartas/Verso da carta Verde.png'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.png'}];
-BACKS.forEach(b=>{ const im=new Image(); im.src=b.img; });
+BACKS.forEach(b=>{ b.full=b.img; b.img=miniOf(b.img); preload(b.img,()=>{ b.img=b.full; preload(b.full); }); });
 function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return BACKS[i]?i:0; }catch(e){ return 0; } }
 function backOf(p){ return BACKS[p===0?myBack():0].img; }    // o oponente usa o verso padrão
 
@@ -349,17 +360,17 @@ const A = {
   },
   field(p, c){ const pl=P(p); detach(pl,c); for(const x of [0,1]) if(P(x).field) toVoid(P(x),P(x).field); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
-  bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); detach(pl,r); pl.hand.push(r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
+  async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
   tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+500 ATQ).`); },
   semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); pl.life+=v; log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); fxFloat(p,'+'+v,true); },
   disparo(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Disparo de Ki destrói ${t.def.name}!`); },
-  caminho(p, c){ const pl=P(p); const g=pl.void.find(x=>x.id===1); detach(pl,g); pl.chars[freeIdx(pl.chars)]=g; toVoid(pl,c); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
-  radar(p, c, e){ const pl=P(p); toVoid(pl,c); detach(pl,e); pl.hand.push(e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
-  esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; detach(pl,e); pl.hand.push(e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
+  async caminho(p, c, slot){ const pl=P(p); const g=pl.void.find(x=>x.id===1); toVoid(pl,c); await voidToField(p,g,slot); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
+  async radar(p, c, e){ const pl=P(p); toVoid(pl,c); await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
+  async esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
   auto(p, c, g, pc){ const pl=P(p); const v=Math.round((atkOf(p,g)+atkOf(p,pc))/2); toVoid(pl,c); g.tmp=v; pc.tmp=v; log(`Autoescola! Goku e Piccolo ficam com ATQ ${v} até o fim do turno.`); },
-  casa(p, chosen, fld){ const pl=P(p); fld.used=true; detach(pl,chosen); pl.hand.push(chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
+  async casa(p, chosen, fld){ const pl=P(p); fld.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
   yaji(p, c){ const pl=P(p); const ch=chars(p)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
-  kaioh(p, c, chosen){ const pl=P(p); c.used=true; detach(pl,chosen); pl.hand.push(chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
+  async kaioh(p, c, chosen){ const pl=P(p); c.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
   kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1500; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1500 de ATQ e vai para o vazio na Fase Final.`); },
   kame(p, c, t){ toVoid(P(p),c); toVoid(P(1-p),t); log(`Kamehameha destrói ${t.def.name}!`); },
   picc(p, picc, g){ const pl=P(p); toVoid(pl,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
@@ -448,29 +459,56 @@ function flyCard(a, bx, img, ms, spin){
   });
 }
 function handSlot(p, n){                       // onde a n-ésima carta (1..n) fica na mão
-  if(p===1){ const W=90,st=n>1?Math.min(70,(810-W)/(n-1)):0,t=(n-1)*st+W; return {x:(1080-t)/2+(n-1)*st,y:205,w:W,h:126}; }
+  if(p===1){ const st=n>1?Math.min(70,(810-90)/(n-1)):0,t=(n-1)*st+90; return {x:(1080-t)/2+(n-1)*st,y:150,w:84,h:118}; }
   const W=190, st=n>1?Math.min(W+12,(930-W)/(n-1)):0, t=(n-1)*st+W;
   return {x:(1080-t)/2+(n-1)*st, y:1674, w:W, h:266};
 }
-function slideCard(a, bx, img, ms, rot, back){       // desliza em curva, virando no caminho
+function slideCard(a, bx, img, ms, rot, back, faceUp){       // desliza em curva, virando no caminho
   return new Promise(res=>{
-    const d=el('div','fly bk'+(back?' img':'')); if(back) d.style.backgroundImage=`url("${back}")`;
+    const d=el('div','fly'+(faceUp?'':' bk')+(back&&!faceUp?' img':'')); if(faceUp) d.style.backgroundImage=`url("${img}")`; else if(back) d.style.backgroundImage=`url("${back}")`;
     d.style.left=a.x+'px'; d.style.top=a.y+'px'; d.style.width=a.w+'px'; d.style.height=a.h+'px';
-    d.style.transform='rotateY(180deg) rotate(-8deg)';
+    d.style.transform=faceUp?'rotate(-8deg)':'rotateY(180deg) rotate(-8deg)';
     $('#stage').appendChild(d);
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       d.style.transition=`left ${ms}ms cubic-bezier(.15,.75,.3,1),top ${ms}ms cubic-bezier(.55,0,.35,1),width ${ms}ms ease-out,height ${ms}ms ease-out,transform ${ms}ms cubic-bezier(.3,.7,.3,1)`;
       d.style.left=bx.x+'px'; d.style.top=bx.y+'px'; d.style.width=bx.w+'px'; d.style.height=bx.h+'px';
       d.style.transform=`rotateY(0deg) rotate(${rot}deg)`;
     }));
-    if(img) setTimeout(()=>{ d.classList.remove('bk'); d.style.backgroundImage=`url("${img}")`; }, ms*0.42);   // vira no meio do caminho
+    if(img && !faceUp) setTimeout(()=>{ d.classList.remove('bk'); d.style.backgroundImage=`url("${img}")`; }, ms*0.42);   // vira no meio do caminho
     setTimeout(()=>{ d.remove(); res(); }, ms+20);
   });
+}
+function pileRect(p, where){ const s=POS[p][where]; return {x:s[0],y:s[1],w:SW,h:SH}; }
+function slotRect(p, i){ const s=POS[p].chars[i]; return {x:s[0]-8,y:s[1]-8,w:CHAR_W+16,h:CHAR_H+16}; }
+async function toHand(p, inst){                  // busca: sai do baralho ou do vazio e entra pela direita da mão
+  const pl=P(p), fromVoid=pl.void.includes(inst);
+  const from=pileRect(p, fromVoid?'void':'deck'), slot=handSlot(p, pl.hand.length+1);
+  detach(pl,inst); render();
+  const show = p===0 || fromVoid;
+  await slideCard(from, slot, show?mini(inst):null, 560, p===0?4:0, backOf(p), fromVoid);
+  pl.hand.push(inst); seen.add(inst.uid); render();
+}
+async function voidToField(p, inst, i){          // sai do vazio e vai para o slot escolhido
+  const pl=P(p); if(i==null||pl.chars[i]) i=freeIdx(pl.chars);
+  detach(pl,inst); render();
+  await slideCard(pileRect(p,'void'), slotRect(p,i), mini(inst), 560, 0, null, true);
+  pl.chars[i]=inst; G.settle=inst.uid; render();
+}
+async function voidToDeck(p, inst){              // (para efeitos futuros) sai do vazio e volta ao baralho
+  const pl=P(p); detach(pl,inst); render();
+  await slideCard(pileRect(p,'void'), pileRect(p,'deck'), mini(inst), 520, 0, null, true);
+  pl.deck.push(inst); shuffle(pl.deck); render();
+}
+function pickSlot(prompt){                       // escolher um slot de Personagem vazio
+  const free=P(0).chars.map((c,i)=>c?null:i).filter(i=>i!=null);
+  if(free.length===1) return Promise.resolve({slot:free[0]});
+  closeModal();
+  return new Promise(res=>{ G.pick={set:new Set(),map:new Map(),prompt,slots:new Set(free),res}; render(); });
 }
 async function drawAnim(p, inst){
   const d=POS[p].deck, from={x:d[0],y:d[1],w:SW,h:SH};
   const slot=handSlot(p, P(p).hand.length+1);
-  await slideCard(from, slot, (p===0&&inst)?inst.def.img:null, p===0?620:480, p===0?4:0, backOf(p));
+  await slideCard(from, slot, (p===0&&inst)?mini(inst):null, p===0?620:480, p===0?4:0, backOf(p));
 }
 async function vanish(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
   const a=stageRect(e), v=POS[owner].void; e.style.visibility='hidden';
@@ -593,6 +631,29 @@ setInterval(()=>{
     const z=document.getElementById('life'+p); if(z) paintLife(z,p);
   }
 },30);
+/* ---------- cronômetro de 60 s por turno ---------- */
+const TURN_MS=60000;
+const TMR=document.createElement('div'); TMR.className='tmr'; TMR.innerHTML='<b>60</b>';
+setTimeout(()=>$('#stage').appendChild(TMR),0);
+function timerStart(){ if(G){ G.tEnd=Date.now()+TURN_MS; G.tOut=false; } }
+setInterval(()=>{
+  if(!G || G.over || !G.tEnd){ TMR.classList.remove('on'); return; }
+  const left=Math.max(0,G.tEnd-Date.now()), sec=Math.ceil(left/1000), r=left/TURN_MS;
+  TMR.classList.add('on'); TMR.firstChild.textContent=sec;
+  TMR.style.setProperty('--tp',r.toFixed(3)); TMR.style.setProperty('--tc', sec>20?'#2ee66b':sec>10?'#fdcd00':'#ff0803');
+  TMR.classList.toggle('low', sec<=10);
+  if(left<=0 && G.turn===0 && !G.tOut && G.phase!=='end') timeUp();
+},200);
+async function timeUp(){                           // acabou o tempo: o turno termina sozinho
+  G.tOut=true; const g=G;
+  if(H.on) endHand();
+  if(G.pick) endPick(null);
+  closeModal();
+  toast('Tempo esgotado!');
+  while(G===g && !G.over && G.busy && G.phase!=='end') await sleep(120);   // espera a animação em andamento
+  if(G!==g || G.over || G.turn!==0 || G.phase==='end') return;
+  G.busy=true; render(); await finalPhase(0);
+}
 function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),1600); }
 async function banner(t){ const b=$('#banner'); b.textContent=t; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); await sleep(950); b.classList.remove('on'); }
 
@@ -649,7 +710,7 @@ function actionsFor(p, inst, where){
         const cs=zoneCands(pl,x=>x.id===14,inst);
         add('Usar', !supports(p).some(x=>x.id===10)?'Precisa da "Bulma" em campo.':cs.length?null:'Não há "Esferas do dragão" no baralho nem no vazio.', async()=>{
           const e=await chooseCards('Escolha as Esferas do dragão',cs); if(!e) return;
-          A.radar(p,inst,e);
+          await A.radar(p,inst,e);
         });
       }
       if(inst.id===14){
@@ -658,7 +719,7 @@ function actionsFor(p, inst, where){
           const m=await chooseMode('Esferas do dragão: escolha um efeito',[{label:'1. Adicionar um Personagem à mão',off:!cc.length},{label:'2. Adicionar um Poder à mão',off:!pc.length}]);
           if(m===null) return;
           const e=await chooseCards(m===0?'Escolha o Personagem':'Escolha o Poder',m===0?cc:pc); if(!e) return;
-          A.esferas(p,inst,e);
+          await A.esferas(p,inst,e);
         });
       }
       if(inst.id===16){
@@ -670,7 +731,7 @@ function actionsFor(p, inst, where){
           A.auto(p,inst,g,pc);
         });
       }
-      if(inst.id===15) add('Usar', !pl.void.some(c=>c.id===1)?'"Goku - Guerreiros Z" não está no seu vazio.':(freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null), async()=>A.caminho(p,inst));
+      if(inst.id===15) add('Usar', !pl.void.some(c=>c.id===1)?'"Goku - Guerreiros Z" não está no seu vazio.':(freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null), async()=>{ let sl=null; if(p===0){ const r=await pickSlot('Caminho da serpente: escolha onde o Goku vai entrar.'); if(!r) return; sl=r.slot; } await A.caminho(p,inst,sl); });
     }
   }
   if(where==='field'){
@@ -695,14 +756,14 @@ function actionsFor(p, inst, where){
     }
     if(d.kind==='field') add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(c=>c.def.kind==='char')?null:'Não há Personagens no baralho.'), async()=>{
       const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(c=>c.def.kind==='char')); if(!r) return;
-      A.casa(p,r,inst);
+      await A.casa(p,r,inst);
     });
     if(inst.id===10) add('Efeito: buscar Radar do dragão', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===13)?null:'Não há "Radar do dragão" no baralho.'), async()=>A.bulma(p,inst));
     if(inst.id===18){
       const cs=pl.deck.filter(x=>x.id===15||x.id===17||x.id===19);
       add('Efeito: buscar carta', inst.used?'Já usado neste turno.':(!chars(p).some(c=>c.id===1)?'Precisa de "Goku - Guerreiros Z" em campo.':(cs.length?null:'Não há "Caminho da serpente", "Kaioken" ou "Kaioken aumentado 4x" no baralho.')), async()=>{
         const r=await chooseFromList('Senhor Kaioh: escolha uma carta do baralho',cs); if(!r) return;
-        A.kaioh(p,inst,r);
+        await A.kaioh(p,inst,r);
       });
     }
   }
@@ -734,7 +795,7 @@ function searchList(title, entries){        // lista vertical estilo Yu-Gi-Oh, a
     entries.forEach(e=>{ const k=e.inst.id+'|'+(e.label||''); if(!groups.has(k)) groups.set(k,{inst:e.inst,label:e.label,n:0}); groups.get(k).n++; });
     groups.forEach(g=>{
       const d=g.inst.def, r=el('div','srow'+(g.label==='Vazio'?' void':''));
-      const th=el('div','sth'); th.style.backgroundImage=`url("${d.img}")`; r.appendChild(th);
+      const th=el('div','sth'); th.style.backgroundImage=`url("${d.mini}")`; r.appendChild(th);
       const info=el('div','sinfo');
       info.appendChild(el('div','sname',d.name));
       let sub=KIND[d.kind];
@@ -776,12 +837,14 @@ function showModal(node){ const m=$('#modal'); m.innerHTML=''; m.appendChild(nod
 function closeModal(){ const m=$('#modal'); m.classList.remove('on'); m.innerHTML=''; }
 function canAct(){ return G && !G.over && !G.busy && G.turn===0 && !G.pick; }
 
+function bigArt(e,d){ e.style.backgroundImage=`url("${d.mini}")`; if(d.mini===d.img) return; const im=new Image(); im.onload=()=>{ e.style.backgroundImage=`url("${d.img}")`; }; im.src=d.img; }
 function cardModal(inst, p, where){
   const box=el('div','mbox');
-  const big=el('div','bigcard'); big.style.backgroundImage=`url("${inst.def.img}")`; box.appendChild(big);
-  let info = KIND[inst.def.kind];
-  if(inst.def.kind==='char') info += ` — Tipo: ${ELEM[inst.def.el].n} — Arquétipo: ${inst.def.arq.join(' / ')} — ATQ atual ${atkOf(p,inst)}`;
-  box.appendChild(el('div','',`<span style="font-size:32px;color:#bbb">${info}</span>`));
+  const big=el('div','bigcard'); bigArt(big,inst.def); box.appendChild(big);
+  const info = inst.def.kind==='char'
+    ? `Tipo: ${ELEM[inst.def.el].n} · Arquétipo: ${inst.def.arq.join(' / ')}<br><b style="color:#fff">ATQ atual: ${atkOf(p,inst)}</b>`
+    : KIND[inst.def.kind];
+  box.appendChild(el('div','',`<div style="font-size:34px;color:#bbb;line-height:1.4">${info}</div>`));
   const acts=el('div','acts');
   if(canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || inst.def.kind==='field')))){
     actionsFor(0,inst,where).forEach(a=>{
@@ -798,7 +861,7 @@ function voidModal(p){
   box.appendChild(el('div','big',`Vazio ${p?'do oponente':'seu'} (${pl.void.length})`));
   const list=el('div','list');
   if(!pl.void.length) list.appendChild(el('div','',`<span style="font-size:34px;color:#aaa">Nenhuma carta no vazio.</span>`));
-  pl.void.slice().reverse().forEach(i=>{ const c=el('div','c'); c.style.backgroundImage=`url("${i.def.img}")`; c.onclick=()=>cardModal(i,p,'void'); list.appendChild(c); });
+  pl.void.slice().reverse().forEach(i=>{ const c=el('div','c'); c.style.backgroundImage=`url("${mini(i)}")`; c.onclick=()=>cardModal(i,p,'void'); list.appendChild(c); });
   box.appendChild(list); box.appendChild(btn('Fechar','sec',closeModal));
   showModal(box);
 }
@@ -850,7 +913,7 @@ function zone(parent, x,y,w,h,label,small,flip){
   parent.appendChild(z); return z;
 }
 function cardEl(inst, p, zname){
-  const c=el('div','card'); c.style.backgroundImage=`url("${inst.def.img}")`; c.dataset.uid=inst.uid;
+  const c=el('div','card'); c.style.backgroundImage=`url("${mini(inst)}")`; c.dataset.uid=inst.uid;
   G.index.set(inst.uid,{inst,p,zone:zname});
   if(G.pick && G.pick.set.has(inst.uid)) c.classList.add('cand');
   if(G.pick && G.pick.attack && zname==='char'){ if(G.pick.set.has(inst.uid)) c.classList.add('atk'); else if(p===G.pick.foe) c.classList.add('nocand'); }
@@ -867,13 +930,14 @@ function render(){
     const pl=P(p), pos=POS[p], fl=(p===1);
     for(let i=0;i<3;i++){
       const z=zone(frag,pos.chars[i][0],pos.chars[i][1],CHAR_W,CHAR_H,'Personagem',false,fl); if(p===0) z.dataset.drop='c'+i;
+      if(p===0 && G.pick && G.pick.slots && G.pick.slots.has(i)) z.classList.add('drop','over');
       const c=pl.chars[i];
       if(c){
         z.textContent=''; const ce=cardEl(c,p,'char'); z.appendChild(ce);
         const a=atkOf(p,c), base=c.def.atk;
         ce.appendChild(chipAtq(a, base));
         c.equips.forEach((k,ki)=>{
-          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${k.def.img}")`; ti.style.top=(70+ki*84)+'px'; ti.dataset.uid=k.uid;
+          const ti=el('div','toolico'); ti.style.backgroundImage=`url("${mini(k)}")`; ti.style.top=(42+ki*76)+'px'; ti.dataset.uid=k.uid;
           G.index.set(k.uid,{inst:k,p,zone:'tool'});
           if(G.pick && G.pick.set.has(k.uid)) ti.classList.add('cand');
           z.appendChild(ti);
@@ -888,11 +952,9 @@ function render(){
     }
     const zd=zone(frag,pos.deck[0],pos.deck[1],SW,SH,'Baralho',true,fl);
     if(pl.deck.length){ zd.textContent=''; const bk=el('div','card back img'); bk.style.backgroundImage=`url("${backOf(p)}")`; bk.dataset.deck=p; zd.appendChild(bk); }
-    zd.appendChild(el('div','badge',pl.deck.length));
     const zv=zone(frag,pos.void[0],pos.void[1],SW,SH,'Vazio',true,fl);
-    if(pl.void.length){ zv.textContent=''; const top=pl.void[pl.void.length-1]; const ce=el('div','card'); ce.style.backgroundImage=`url("${top.def.img}")`; ce.dataset.void=p; zv.appendChild(ce); }
+    if(pl.void.length){ zv.textContent=''; const top=pl.void[pl.void.length-1]; const ce=el('div','card'); ce.style.backgroundImage=`url("${mini(top)}")`; ce.dataset.void=p; zv.appendChild(ce); }
     zv.dataset.void=p;
-    zv.appendChild(el('div','badge',pl.void.length));
   }
   // campo (um só, compartilhado)
   const fo = P(0).field ? [0,P(0).field] : (P(1).field ? [1,P(1).field] : null);
@@ -904,7 +966,7 @@ function render(){
   for(let i=0;i<oh;i++){
     const step=oh>1?Math.min(70,(810-90)/(oh-1)):0; const total=(oh-1)*step+90;
     const x=(1080-total)/2+i*step;
-    const c=el('div','card back img'); c.style.cssText=`inset:auto;left:${x}px;top:205px;width:90px;height:126px;cursor:default;background-image:url("${backOf(1)}")`; frag.appendChild(c);
+    const c=el('div','card back img'); c.style.cssText=`inset:auto;left:${x}px;top:150px;width:84px;height:118px;cursor:default;background-image:url("${backOf(1)}")`; frag.appendChild(c);
   }
   // mão do jogador
   const h=P(0).hand, n=h.length, W=190;
@@ -960,6 +1022,7 @@ $('#board').addEventListener('click', e=>{
   const ce=e.target.closest('[data-uid]');
   const ve=e.target.closest('[data-void]');
   if(G.pick){
+    if(G.pick.slots){ const z=e.target.closest('[data-drop]'); if(z && z.dataset.drop[0]==='c' && G.pick.slots.has(+z.dataset.drop.slice(1))) endPick({slot:+z.dataset.drop.slice(1)}); return; }
     if(ce){ const u=+ce.dataset.uid; if(G.pick.set.has(u)) endPick({target:G.pick.map.get(u)}); }
     return;
   }
@@ -1002,7 +1065,7 @@ addEventListener('pointermove', e=>{
     const p=toStage(e.clientX,e.clientY);
     if(p.y < 1560 && canAct()){                 // saiu da mão para cima: começa a arrastar
       H.drag=true; H.h.classList.remove('lift'); H.h.classList.add('dragging');
-      H.ghost=el('div','ghost'); H.ghost.style.backgroundImage=`url("${H.inst.def.img}")`; $('#stage').appendChild(H.ghost);
+      H.ghost=el('div','ghost'); H.ghost.style.backgroundImage=`url("${mini(H.inst)}")`; $('#stage').appendChild(H.ghost);
       H.targets=dropTargets(H.inst);
       H.targets.forEach(t=>{ const z=document.querySelector(`#board [data-drop="${t}"]`); if(z) z.classList.add('drop'); });
     } else {                                    // deslizando sobre a mão: levanta a carta sob o dedo
@@ -1055,7 +1118,7 @@ async function draw(p){
 }
 async function startTurn(p){
   if(G.over) return;
-  G.turn=p; G.phase='prep'; G.turnNo++; const pl=P(p); pl.turns++;
+  G.turn=p; G.phase='prep'; G.turnNo++; const pl=P(p); pl.turns++; timerStart();
   pl.esf=false;
   [...P(0).chars,...P(1).chars].filter(Boolean).forEach(c=>{c.tmp=null;});   // efeitos 'até o fim do turno' terminam
   [...pl.chars,...pl.powers].filter(Boolean).forEach(c=>{c.attacked=false;c.direct=false;c.used=false;});
@@ -1108,8 +1171,11 @@ function endGame(winner){
 
 async function beginMatch(first){
   const myDeck=loadDeck();
+  const scen=SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)], si=SCEN_IMG[scen];
+  if(si && !si.complete) await new Promise(r=>{ si.addEventListener('load',r,{once:true}); si.addEventListener('error',r,{once:true}); setTimeout(r,6000); });
+  if(si && si.decode) await si.decode().catch(()=>{});
   LF=[MAX_LIFE,MAX_LIFE];
-  G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0};
+  G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
   for(const p of [0,1]){
     const pl=P(p);
     for(let i=0;i<HAND_START;i++) pl.hand.push(pl.deck.shift());
@@ -1152,15 +1218,15 @@ async function botTurn(){
   const fld=P(0).field||P(1).field;
   if(fld && fld.id===8 && !fld.used){
     const opts=pl.deck.filter(x=>x.def.kind==='char').sort((a,b)=>projAtk(b)-projAtk(a));
-    if(opts.length){ A.casa(p,opts[0],fld); if(!await pause(800)) return; }
+    if(opts.length){ await A.casa(p,opts[0],fld); if(!await pause(800)) return; }
   }
   // 2) Bulma -> Radar -> Esferas
   c=hand(10);
   if(c && freeP() && pl.deck.some(x=>x.id===13)){ A.support(p,c); if(!await pause(800)) return; }
   const bu=pl.powers.find(x=>x&&x.id===10&&!x.used);
-  if(bu && pl.deck.some(x=>x.id===13)){ A.bulma(p,bu); if(!await pause(800)) return; }
+  if(bu && pl.deck.some(x=>x.id===13)){ await A.bulma(p,bu); if(!await pause(800)) return; }
   c=hand(13);
-  if(c && supports(p).some(x=>x.id===10)){ const e=pl.deck.find(x=>x.id===14)||pl.void.find(x=>x.id===14); if(e){ A.radar(p,c,e); if(!await pause(800)) return; } }
+  if(c && supports(p).some(x=>x.id===10)){ const e=pl.deck.find(x=>x.id===14)||pl.void.find(x=>x.id===14); if(e){ await A.radar(p,c,e); if(!await pause(800)) return; } }
   // 2b) Senhor Kaioh
   c=hand(18);
   if(c && freeP() && chars(p).some(x=>x.id===1)){ A.support(p,c); if(!await pause(700)) return; }
@@ -1168,21 +1234,21 @@ async function botTurn(){
   if(ka && chars(p).some(x=>x.id===1)){
     const want = (!hand(17) && chars(p).some(x=>x.id===1&&!x.equips.length)) ? 17 : (!hand(19) && (hand(17)||chars(p).some(x=>x.equips.length))) ? 19 : 15;
     const pick = pl.deck.find(x=>x.id===want) || pl.deck.find(x=>x.id===17||x.id===19||x.id===15);
-    if(pick){ A.kaioh(p,ka,pick); if(!await pause(800)) return; }
+    if(pick){ await A.kaioh(p,ka,pick); if(!await pause(800)) return; }
   }
   // 3) Caminho da serpente (traz Goku do vazio)
   c=hand(15);
-  if(c && pl.void.some(x=>x.id===1) && freeC()){ A.caminho(p,c); if(!await pause(900)) return; }
+  if(c && pl.void.some(x=>x.id===1) && freeC()){ await A.caminho(p,c); if(!await pause(900)) return; }
   // 4) Invocar Personagens
   if(!await summonAll()) return;
   // 5) Esferas do dragão: busca o melhor Personagem se ainda houver espaço
   c=hand(14);
   if(c && !pl.esf && freeC()){
     const cand=[...pl.deck,...pl.void].filter(x=>x.def.kind==='char'&&x!==c).sort((a,b)=>projAtk(b)-projAtk(a))[0];
-    if(cand){ A.esferas(p,c,cand); if(!await pause(900)) return; if(!await summonAll()) return; }
+    if(cand){ await A.esferas(p,c,cand); if(!await pause(900)) return; if(!await summonAll()) return; }
   }
   c=hand(15);
-  if(c && pl.void.some(x=>x.id===1) && freeC()){ A.caminho(p,c); if(!await pause(900)) return; }
+  if(c && pl.void.some(x=>x.id===1) && freeC()){ await A.caminho(p,c); if(!await pause(900)) return; }
   // 6) Semente
   c=hand(11);
   if(c && chars(p).length && pl.life<=2500){ A.semente(p,c); if(!await pause(900)) return; }
@@ -1286,7 +1352,7 @@ function titleScreen(){
   const s=el('div','scr home');
   const ids=shuffle(Object.keys(DEFS).map(Number)).slice(0,3);         // três cartas aleatórias, mesmas posições
   const fan=el('div','fan');
-  [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].img}")`; fan.appendChild(d); });
+  [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
   s.appendChild(fan);
   const hot=(cls,x,y,w,h,fn)=>{ const b=el('button','hot '+cls); b.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`; b.onclick=fn; s.appendChild(b); return b; };
   hot('h-play',216,1053,648,102,startFlow).setAttribute('aria-label','Jogar contra a máquina');
@@ -1307,7 +1373,7 @@ function deckScreen(){
   const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
   const nums={};
   Object.values(DEFS).forEach(d=>{
-    const t=el('div','tile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.img}")`; im.onclick=()=>cardModalView(d);
+    const t=el('div','tile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d);
     const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
     ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
     ctl.appendChild(nb);
@@ -1333,7 +1399,7 @@ function deckScreen(){
   upd(); setScreen(s);
 }
 function cardModalView(d){
-  const box=el('div','mbox'); const big=el('div','bigcard'); big.style.backgroundImage=`url("${d.img}")`; box.appendChild(big);
+  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
   box.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
 }
 
