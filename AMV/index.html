@@ -279,7 +279,10 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   19:{id:19,name:'Kaioken aumentado 4x',kind:'item',img:'Cartas/Item - Kaioken aumentado 4x.jpg'},
   20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.jpg'},
   21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1400,arq:['Emissor','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
-  22:{id:22,name:'Cajado do Zé',kind:'tool',img:'Cartas/Ferramenta - Cajado do Zé.jpg'}
+  22:{id:22,name:'Cajado do Zé',kind:'tool',img:'Cartas/Ferramenta - Cajado do Zé.jpg'},
+  23:{id:23,name:'Sabrina',kind:'char',atk:1300,arq:['Controlador','Máquina'],el:'escuridao',fios:true,troca:true,img:'Cartas/Sabrina.jpg'},
+  24:{id:24,name:'Fios invisíveis',kind:'item',img:'Cartas/Item - Fios invisíveis.jpg'},
+  25:{id:25,name:'Troca de Marionetes',kind:'item',img:'Cartas/Item - Troca de marionetes.jpg'}
 };
 for(const i in DEFS) DEFS[i].gz=/Guerreiros Z/.test(DEFS[i].name);
 const isGZ=c=>!!(c&&c.def.gz);
@@ -381,12 +384,33 @@ function detach(pl, inst){
   else if((i=pl.powers.indexOf(inst))>=0) pl.powers[i]=null;
   else if(pl.field===inst) pl.field=null;
 }
+const ownPl=(inst,pl)=> inst.own!=null ? P(inst.own) : pl;
 function toVoid(pl, inst){
   detach(pl, inst);
-  if(inst.equips.length){ inst.equips.forEach(k=>{ k.equipTo=null; detach(pl,k); pl.void.push(k); }); inst.equips=[]; }
+  if(inst.equips.length){ inst.equips.forEach(k=>{ k.equipTo=null; detach(pl,k); ownPl(k,pl).void.push(k); }); inst.equips=[]; }
   if(inst.equipTo){ const g=inst.equipTo; g.equips=g.equips.filter(k=>k!==inst); inst.equipTo=null; }
-  inst.direct=false; inst.attacked=false; inst.tmp=null; inst.used=false; inst.boost=0; inst.doom=false;
-  pl.void.push(inst);
+  inst.direct=false; inst.attacked=false; inst.tmp=null; inst.used=false; inst.boost=0; inst.doom=false; inst.ctrlBy=null;
+  ownPl(inst,pl).void.push(inst);
+  releaseCtl(inst);
+}
+/* ---- controle de cartas (Sabrina / Troca de Marionetes) ---- */
+const ctrlOf = inst => [0,1].find(x=>P(x).chars.includes(inst));
+const puppets = sab => [0,1].flatMap(x=>chars(x)).filter(c=>c.ctrlBy===sab.uid);
+const shielded = c => { if(c.id!==23) return false; const x=ctrlOf(c); return x!=null && chars(x).some(k=>k!==c && k.own!=null && k.own!==x); };   // Sabrina não pode ser alvo de ataque enquanto o controlador dela tiver um Personagem que era do oponente
+const atkTargets = q => chars(q).filter(c=>!shielded(c));
+function releaseCtl(sab){                                       // Sabrina deixou o campo: o personagem volta para o dono
+  for(const c of puppets(sab)){
+    c.ctrlBy=null; const x=ctrlOf(c); if(x===c.own) continue;
+    detach(P(x),c); const fi=freeIdx(P(c.own).chars);
+    if(fi>=0){ P(c.own).chars[fi]=c; G.settle=c.uid; } else toVoid(P(x),c);
+    log(`${c.def.name} volta para ${c.own?'o oponente':'você'}.`);
+  }
+}
+async function moveCtl(moves){                                  // moves: [inst, de(p,i), para(p,i)]
+  if(!window.__NOFX){
+    const els=moves.map(m=>document.querySelector(`[data-uid="${m[0].uid}"]`)); els.forEach(e=>{ if(e) e.style.visibility='hidden'; });
+    await Promise.all(moves.map(m=>slideCard(slotRect(m[1][0],m[1][1]), slotRect(m[2][0],m[2][1]), mini(m[0]), 560, 0, null, true)));
+  }
 }
 function log(m){ G.log.push(m); if(G.log.length>300) G.log.shift(); }
 
@@ -402,9 +426,29 @@ const A = {
         render(); await activateFx(p,c,true);
         let t=tools[0];
         if(p===0){ render(); const r=await pickTarget(tools,{prompt:'Kienzan: escolha a Ferramenta a destruir.'}); t=r?r.target:null; }
-        if(t){ const g=t.equipTo; if(g) g.equips=g.equips.filter(k=>k!==t); t.equipTo=null; P(1-p).void.push(t); log(`Kienzan! ${t.def.name} é destruída.`); }
+        if(t){ const g=t.equipTo; if(g) g.equips=g.equips.filter(k=>k!==t); t.equipTo=null; ownPl(t,P(1-p)).void.push(t); log(`Kienzan! ${t.def.name} é destruída.`); }
       }
     }
+    if(c.id===23){  // Sabrina - Marionete Humana: pode tomar o controle do personagem da coluna da frente
+      const i=pl.chars.indexOf(c), t=P(1-p).chars[i], fi=freeIdx(pl.chars);
+      if(t && fi>=0){
+        let ok=true;
+        if(p===0){ render(); const r=await pickTarget([t],{prompt:`Marionete Humana: tocar em ${t.def.name.split(' - ')[0]} para tomar o controle (toque fora para recusar).`}); ok=!!r; }
+        if(ok){
+          render(); await activateFx(p,c,true);
+          await moveCtl([[t,[1-p,i],[p,fi]]]);
+          P(1-p).chars[i]=null; pl.chars[fi]=t; t.ctrlBy=c.uid; t.attacked=false; t.direct=false;
+          log(`Marionete Humana! ${p?'Oponente toma':'Você toma'} o controle de ${t.def.name}.`); render();
+        }
+      }
+    }
+  },
+  async fios(p, c, t){ const q=1-p, v=atkOf(q,t); toVoid(P(p),c); render(); log(`Fios invisíveis: ${p?'você perde':'o oponente perde'} ${v} de vida (ATQ de ${t.def.name}).`); await damage(q, v); },
+  async troca(p, c, mine, theirs){
+    const q=1-p, i=P(p).chars.indexOf(mine), j=P(q).chars.indexOf(theirs); toVoid(P(p),c); render();
+    await moveCtl([[mine,[p,i],[q,j]],[theirs,[q,j],[p,i]]]);
+    P(p).chars[i]=theirs; P(q).chars[j]=mine; mine.ctrlBy=null; theirs.ctrlBy=null;
+    log(`Troca de Marionetes: ${mine.def.name} e ${theirs.def.name} trocam de controle.`); render();
   },
   async field(p, c){ const pl=P(p); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
@@ -586,7 +630,7 @@ async function drawAnim(p, inst){
   await slideCard(from, slot, (p===0&&inst)?mini(inst):null, p===0?620:480, p===0?4:0, backOf(p));
 }
 async function vanish_raw(uid, owner){ const e=document.querySelector(`[data-uid="${uid}"]`); if(!e) return;
-  const r=G.index.get(uid), inst=r&&r.inst; const img=inst?mini(inst):e.style.backgroundImage.slice(5,-2);
+  const r=G.index.get(uid), inst=r&&r.inst; if(inst&&inst.own!=null) owner=inst.own; const img=inst?mini(inst):e.style.backgroundImage.slice(5,-2);
   const a=stageRect(e); e.style.visibility='hidden';
   await slideCard(a, pileRect(owner,'void'), img, 560, 0, null, true);   // mesmo caminho da volta do vazio, ao contrário
 }
@@ -631,7 +675,7 @@ async function activateFx_raw(p, card, back, src){
   await sleep(480);
   wrap.remove();
 }
-const FX_CARD_ARG={semente:1,yaji:1,kaio4:1,kame:1,disparo:1,radar:1,esferas:1,caminho:1,auto:1,tool:1,bulma:1,kaioh:1,casa:2};
+const FX_CARD_ARG={fios:1,troca:1,semente:1,yaji:1,kaio4:1,kame:1,disparo:1,radar:1,esferas:1,caminho:1,auto:1,tool:1,bulma:1,kaioh:1,casa:2};
 for(const n in FX_CARD_ARG){ const orig=A[n];
   A[n]=function(...args){
     if(window.__NOFX) return orig.apply(A,args);
@@ -835,6 +879,20 @@ function actionsFor(p, inst, where){
           await A.kame(p,inst,r.target);
         });
       }
+      if(inst.id===24){
+        const tg=chars(q).filter(t=>atkOf(q,t)<=1000);
+        add('Usar', !chars(p).some(c=>c.def.fios)?'Um dos seus Personagens precisa ter a habilidade "Fios Invisíveis".':(tg.length?null:'O oponente não tem Personagem com 1000 de ATQ ou menos.'), async()=>{
+          const r=await pickTarget(tg,{prompt:'Fios invisíveis: escolha o Personagem do oponente.'}); if(!r) return;
+          await A.fios(p,inst,r.target);
+        });
+      }
+      if(inst.id===25){
+        add('Usar', !chars(p).some(c=>c.def.troca)?'Um dos seus Personagens precisa ter a habilidade "Troca de Marionetes".':(chars(q).length?null:'O oponente não tem Personagem em campo.'), async()=>{
+          const r1=await pickTarget(chars(q),{prompt:'Troca de Marionetes: escolha o Personagem do oponente.'}); if(!r1) return;
+          render(); const r2=await pickTarget(chars(p),{prompt:'Agora escolha o seu Personagem que irá para o oponente.'}); if(!r2) return;
+          await A.troca(p,inst,r2.target,r1.target);
+        });
+      }
       if(inst.id===12){
         const sups=supports(q);
         add('Usar', noChar || (sups.length?null:'O oponente não controla nenhum Apoiador.'), async()=>{
@@ -874,7 +932,7 @@ function actionsFor(p, inst, where){
   if(where==='field'){
     if(d.kind==='char'){
       add('Atacar', !canAttack(p)?'Quem começa a partida só ataca no 2º turno.':(inst.attacked?'Já atacou neste turno.':null), async()=>{
-        const tg=chars(q);
+        const tg=atkTargets(q);
         if(tg.length===0){ await doAttack(p,inst,null); return; }
         const r=await pickTarget(tg,{prompt:`Escolha o alvo de ${d.name}.`, direct:inst.direct, attack:true, foe:q});
         if(!r) return;
@@ -1325,6 +1383,7 @@ async function beginMatch(first){
   if(si && si.decode) await si.decode().catch(()=>{});
   LF=[MAX_LIFE,MAX_LIFE];
   G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
+  G.p.forEach((pl,i)=>pl.deck.forEach(c=>{ c.own=i; }));        // dono da carta (o vazio é sempre o do dono)
   for(const p of [0,1]){
     const pl=P(p);
     for(let i=0;i<HAND_START;i++) pl.hand.push(pl.deck.shift());
@@ -1413,6 +1472,16 @@ async function botTurn(){
   c=hand(22);
   const zt=chars(p).filter(x=>canEquip({id:22},x)).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
   if(c && zt){ await A.tool(p,c,zt); if(!await pause(900)) return; }
+  // 8b) Fios invisíveis: dano igual ao ATQ do alvo (pega o maior até 1000)
+  c=hand(24);
+  if(c && chars(p).some(x=>x.def.fios)){ const t=chars(q).filter(x=>atkOf(q,x)<=1000).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.fios(p,c,t); if(G.over||!await pause(900)) return; } }
+  // 8c) Troca de Marionetes: troca o meu mais fraco pelo mais forte dele, se valer a pena
+  c=hand(25);
+  if(c && chars(p).some(x=>x.def.troca) && chars(q).length){
+    const mine=chars(p).filter(x=>!x.def.troca||chars(p).filter(y=>y.def.troca).length>1).sort((a,b)=>atkOf(p,a)-atkOf(p,b))[0];
+    const theirs=chars(q).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0];
+    if(mine && theirs && atkOf(q,theirs)>atkOf(p,mine)+200){ await A.troca(p,c,mine,theirs); if(!await pause(900)) return; }
+  }
   // 9) Kaioken
   c=hand(17);
   const goku=chars(p).filter(x=>x.id===1&&x.equips.length<2).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
@@ -1452,7 +1521,7 @@ async function botTurn(){
     while(!G.over){
       const atts=pl.chars.filter(x=>x&&!x.attacked&&!skipped.has(x.uid)).sort((a,b)=>atkOf(p,b)-atkOf(p,a));
       if(!atts.length) break;
-      const a=atts[0], tg=chars(q);
+      const a=atts[0], tg=atkTargets(q);
       let choice=null;
       if(!tg.length) choice={direct:true};
       else if(a.direct && (atkOf(p,a)>=ql.life || !tg.some(t=>bDef(t)<bAtk(a)))) choice={direct:true};
@@ -1590,7 +1659,7 @@ function rps(msg){
 }
 
 titleScreen();
-window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList};   // útil para depurar
+window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets};   // útil para depurar
 })();
 </script>
 </body>
