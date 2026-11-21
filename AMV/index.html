@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Animes Multiverse Versus</title>
+<title>Anomalia Multiversal Versus</title>
 <link rel="icon" href="Logo/AMV - Logomarca.png">
 <link rel="apple-touch-icon" href="Logo/AMV - Logomarca.png">
 <style>
@@ -168,7 +168,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .backs{display:flex;align-items:center;gap:18px;margin-top:16px;font-size:34px;font-weight:800}
 .backs .bk{width:96px;height:134px;border-radius:8px;background-size:100% 100%;cursor:pointer;border:5px solid transparent;opacity:.6}
 .backs .bk.sel{border-color:var(--gold);opacity:1;box-shadow:0 0 22px var(--gold)}
-.scr.home{background:#000 url("Menus/Menu - Tela inicial.jpg") center/100% 100% no-repeat;padding:0}
+.scr.home{background:#000;padding:0}
+.scr.home .spin{position:absolute;left:-590px;top:-168px;width:2240px;height:2240px;background:url("Menus/Menu - Tela inicial - Giro.jpg") center/100% 100% no-repeat;animation:spin 60s linear infinite;will-change:transform;pointer-events:none}
+@keyframes spin{to{transform:rotate(-360deg)}}
+.scr.home .ui{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none}
 .scr.home .fan{position:absolute;left:40px;top:545px;margin:0}
 .hot{position:absolute;display:block;background:transparent;border:0;border-radius:18px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}
 .hot:active{background:rgba(255,255,255,.14)}
@@ -201,6 +204,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .actfx .ring{position:absolute;inset:-10px;border-radius:24px;opacity:0}
 .actfx.snap .ring{opacity:1;box-shadow:0 0 0 5px #7df,0 0 30px 10px #4cf}
 .actfx.hold .face{animation:actHold .62s ease-in-out}
+.actfx.ret .face{animation:actFlash .36s ease-out}
+.actfx.ret .ring{opacity:0;transition:opacity .3s}
+@keyframes actFlash{0%{filter:brightness(2.2)}100%{filter:brightness(1)}}
+.tico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.22em}
 .actfx.hold .ring{opacity:1;box-shadow:0 0 0 6px #7df,0 0 50px 18px #4cf;animation:glowp .31s infinite alternate}
 @keyframes actHold{50%{transform:scale(1.03)}}
 .actfx.burst .face{animation:actWhite .48s ease-out forwards}
@@ -251,13 +258,13 @@ const DEFAULT_DECK = {1:3,2:2,3:2,4:2,5:2,6:2,7:2,8:1,9:1,10:1,11:2,12:1,13:1,14
 const BOT_DECK = DEFAULT_DECK;   // baralho do bot
 
 const DEFS = {   // arquivos com nome, pasta Cartas
-  1:{id:1,name:'Goku - Guerreiros Z',kind:'char',atk:1600,arq:['Guerreiro','Espacial'],kame:true,img:'Cartas/Personagem - Goku - Guerreiros Z.jpg'},
-  2:{id:2,name:'Gohan - Guerreiros Z',kind:'char',atk:800,arq:['Guerreiro'],img:'Cartas/Personagem - Gohan - Guerreiros Z.jpg'},
-  3:{id:3,name:'Piccolo - Guerreiros Z',kind:'char',atk:1500,arq:['Guerreiro','Espacial'],img:'Cartas/Personagem - Piccolo - Guerreiros Z.jpg'},
-  4:{id:4,name:'Kuririn - Guerreiros Z',kind:'char',atk:1200,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Kuririn - Guerreiros Z.jpg'},
-  5:{id:5,name:'Tenshinhan - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],img:'Cartas/Personagem - Tenshinhan - Guerreiros Z.jpg'},
-  6:{id:6,name:'Chaos - Guerreiros Z',kind:'char',atk:300,arq:['Guerreiro'],img:'Cartas/Personagem - Chaos - Guerreiros Z.jpg'},
-  7:{id:7,name:'Yamcha - Guerreiros Z',kind:'char',atk:1300,arq:['Guerreiro'],kame:true,img:'Cartas/Personagem - Yamcha - Guerreiros Z.jpg'},
+  1:{id:1,name:'Goku - Guerreiros Z',kind:'char',atk:1600,arq:['Lutador','Espacial'],kame:true,img:'Cartas/Personagem - Goku - Guerreiros Z.jpg'},
+  2:{id:2,name:'Gohan - Guerreiros Z',kind:'char',atk:800,arq:['Lutador'],img:'Cartas/Personagem - Gohan - Guerreiros Z.jpg'},
+  3:{id:3,name:'Piccolo - Guerreiros Z',kind:'char',atk:1500,arq:['Lutador','Espacial'],img:'Cartas/Personagem - Piccolo - Guerreiros Z.jpg'},
+  4:{id:4,name:'Kuririn - Guerreiros Z',kind:'char',atk:1200,arq:['Lutador'],kame:true,img:'Cartas/Personagem - Kuririn - Guerreiros Z.jpg'},
+  5:{id:5,name:'Tenshinhan - Guerreiros Z',kind:'char',atk:1300,arq:['Lutador'],img:'Cartas/Personagem - Tenshinhan - Guerreiros Z.jpg'},
+  6:{id:6,name:'Chaos - Guerreiros Z',kind:'char',atk:300,arq:['Lutador'],img:'Cartas/Personagem - Chaos - Guerreiros Z.jpg'},
+  7:{id:7,name:'Yamcha - Guerreiros Z',kind:'char',atk:1300,arq:['Lutador'],kame:true,img:'Cartas/Personagem - Yamcha - Guerreiros Z.jpg'},
   8:{id:8,name:'Casa do Kame',kind:'field',img:'Cartas/Campo - Casa do Kame.jpg'},
   9:{id:9,name:'Yajirobe',kind:'item',img:'Cartas/Item - Yajirobe.jpg'},
   10:{id:10,name:'Bulma',kind:'support',img:'Cartas/Apoiador - Bulma.jpg'},
@@ -270,10 +277,18 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   17:{id:17,name:'Kaioken',kind:'tool',img:'Cartas/Ferramenta - Kaioken.jpg'},
   18:{id:18,name:'Senhor Kaioh',kind:'support',img:'Cartas/Apoiador - Senhor Kaioh.jpg'},
   19:{id:19,name:'Kaioken aumentado 4x',kind:'item',img:'Cartas/Item - Kaioken aumentado 4x.jpg'},
-  20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.jpg'}
+  20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.jpg'},
+  21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1400,arq:['Emissor','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
+  22:{id:22,name:'Cajado do Zé',kind:'tool',img:'Cartas/Ferramenta - Cajado do Zé.jpg'}
 };
-const ELEM = {terra:{n:'Terra',c:'#410e00',adv:['fogo','ar','raio']},planta:{n:'Planta',c:'#32bf0b',adv:['agua','terra']},agua:{n:'Água',c:'#0725de',adv:['terra','fogo']},fogo:{n:'Fogo',c:'#ff0803',adv:['ar','planta','metal','escuridao']},ar:{n:'Ar',c:'#f2efe9',adv:['planta']},raio:{n:'Raio',c:'#fdcd00',adv:['agua','ar','escuridao']},metal:{n:'Metal',c:'#57808a',adv:['terra','raio','planta']},escuridao:{n:'Escuridão',c:'#450066',adv:['ar','planta']},divino:{n:'Divino',c:'#fb9e20',adv:['divino']}};
-for(const i in DEFS) if(DEFS[i].kind==='char') DEFS[i].el = (i==3?'planta':'terra');
+for(const i in DEFS) DEFS[i].gz=/Guerreiros Z/.test(DEFS[i].name);
+const isGZ=c=>!!(c&&c.def.gz);
+const TOOL_FOR={17:1,22:21};                                   // Ferramenta -> Personagem que pode equipá-la
+const canEquip=(t,c)=>!!c && c.id===TOOL_FOR[t.id] && c.equips.length<2;
+const ELEM = {terra:{n:'Terra',c:'#410e00',adv:['fogo','ar','raio']},planta:{n:'Planta',c:'#32bf0b',adv:['agua','terra']},agua:{n:'Água',c:'#0796de',adv:['terra','fogo']},fogo:{n:'Fogo',c:'#ff0803',adv:['ar','planta','metal','escuridao']},ar:{n:'Ar',c:'#f2efe9',adv:['planta']},raio:{n:'Raio',c:'#fdcd00',adv:['agua','ar','escuridao']},metal:{n:'Metal',c:'#677d82',adv:['terra','raio','planta']},escuridao:{n:'Escuridão',c:'#28003b',adv:['ar','planta']},divino:{n:'Divino',c:'#fb9e23',adv:['divino']}};
+for(const i in DEFS) if(DEFS[i].kind==='char' && !DEFS[i].el) DEFS[i].el = (i==3?'planta':'terra');
+const EL_ICO={agua:2,terra:3,fogo:4,ar:5,raio:6,planta:7,metal:8,escuridao:9,divino:10}, KIND_ICO={support:12,item:13,tool:14,field:15};
+const elIco=k=>`<img class="tico" src="Icones/${EL_ICO[k]}.png" alt="">`, kindIco=k=>KIND_ICO[k]?`<img class="tico" src="Icones/${KIND_ICO[k]}.png" alt="">`:'';
 const hasAdv=(a,b)=>a.def.el&&b.def.el&&ELEM[a.def.el].adv.includes(b.def.el);
 const KIND = {char:'Personagem',field:'Campo',support:'Apoiador',item:'Item',tool:'Ferramenta'};
 
@@ -342,17 +357,18 @@ function newPlayer(counts){
   return {life:MAX_LIFE, deck:shuffle(ids.map(mk)), hand:[], chars:[null,null,null], powers:[null,null,null], field:null, void:[], turns:0, esf:false};
 }
 function atkOf(p, inst){
-  if(inst.tmp!=null) return inst.tmp;                                            // Autoescola: ATQ final até o fim do turno
+  const intim = 200 * P(1-p).chars.filter(c=>c&&c.id===21).length;               // Zé do Trovão (Intimidador): -200 nos Personagens do oponente
+  if(inst.tmp!=null) return Math.max(0, inst.tmp - intim);                       // Autoescola: ATQ final até o fim do turno
   let a;
   {
     a = inst.def.atk;
     const v = P(p).void;
-    if(inst.id===1) a += 100 * v.filter(c=>c.def.kind==='char').length;          // Goku: +100 por Guerreiro Z no vazio
+    if(inst.id===1) a += 100 * v.filter(c=>c.def.kind==='char'&&isGZ(c)).length; // Goku: +100 por Guerreiro Z no vazio
     if(inst.id===2) a += 600 * v.filter(c=>c.id===3).length;                     // Gohan: +600 por Piccolo no vazio
   }
   a += 400 * inst.equips.length;                                                 // Kaioken: +400 cada (pode ter vários)
   a += inst.boost||0;                                                            // Kaioken aumentado 4x: +1000 até o fim do turno
-  return a;
+  return Math.max(0, a - intim);
 }
 function canAttack(p){ return !(p===G.first && P(p).turns===1); }   // quem começa não ataca no 1º turno
 
@@ -383,6 +399,7 @@ const A = {
     if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
       const tools=chars(1-p).flatMap(x=>x.equips);
       if(tools.length){
+        render(); await activateFx(p,c,true);
         let t=tools[0];
         if(p===0){ render(); const r=await pickTarget(tools,{prompt:'Kienzan: escolha a Ferramenta a destruir.'}); t=r?r.target:null; }
         if(t){ const g=t.equipTo; if(g) g.equips=g.equips.filter(k=>k!==t); t.equipTo=null; P(1-p).void.push(t); log(`Kienzan! ${t.def.name} é destruída.`); }
@@ -392,19 +409,20 @@ const A = {
   async field(p, c){ const pl=P(p); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
-  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} Kaioken em Goku (+400 ATQ).`); },
-  async semente(p, c){ const pl=P(p); const v=500*chars(p).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
+  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
+  async ze(p, ze, cj){ const pl=P(p); ze.used=true; await activateFx(p,ze,true); await toHand(p,cj); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} "Me dá meu cajado" e busca o Cajado do Zé.`); },
+  async semente(p, c){ const pl=P(p); const v=500*chars(p).filter(isGZ).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
   async disparo(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Disparo de Ki destrói ${t.def.name}!`); },
   async caminho(p, c, slot){ const pl=P(p); const g=pl.void.find(x=>x.id===1); toVoid(pl,c); await voidToField(p,g,slot); log(`${p?'Oponente traz':'Você traz'} Goku de volta ao campo!`); },
   async radar(p, c, e){ const pl=P(p); toVoid(pl,c); await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
   async esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
   auto(p, c, g, pc){ const pl=P(p); const v=Math.round((atkOf(p,g)+atkOf(p,pc))/2); toVoid(pl,c); g.tmp=v; pc.tmp=v; log(`Autoescola! Goku e Piccolo ficam com ATQ ${v} até o fim do turno.`); },
   async casa(p, chosen, fld){ const pl=P(p); fld.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
-  yaji(p, c){ const pl=P(p); const ch=chars(p)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
+  yaji(p, c){ const pl=P(p); const ch=chars(p).filter(isGZ)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
   async kaioh(p, c, chosen){ const pl=P(p); c.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
   kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1000; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1000 de ATQ e vai para o vazio na Fase Final.`); },
   async kame(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Kamehameha destrói ${t.def.name}!`); },
-  async picc(p, picc, g){ const pl=P(p); await sendVoid(p,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
+  async picc(p, picc, g){ const pl=P(p); await activateFx(p,picc,true); await sendVoid(p,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
 };
 
 /* ============================================================
@@ -452,11 +470,14 @@ async function afterBattle(w, winner, l, loser, tie, attackerWon){
   render(); await sleep(350);
 }
 async function chaosFx(owner, chaos, killerOwner, killer){
+  const kill = P(killerOwner).chars.includes(killer) && atkOf(killerOwner,killer)<=1000;
+  const pl0=P(owner), tt=pl0.deck.find(x=>x.id===5), willSummon = tt && freeIdx(pl0.chars)>=0;
+  if(kill || willSummon){ render(); const vr=pileRect(owner,'void'); await activateFx(owner, chaos, vr, vr); }
   if(P(killerOwner).chars.includes(killer) && atkOf(killerOwner,killer)<=1000){
     log(`Adeus, Senhor Tenshinhan! ${killer.def.name} é destruído.`); await sendVoid(killerOwner,killer);
   }
   const pl=P(owner), t=pl.deck.find(x=>x.id===5);
-  if(t && freeIdx(pl.chars)>=0){ detach(pl,t); pl.chars[freeIdx(pl.chars)]=t; shuffle(pl.deck); log(`${owner?'Oponente invoca':'Você invoca'} Tenshinhan do baralho!`); }
+  if(t && freeIdx(pl.chars)>=0){ await deckToField(owner,t,freeIdx(pl.chars)); shuffle(pl.deck); log(`${owner?'Oponente invoca':'Você invoca'} Tenshinhan do baralho!`); }
   render(); await sleep(700);
 }
 async function damage(who, n){
@@ -542,6 +563,12 @@ async function voidToField(p, inst, i){          // sai do vazio e vai para o sl
   await slideCard(pileRect(p,'void'), slotRect(p,i), mini(inst), 560, 0, null, true);
   pl.chars[i]=inst; G.settle=inst.uid; render();
 }
+async function deckToField(p, inst, i){          // sai do baralho do dono (virada), desvira no caminho e cai no slot
+  const pl=P(p); if(i==null||pl.chars[i]) i=freeIdx(pl.chars);
+  detach(pl,inst); render();
+  if(!window.__NOFX) await slideCard(pileRect(p,'deck'), slotRect(p,i), mini(inst), 600, 0, backOf(p));
+  pl.chars[i]=inst; G.settle=inst.uid; render();
+}
 async function voidToDeck(p, inst){              // (para efeitos futuros) sai do vazio e volta ao baralho
   const pl=P(p); detach(pl,inst); render();
   await slideCard(pileRect(p,'void'), pileRect(p,'deck'), mini(inst), 520, 0, null, true);
@@ -565,10 +592,10 @@ async function vanish_raw(uid, owner){ const e=document.querySelector(`[data-uid
 }
 async function sendVoid(owner, inst){ if(!inst) return; await vanish(inst.uid, owner); toVoid(P(owner),inst); render(); }
 /* ---------- ativação de efeito (Item, Apoiador, Campo, Ferramenta): a carta cresce, brilha e explode em luz ---------- */
-async function activateFx_raw(p, card){
+async function activateFx_raw(p, card, back, src){
   if(window.__NOFX || !card) return;
   const st=$('#stage');
-  let from=G.fxFrom; G.fxFrom=null; const dropped=!!from;
+  let from=src||G.fxFrom; if(!src) G.fxFrom=null; const dropped=!src&&!!from;
   const e=document.querySelector(`[data-uid="${card.uid}"]`);
   if(!from) from = e ? stageRect(e) : (p===1 ? {x:498,y:150,w:84,h:118} : {x:445,y:1660,w:190,h:266});
   if(e) e.style.visibility='hidden';
@@ -589,11 +616,18 @@ async function activateFx_raw(p, card){
   wrap.style.left=big.x+'px'; wrap.style.top=big.y+'px'; wrap.style.width=big.w+'px'; wrap.style.height=big.h+'px';
   await sleep(380);
   wrap.classList.add('hold'); await sleep(620);           // mostra a carta grande
-  wrap.classList.add('burst');                            // vira luz e se expande
+  if(!back) wrap.classList.add('burst');                 // vira luz e se expande (personagem só dá o clarão)
   for(let i=0;i<22;i++){ const sp=el('div','spark'); const a=Math.random()*Math.PI*2, d=260+Math.random()*260;
     sp.style.left=(big.x+big.w/2)+'px'; sp.style.top=(big.y+big.h/2)+'px';
     sp.style.setProperty('--tx',(Math.cos(a)*d).toFixed(0)+'px'); sp.style.setProperty('--ty',(Math.sin(a)*d).toFixed(0)+'px');
     st.appendChild(sp); setTimeout(()=>sp.remove(),700); }
+  if(back){                                               // personagem: brilha, solta a luz e volta para o lugar
+    wrap.classList.remove('hold'); wrap.classList.add('ret');
+    const to=back.x!=null?back:from;
+    wrap.style.transition='left .34s cubic-bezier(.5,0,.3,1),top .34s cubic-bezier(.5,0,.3,1),width .34s cubic-bezier(.5,0,.3,1),height .34s cubic-bezier(.5,0,.3,1)';
+    wrap.style.left=to.x+'px'; wrap.style.top=to.y+'px'; wrap.style.width=to.w+'px'; wrap.style.height=to.h+'px';
+    await sleep(360); if(e) e.style.visibility=''; wrap.remove(); return;
+  }
   await sleep(480);
   wrap.remove();
 }
@@ -768,22 +802,22 @@ function actionsFor(p, inst, where){
   const slotsP = freeIdx(pl.powers)>=0;
   if(where==='hand'){
     if(d.kind==='char') add('Invocar', freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':null, async()=>{ await A.summon(p,inst); });
-    if(d.kind==='field') add('Ativar no campo', null, async()=>await A.field(p,inst));
+    if(d.kind==='field'){ const cur=P(0).field||P(1).field; add('Ativar no campo', (cur&&cur.id===inst.id)?'Essa carta de Campo já está em jogo.':null, async()=>await A.field(p,inst)); }
     if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>A.support(p,inst));
     if(d.kind==='tool'){
-      const gs=chars(p).filter(c=>c.id===1);
-      const gf=gs.filter(g=>g.equips.length<2);       // no máximo 2 Ferramentas por Personagem
-      add('Equipar', !gs.length?'Precisa de um "Goku - Guerreiros Z" em campo.':(gf.length?null:'Cada Personagem pode ter no máximo 2 Ferramentas.'), async()=>{
+      const who=DEFS[TOOL_FOR[inst.id]], gs=chars(p).filter(c=>c.id===who.id);
+      const gf=gs.filter(g=>canEquip(inst,g));       // no máximo 2 Ferramentas por Personagem
+      add('Equipar', !gs.length?`Precisa de "${who.name}" em campo.`:(gf.length?null:'Cada Personagem pode ter no máximo 2 Ferramentas.'), async()=>{
         let g=gf[0];
-        if(gf.length>1){ const r=await pickTarget(gf,{prompt:'Escolha o Goku que receberá o Kaioken.'}); if(!r) return; g=r.target; }
+        if(gf.length>1){ const r=await pickTarget(gf,{prompt:`Escolha quem receberá ${d.name}.`}); if(!r) return; g=r.target; }
         await A.tool(p,inst,g);
       });
     }
     if(d.kind==='item'){
-      const noChar = chars(p).length===0 ? 'Precisa de um Personagem "Guerreiros Z" em campo.' : null;
+      const noChar = !chars(p).some(isGZ) ? 'Precisa de um Personagem "Guerreiros Z" em campo.' : null;
       if(inst.id===11) add('Usar', noChar, async()=>await A.semente(p,inst));
       if(inst.id===9){
-        const ch=chars(p);
+        const ch=chars(p).filter(isGZ);
         add('Usar', pl.life>500?'Precisa estar com 500 pontos de vida ou menos.':(ch.length!==1?'Precisa ter exatamente 1 Personagem "Guerreiros Z" em campo.':(ch[0].attacked?'Seu Personagem já atacou neste turno.':(canAttack(p)?null:'Você ainda não pode atacar.'))), async()=>await A.yaji(p,inst));
       }
       if(inst.id===19){
@@ -857,8 +891,9 @@ function actionsFor(p, inst, where){
           });
       }
     }
-    if(d.kind==='field') add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(c=>c.def.kind==='char')?null:'Não há Personagens no baralho.'), async()=>{
-      const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(c=>c.def.kind==='char')); if(!r) return;
+    if(inst.id===21) add('Efeito: Me dá meu cajado', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===22)?null:'Não há "Cajado do Zé" no baralho.'), async()=>await A.ze(p,inst,pl.deck.find(x=>x.id===22)));
+    if(d.kind==='field') add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(isGZ)?null:'Não há cartas "Guerreiros Z" no baralho.'), async()=>{
+      const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(isGZ)); if(!r) return;
       await A.casa(p,r,inst);
     });
     if(inst.id===10) add('Efeito: buscar Radar do dragão', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===13)?null:'Não há "Radar do dragão" no baralho.'), async()=>await A.bulma(p,inst));
@@ -901,8 +936,8 @@ function searchList(title, entries){        // lista vertical estilo Yu-Gi-Oh, a
       const th=el('div','sth'); th.style.backgroundImage=`url("${d.mini}")`; r.appendChild(th);
       const info=el('div','sinfo');
       info.appendChild(el('div','sname',d.name));
-      let sub=KIND[d.kind];
-      if(d.kind==='char') sub+=` · Tipo ${ELEM[d.el].n} · ATQ ${d.atk}`;
+      let sub=kindIco(d.kind)+KIND[d.kind];
+      if(d.kind==='char') sub+=` · ${elIco(d.el)}${ELEM[d.el].n} · ATQ ${d.atk}`;
       if(g.label) sub+=` · ${g.label}`;
       info.appendChild(el('div','ssub',sub));
       r.appendChild(info);
@@ -945,8 +980,8 @@ function cardModal(inst, p, where){
   const box=el('div','mbox');
   const big=el('div','bigcard'); bigArt(big,inst.def); box.appendChild(big);
   const info = inst.def.kind==='char'
-    ? `Tipo: ${ELEM[inst.def.el].n} · Arquétipo: ${inst.def.arq.join(' / ')}<br><b style="color:#fff">ATQ atual: ${atkOf(p,inst)}</b>`
-    : KIND[inst.def.kind];
+    ? `Tipo: ${elIco(inst.def.el)}${ELEM[inst.def.el].n} · Arquétipo: ${inst.def.arq.join(' / ')}<br><b style="color:#fff">ATQ atual: ${atkOf(p,inst)}</b>`
+    : kindIco(inst.def.kind)+KIND[inst.def.kind];
   box.appendChild(el('div','',`<div style="font-size:34px;color:#bbb;line-height:1.4">${info}</div>`));
   const acts=el('div','acts');
   if(canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || inst.def.kind==='field')))){
@@ -987,7 +1022,7 @@ function rulesModal(){
   <li>Arraste as cartas da mão até o slot onde quer colocá-las.</li></ul>
   <h3>Combate</h3><ul><li>ATQ maior destrói o menor e a diferença é tirada da vida de quem perdeu. Empate: nenhum é destruído (exceto se o atacante tem vantagem de Tipo: o defensor vai ao vazio).</li>
   <li>Só dá para atacar direto se o oponente não tiver Personagens, ou por efeito (Piccolo, Yajirobe).</li></ul>
-  <h3>Tipos</h3><ul><li>Cada Personagem tem um Tipo (Terra, Planta, Água...). A vantagem de Tipo só decide empates.</li><li>Os Arquétipos (Guerreiro, Espacial...) aparecem no zoom da carta.</li></ul>
+  <h3>Tipos</h3><ul><li>Cada Personagem tem um Tipo (Terra, Planta, Água...). A vantagem de Tipo só decide empates.</li><li>Os Arquétipos (Lutador, Espacial...) aparecem no zoom da carta.</li></ul>
   <h3>Baralho</h3><ul><li>${DECK_MIN} a ${DECK_MAX} cartas, no máximo ${COPY_MAX} cópias de cada.</li></ul>`));
   box.appendChild(btn('Fechar','sec',()=>{ if(!G && history.state && history.state.s==='rules') history.back(); else closeModal(); })); showModal(box);
 }
@@ -1149,8 +1184,8 @@ function dropTargets(inst){                     // onde essa carta pode ser solt
   const pl=P(0), k=inst.def.kind, out=[];
   if(k==='char') pl.chars.forEach((c,i)=>{ if(!c) out.push('c'+i); });
   else if(k==='support') pl.powers.forEach((c,i)=>{ if(!c) out.push('w'+i); });
-  else if(k==='tool') pl.chars.forEach((c,i)=>{ if(c && c.id===1 && c.equips.length<2) out.push('c'+i); });
-  else if(k==='field') out.push('f');
+  else if(k==='tool') pl.chars.forEach((c,i)=>{ if(canEquip(inst,c)) out.push('c'+i); });
+  else if(k==='field'){ const cur=P(0).field||P(1).field; if(!(cur&&cur.id===inst.id)) out.push('f'); }
   return out;   // item: qualquer lugar do campo
 }
 function zoneUnder(cx,cy){ let z=null; document.querySelectorAll('#board .zone.drop').forEach(e=>{ const r=e.getBoundingClientRect(); if(cx>=r.left-20&&cx<=r.right+20&&cy>=r.top-20&&cy<=r.bottom+20) z=e; }); return z; }
@@ -1217,7 +1252,7 @@ async function dropPlay(inst, slot, y, okItem){
   if(k==='char')    { G.settle=inst.uid; await runAction({run:()=>A.summon(0,inst,i)}); }
   if(k==='support') { G.settle=inst.uid; await runAction({run:async()=>A.support(0,inst,i)}); }
   if(k==='field')   { G.settle=inst.uid; await runAction({run:async()=>await A.field(0,inst)}); }
-  if(k==='tool')    { const g=P(0).chars[i]; if(!g || g.equips.length>=2){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>await A.tool(0,inst,g)}); }
+  if(k==='tool')    { const g=P(0).chars[i]; if(!canEquip(inst,g)){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({run:async()=>await A.tool(0,inst,g)}); }
 }
 
 /* ============================================================
@@ -1331,7 +1366,7 @@ async function botTurn(){
   if(c && !P(0).field && !pl.field){ await A.field(p,c); if(!await pause(800)) return; }
   const fld=P(0).field||P(1).field;
   if(fld && fld.id===8 && !fld.used){
-    const opts=pl.deck.filter(x=>x.def.kind==='char').sort((a,b)=>projAtk(b)-projAtk(a));
+    const opts=pl.deck.filter(isGZ).sort((a,b)=>projAtk(b)-projAtk(a));
     if(opts.length){ await A.casa(p,opts[0],fld); if(!await pause(800)) return; }
   }
   // 2) Bulma -> Radar -> Esferas
@@ -1372,6 +1407,12 @@ async function botTurn(){
   // 7) Disparo de Ki
   c=hand(12);
   if(c && chars(p).length && supports(q).length){ await A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
+  // 8) Zé do Trovão: busca e equipa o Cajado
+  const zz=chars(p).find(x=>x.id===21&&!x.used);
+  if(zz && !hand(22) && pl.deck.some(x=>x.id===22)){ await A.ze(p,zz,pl.deck.find(x=>x.id===22)); if(!await pause(800)) return; }
+  c=hand(22);
+  const zt=chars(p).filter(x=>canEquip({id:22},x)).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
+  if(c && zt){ await A.tool(p,c,zt); if(!await pause(900)) return; }
   // 9) Kaioken
   c=hand(17);
   const goku=chars(p).filter(x=>x.id===1&&x.equips.length<2).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
@@ -1464,6 +1505,7 @@ try{ history.replaceState({s:'home'},''); }catch(e){}
 function titleScreen(){
   closeModal();
   const s=el('div','scr home');
+  s.appendChild(el('div','spin')); const ui=el('img','ui'); ui.src='Menus/Menu - Tela inicial - Interface.png'; ui.alt=''; s.appendChild(ui);
   const ids=shuffle(Object.keys(DEFS).map(Number)).slice(0,3);         // três cartas aleatórias, mesmas posições
   const fan=el('div','fan');
   [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
