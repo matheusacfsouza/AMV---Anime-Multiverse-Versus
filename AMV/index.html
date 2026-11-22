@@ -200,6 +200,9 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .form h2{margin:0;font-size:60px}
 .form input{width:820px;box-sizing:border-box;font:inherit;font-size:40px;padding:22px 28px;border-radius:20px;border:3px solid #4a4a4a;background:#111;color:#fff;outline:none}
 .form input:focus{border-color:#7fd6f5}
+.pwrap{position:relative;width:820px}
+.pwrap input{padding-right:110px!important}
+.pwrap .eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:46px;cursor:pointer;padding:6px 12px}
 .form .tabs{display:flex;gap:16px}
 .form .tabs .btn{font-size:36px}
 .form .err{color:#ff8a7a;font-size:32px;min-height:40px;text-align:center}
@@ -395,7 +398,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-170446';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-173650';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -1753,15 +1756,24 @@ const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Ema
   [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
   [/rate limit|too many/i,'Muitas tentativas. Espere um pouco e tente de novo.'],[/Failed to fetch|NetworkError/i,'Sem conexão com o servidor. Verifique sua internet.']];
 const errPt=e=>{ const m=(e&&(e.message||e.error_description))||String(e); const f=ERR_PT.find(([r])=>r.test(m)); return f?f[1]:'Algo deu errado: '+m; };
+const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
 async function loadProfile(){
   ACC.profile=null; if(!SB||!ACC.user) return;
-  const {data,error}=await SB.from('profiles').select('nickname,avatar').eq('id',ACC.user.id).maybeSingle();
-  if(error){ console.warn(error); return; }
-  if(!data){ await SB.from('profiles').insert({id:ACC.user.id}); ACC.profile={nickname:null,avatar:null}; } else ACC.profile=data;
+  try{
+    let data=null;
+    for(let i=0;i<4 && !data;i++){ if(i) await sleep(500); data=await fetchProfile(); }   // logo após o link do e-mail a sessão pode demorar um instante
+    if(!data){ await SB.from('profiles').upsert({id:ACC.user.id},{onConflict:'id',ignoreDuplicates:true}); data=await fetchProfile(); }
+    ACC.profile=data||{nickname:null,avatar:null};
+  }catch(e){ console.warn(e); }
 }
-async function accRefresh(){
-  await loadProfile(); accChip();
-  if(ACC.user && ACC.profile && !ACC.profile.nickname && !G) profileEdit(true);     // conta nova (ex.: Google) sem apelido
+let accBusy=null;
+function accRefresh(){
+  if(accBusy) return accBusy;
+  accBusy=(async()=>{ try{
+    await loadProfile(); accChip();
+    if(ACC.user && ACC.profile && !ACC.profile.nickname && !G && !$('#modal').classList.contains('on')) profileEdit(true);   // conta nova (ex.: Google) sem apelido
+  } finally { accBusy=null; } })();
+  return accBusy;
 }
 function accChip(){
   const home=document.querySelector('.scr.home'); if(!home) return;
@@ -1782,7 +1794,12 @@ function authModal(mode){
   tabs.appendChild(btn('Entrar',mode==='login'?'':'sec',()=>authModal('login')));
   tabs.appendChild(btn('Criar conta',mode==='signup'?'':'sec',()=>authModal('signup')));
   f.appendChild(tabs);
-  const inp=(ph,type)=>{ const i=document.createElement('input'); i.placeholder=ph; i.type=type||'text'; i.autocomplete=type==='password'?(mode==='signup'?'new-password':'current-password'):(type==='email'?'email':'off'); f.appendChild(i); return i; };
+  const inp=(ph,type)=>{ const i=document.createElement('input'); i.placeholder=ph; i.type=type||'text'; i.autocomplete=type==='password'?(mode==='signup'?'new-password':'current-password'):(type==='email'?'email':'off');
+    if(type!=='password'){ f.appendChild(i); return i; }
+    const w=el('div','pwrap'); w.appendChild(i);                       // olhinho: mostra/esconde a senha
+    const eye=el('button','eye','👁️'); eye.type='button'; eye.setAttribute('aria-label','Mostrar senha');
+    eye.onclick=()=>{ const show=i.type==='password'; i.type=show?'text':'password'; eye.textContent=show?'🙈':'👁️'; eye.setAttribute('aria-label',show?'Esconder senha':'Mostrar senha'); i.focus(); };
+    w.appendChild(eye); f.appendChild(w); return i; };
   let nick=null, av=AVATARS[0];
   if(mode==='signup'){
     f.appendChild(el('div','lbl','Escolha seu avatar'));
@@ -1839,7 +1856,9 @@ function profileEdit(first){
     if(!NICK_RE.test(n)){ err.textContent='O apelido precisa ter de 3 a 16 letras, números ou _ (sem espaços).'; return; }
     sv.disabled=true;
     try{
-      if(!ACC.profile || (ACC.profile.nickname||'').toLowerCase()!==n.toLowerCase()){
+      let mine=null; try{ mine=await fetchProfile(); }catch(e){}
+      if(mine && mine.nickname && mine.nickname.toLowerCase()===n.toLowerCase()){ /* é o seu próprio apelido */ }
+      else if(!ACC.profile || (ACC.profile.nickname||'').toLowerCase()!==n.toLowerCase()){
         const {data:livre,error:e1}=await SB.rpc('nickname_available',{n}); if(e1) throw e1;
         if(!livre){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; }
       }
@@ -1847,7 +1866,10 @@ function profileEdit(first){
       ACC.profile={nickname:n, avatar:av}; closeModal(); accChip(); toast('Perfil salvo!');
     }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
   });
-  f.appendChild(sv); if(!first) f.appendChild(btn('Cancelar','sec',closeModal));
+  f.appendChild(sv);
+  const row=el('div','row'); row.appendChild(btn(first?'Agora não':'Cancelar','sec',closeModal));
+  if(first) row.appendChild(btn('Sair da conta','sec',async()=>{ await SB.auth.signOut(); closeModal(); }));
+  f.appendChild(row);
   showModal(box);
 }
 if(SB){
