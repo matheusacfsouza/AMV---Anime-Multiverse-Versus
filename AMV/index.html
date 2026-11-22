@@ -27,6 +27,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 @keyframes ban{0%{opacity:0;transform:scaleY(.2)}20%{opacity:1;transform:scaleY(1)}85%{opacity:1}100%{opacity:0}}
 #toast{position:absolute;left:50%;bottom:340px;transform:translateX(-50%);z-index:30;background:#000c;border:3px solid #fff;border-radius:16px;padding:16px 30px;font-size:38px;display:none}
 #toast.on{display:block}
+#upd{position:absolute;left:50%;top:24px;transform:translateX(-50%);z-index:2000;background:linear-gradient(90deg,#86cdf7,#6fe3f0);color:#06202c;font-weight:800;font-size:38px;padding:22px 40px;border-radius:50px;box-shadow:0 8px 30px #0009;cursor:pointer;display:none;text-align:center;max-width:980px}
+#upd.on{display:block;animation:updIn .4s ease-out}
+#upd small{display:block;font-size:28px;font-weight:600}
+@keyframes updIn{from{transform:translate(-50%,-160px)}to{transform:translate(-50%,0)}}
 
 /* zones */
 .zone{position:absolute;border:8px solid #fff;background:#000;color:var(--red);font-weight:800;text-align:center;
@@ -187,6 +191,26 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tile .ctl .btn{width:76px;height:64px;padding:0;font-size:44px;border-radius:14px}
 
 /* modal bits */
+.acc{position:absolute;left:30px;top:30px;z-index:6;display:flex;align-items:center;gap:18px;background:#000b;border:3px solid #fff;border-radius:60px;padding:10px 34px 10px 10px;cursor:pointer;max-width:720px}
+.acc b{font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc small{display:block;font-size:26px;color:#ffd84d;font-weight:600}
+.av{width:86px;height:86px;border-radius:50%;border:4px solid #fff;flex:none;background:#333 center/cover}
+.av.big{width:220px;height:220px;border-width:6px}
+.form{display:flex;flex-direction:column;gap:20px;align-items:center;width:940px;box-sizing:border-box;padding:44px 40px;background:#0d0f14f5;border:2px solid #343a46;border-radius:44px;box-shadow:0 20px 60px #000}
+.form h2{margin:0;font-size:60px}
+.form input{width:820px;box-sizing:border-box;font:inherit;font-size:40px;padding:22px 28px;border-radius:20px;border:3px solid #4a4a4a;background:#111;color:#fff;outline:none}
+.form input:focus{border-color:#7fd6f5}
+.form .tabs{display:flex;gap:16px}
+.form .tabs .btn{font-size:36px}
+.form .err{color:#ff8a7a;font-size:32px;min-height:40px;text-align:center}
+.form .ok{color:#2ee66b;font-size:34px;text-align:center}
+.form .lbl{align-self:flex-start;margin-left:30px;font-size:32px;color:#bbb}
+.avgrid{display:grid;grid-template-columns:repeat(4,170px);gap:22px}
+.avgrid .av{width:170px;height:170px;cursor:pointer;border-color:#555}
+.avgrid .av.sel{border-color:#ffd84d;box-shadow:0 0 24px #ffd84d}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:18px;width:820px;background:#fff;color:#222;border-radius:20px;font-size:38px;font-weight:700;padding:20px;cursor:pointer;border:0;font-family:inherit}
+.gbtn svg{width:46px;height:46px}
+.form .link{font-size:34px;color:#7fd6f5;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
 .mbox{display:flex;flex-direction:column;align-items:center;gap:16px;max-width:1000px}
 .mbox .bigcard{width:760px;height:1064px;border-radius:16px;background-size:100% 100%;box-shadow:0 0 50px #000}
 .acts{display:flex;flex-direction:column;gap:12px;width:760px}
@@ -212,22 +236,22 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .dtool .btn b{color:#7fd6f5}
 .tile{position:relative}
 .tile .fav{position:absolute;right:8px;top:48px;font-size:40px;filter:drop-shadow(0 2px 4px #000)}
-.sheetov{position:absolute;inset:0;background:#000a;z-index:900}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-height:1500px;background:#eef3f8;color:#2b3440;border-radius:56px 56px 0 0;box-shadow:0 -10px 40px #0008;display:flex;flex-direction:column;padding:26px 46px 30px}
-.sheet .grab{width:120px;height:10px;border-radius:6px;background:#c5d1de;margin:0 auto 22px}
-.sheet .search{display:flex;align-items:center;gap:14px;background:#e1e9f2;border-radius:50px;padding:16px 30px;box-shadow:inset 0 3px 8px #b9c6d4}
-.sheet .search input{flex:1;border:0;background:transparent;font:inherit;font-size:40px;color:#2b3440;outline:none}
+.sheetov{position:absolute;inset:0;background:#000b;z-index:900}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:1500px;background:#15181f;color:#eef2f7;border-radius:56px 56px 0 0;box-shadow:0 -10px 40px #000c;border-top:2px solid #2c3442;display:flex;flex-direction:column;padding:26px 46px 30px}
+.sheet .grab{width:120px;height:10px;border-radius:6px;background:#3a4352;margin:0 auto 22px}
+.sheet .search{display:flex;align-items:center;gap:14px;background:#0b0d12;border-radius:50px;padding:16px 30px;box-shadow:inset 0 3px 8px #000}
+.sheet .search input{flex:1;border:0;background:transparent;font:inherit;font-size:40px;color:#eef2f7;outline:none}
 .sheet .body{overflow-y:auto;flex:1;min-height:0;margin-top:18px;padding-bottom:20px;-webkit-overflow-scrolling:touch}
 .sheet h4{font-size:46px;font-weight:700;margin:34px 6px 14px;display:flex;justify-content:space-between;align-items:center}
-.sheet .box{background:#f4f8fb;border-radius:36px;padding:22px;box-shadow:0 4px 14px #c9d5e2;display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.pill{background:#fff;border-radius:44px;padding:18px 10px;font-size:34px;text-align:center;box-shadow:0 4px 10px #c3cfdc;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;color:#4a5562}
-.pill.on{background:linear-gradient(90deg,#86cdf7,#6fe3f0);color:#fff;box-shadow:0 4px 14px #7fd6f5aa}
+.sheet .box{background:#1d2129;border-radius:36px;padding:22px;box-shadow:0 4px 14px #000a;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pill{background:#2a303b;border-radius:44px;padding:18px 10px;font-size:34px;text-align:center;box-shadow:0 4px 10px #0008;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;color:#cfd6e0}
+.pill.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff;box-shadow:0 4px 14px #2bc2d466}
 .pill img{width:40px;height:40px}
 .pill.all{padding:12px 30px;font-size:30px}
 .sheet .foot{display:flex;align-items:center;justify-content:center;gap:30px;margin-top:14px}
-.sheet .ok{background:linear-gradient(90deg,#86cdf7,#6fe3f0);color:#fff;font-size:46px;font-weight:700;border-radius:60px;padding:22px 140px;box-shadow:0 6px 20px #7fd6f5aa;cursor:pointer}
-.sheet .x{width:110px;height:110px;border-radius:50%;background:#fff;box-shadow:0 4px 12px #c3cfdc;font-size:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.sheet .clr{background:#fff;border-radius:50px;padding:20px 50px;font-size:36px;box-shadow:0 4px 12px #c3cfdc;cursor:pointer}
+.sheet .ok{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff;font-size:46px;font-weight:700;border-radius:60px;padding:22px 140px;box-shadow:0 6px 20px #7fd6f5aa;cursor:pointer}
+.sheet .x{width:110px;height:110px;border-radius:50%;background:#2a303b;color:#eef2f7;box-shadow:0 4px 12px #0008;font-size:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sheet .clr{background:#2a303b;color:#eef2f7;border-radius:50px;padding:20px 50px;font-size:36px;box-shadow:0 4px 12px #0008;cursor:pointer}
 .tile .stars{font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:4px;margin:4px 0}
 .tile .stars img{width:34px;height:34px}
 .tico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.22em}
@@ -268,13 +292,14 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   <div id="toast"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
 'use strict';
 /* ============================================================
    CONFIGURAÇÃO (fácil de mexer quando suas regras chegarem)
    ============================================================ */
-const MAX_LIFE = 5000;     // vida inicial e máxima
+const MAX_LIFE = 10000;     // vida inicial e máxima
 const DECK_MIN = 20, DECK_MAX = 30, COPY_MAX = 3;
 const HAND_START = 5;      // cartas iniciais
 const DEFAULT_DECK = {31:3,32:3,33:2,34:2,35:1,36:3,21:2,23:1,22:2,24:1,25:1,26:2,27:2,28:1,29:1,30:3};  // 30 cartas
@@ -370,7 +395,10 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-for(const k in DEFS){ const d=DEFS[k]; d.mini=d.img; preload(d.img); }
+const APP_VER='20261122-170446';                                        // muda a cada versão publicada (igual ao version.json)
+const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
+for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
+SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
 const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
 const mini=inst=>(inst.def||inst).mini;
 function setScenario(on){
@@ -378,7 +406,7 @@ function setScenario(on){
   if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; return; }
   st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen');
 }
-const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}];
+const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(b.img)}));
 BACKS.forEach(b=>preload(b.img));
 function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return BACKS[i]?i:0; }catch(e){ return 0; } }
 function backOf(p){ return BACKS[p===0?myBack():0].img; }    // o oponente usa o verso padrão
@@ -1710,10 +1738,129 @@ addEventListener('popstate', ()=>{
 });
 try{ history.replaceState({s:'home'},''); }catch(e){}
 
+/* ============================================================
+   CONTA (Supabase): login, cadastro, convidado e perfil
+   ============================================================ */
+const SB_URL='https://vpssdkjqiomapcbakbqx.supabase.co', SB_KEY='sb_publishable_z-BXQuoueBAh9BItvRh-VQ_DRzSCyw0';
+let SB=null; try{ if(window.supabase && location.protocol!=='file:') SB=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){ SB=null; }
+const ACC={user:null, profile:null, ready:false};
+const AVATARS=[31,32,36,33,34,35,21,23];                          // Personagens que podem ser avatar
+const NICK_RE=/^[A-Za-z0-9_À-ÿ]{3,16}$/;
+const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
+function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize='230%'; a.style.backgroundPosition='50% 22%'; } return a; }
+const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
+  [/already registered|already been registered/i,'Já existe uma conta com esse e-mail.'],[/Password should be at least/i,'A senha precisa ter pelo menos 6 caracteres.'],
+  [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
+  [/rate limit|too many/i,'Muitas tentativas. Espere um pouco e tente de novo.'],[/Failed to fetch|NetworkError/i,'Sem conexão com o servidor. Verifique sua internet.']];
+const errPt=e=>{ const m=(e&&(e.message||e.error_description))||String(e); const f=ERR_PT.find(([r])=>r.test(m)); return f?f[1]:'Algo deu errado: '+m; };
+async function loadProfile(){
+  ACC.profile=null; if(!SB||!ACC.user) return;
+  const {data,error}=await SB.from('profiles').select('nickname,avatar').eq('id',ACC.user.id).maybeSingle();
+  if(error){ console.warn(error); return; }
+  if(!data){ await SB.from('profiles').insert({id:ACC.user.id}); ACC.profile={nickname:null,avatar:null}; } else ACC.profile=data;
+}
+async function accRefresh(){
+  await loadProfile(); accChip();
+  if(ACC.user && ACC.profile && !ACC.profile.nickname && !G) profileEdit(true);     // conta nova (ex.: Google) sem apelido
+}
+function accChip(){
+  const home=document.querySelector('.scr.home'); if(!home) return;
+  let c=home.querySelector('.acc'); if(c) c.remove();
+  c=el('div','acc');
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ c.appendChild(avatarEl(ACC.profile.avatar)); c.appendChild(el('b','',ACC.profile.nickname)); c.onclick=profileModal; }
+  else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
+    c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
+  home.appendChild(c);
+}
+function authModal(mode){
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
+  if(!SB){ f.appendChild(el('h2','','Conta'));
+    f.appendChild(el('div','err',location.protocol==='file:'?'O login só funciona no site (amv.cofesoapp.com.br).':'Não foi possível conectar ao servidor agora.'));
+    f.appendChild(btn('Jogar como convidado','',()=>{ try{localStorage.setItem('amv_guest','1');}catch(e){} closeModal(); accChip(); }));
+    showModal(box); return; }
+  const tabs=el('div','tabs');
+  tabs.appendChild(btn('Entrar',mode==='login'?'':'sec',()=>authModal('login')));
+  tabs.appendChild(btn('Criar conta',mode==='signup'?'':'sec',()=>authModal('signup')));
+  f.appendChild(tabs);
+  const inp=(ph,type)=>{ const i=document.createElement('input'); i.placeholder=ph; i.type=type||'text'; i.autocomplete=type==='password'?(mode==='signup'?'new-password':'current-password'):(type==='email'?'email':'off'); f.appendChild(i); return i; };
+  let nick=null, av=AVATARS[0];
+  if(mode==='signup'){
+    f.appendChild(el('div','lbl','Escolha seu avatar'));
+    const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
+    nick=inp('Apelido (3 a 16 letras ou números)');
+  }
+  const em=inp('E-mail','email'), pw=inp('Senha (mínimo 6 caracteres)','password');
+  const err=el('div','err'); f.appendChild(err);
+  const go=btn(mode==='login'?'Entrar':'Criar conta','',async()=>{
+    err.textContent=''; go.disabled=true;
+    try{
+      if(mode==='login'){
+        const {error}=await SB.auth.signInWithPassword({email:em.value.trim(), password:pw.value});
+        if(error) throw error; closeModal(); toast('Bem-vindo de volta!');
+      } else {
+        const n=nick.value.trim();
+        if(!NICK_RE.test(n)) throw new Error('nick');
+        const {data:livre,error:e1}=await SB.rpc('nickname_available',{n}); if(e1) throw e1;
+        if(!livre){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; }
+        const {data,error}=await SB.auth.signUp({email:em.value.trim(), password:pw.value, options:{data:{nickname:n, avatar:av}, emailRedirectTo:location.origin+location.pathname}});
+        if(error) throw error;
+        if(data.session){ closeModal(); toast('Conta criada!'); }
+        else { f.replaceChildren(el('h2','','Confirme seu e-mail'), el('div','ok',`Enviamos um link de confirmação para<br><b>${em.value.trim()}</b>.<br><br>Abra o link e depois entre com seu e-mail e senha.`), btn('Ok','',()=>authModal('login'))); }
+      }
+    }catch(e){ err.textContent = e.message==='nick' ? 'O apelido precisa ter de 3 a 16 letras, números ou _ (sem espaços).' : errPt(e); }
+    finally{ go.disabled=false; }
+  });
+  f.appendChild(go);
+  const g=el('button','gbtn','<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar com Google');
+  g.onclick=async()=>{ err.textContent=''; const {error}=await SB.auth.signInWithOAuth({provider:'google', options:{redirectTo:location.origin+location.pathname}}); if(error) err.textContent=errPt(error); };
+  f.appendChild(g);
+  f.appendChild(el('button','link','Jogar como convidado')).onclick=()=>{ try{localStorage.setItem('amv_guest','1');}catch(e){} closeModal(); accChip(); toast('Jogando como convidado: seu progresso não será salvo.'); };
+  showModal(box);
+}
+function profileModal(){
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
+  f.appendChild(avatarEl(ACC.profile.avatar,'big')); f.appendChild(el('h2','',ACC.profile.nickname));
+  f.appendChild(el('div','lbl',ACC.user.email||''));
+  const row=el('div','row');
+  row.appendChild(btn('Editar perfil','',()=>profileEdit(false)));
+  row.appendChild(btn('Sair da conta','sec',async()=>{ await SB.auth.signOut(); closeModal(); toast('Você saiu da conta.'); }));
+  f.appendChild(row); f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+}
+function profileEdit(first){
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
+  f.appendChild(el('h2','',first?'Complete seu perfil':'Editar perfil'));
+  let av=(ACC.profile&&ACC.profile.avatar)||AVATARS[0];
+  f.appendChild(el('div','lbl','Escolha seu avatar'));
+  const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
+  const nk=document.createElement('input'); nk.placeholder='Apelido (3 a 16 letras ou números)'; nk.value=(ACC.profile&&ACC.profile.nickname)||''; f.appendChild(nk);
+  const err=el('div','err'); f.appendChild(err);
+  const sv=btn('Salvar','',async()=>{
+    err.textContent=''; const n=nk.value.trim();
+    if(!NICK_RE.test(n)){ err.textContent='O apelido precisa ter de 3 a 16 letras, números ou _ (sem espaços).'; return; }
+    sv.disabled=true;
+    try{
+      if(!ACC.profile || (ACC.profile.nickname||'').toLowerCase()!==n.toLowerCase()){
+        const {data:livre,error:e1}=await SB.rpc('nickname_available',{n}); if(e1) throw e1;
+        if(!livre){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; }
+      }
+      const {error}=await SB.from('profiles').update({nickname:n, avatar:av}).eq('id',ACC.user.id); if(error) throw error;
+      ACC.profile={nickname:n, avatar:av}; closeModal(); accChip(); toast('Perfil salvo!');
+    }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
+  });
+  f.appendChild(sv); if(!first) f.appendChild(btn('Cancelar','sec',closeModal));
+  showModal(box);
+}
+if(SB){
+  SB.auth.onAuthStateChange((ev, session)=>{ ACC.user=session?session.user:null; setTimeout(accRefresh,0); });
+  SB.auth.getSession().then(({data})=>{ ACC.user=data.session?data.session.user:null; ACC.ready=true;
+    accRefresh().then(()=>{ if(!ACC.user && !isGuest() && document.querySelector('.scr.home') && !$('#modal').classList.contains('on')) authModal('login'); });
+  }).catch(()=>{ ACC.ready=true; });
+}
+
 function titleScreen(){
   closeModal();
   const s=el('div','scr home');
-  s.appendChild(el('div','spin')); const ui=el('img','ui'); ui.src='Menus/Menu - Tela inicial - Interface.png'; ui.alt=''; s.appendChild(ui);
+  s.appendChild(el('div','spin')); const ui=el('img','ui'); ui.src=vq('Menus/Menu - Tela inicial - Interface.png'); ui.alt=''; s.appendChild(ui);
   const ids=shuffle(Object.keys(DEFS).map(Number)).slice(0,3);         // três cartas aleatórias, mesmas posições
   const fan=el('div','fan');
   [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
@@ -1725,7 +1872,7 @@ function titleScreen(){
   const link=(x,url,lab)=>{ const a=el('a','hot'); a.href=url; a.target='_blank'; a.rel='noopener'; a.setAttribute('aria-label',lab); a.style.cssText=`left:${x}px;top:1655px;width:100px;height:104px`; s.appendChild(a); };
   link(432,'https://www.instagram.com/cofesoapp','Instagram');
   link(558,'https://www.tiktok.com/@cofesoapp','TikTok');
-  setScreen(s);
+  setScreen(s); accChip();
 }
 
 function deckScreen(){
@@ -1786,17 +1933,20 @@ const favs=()=>{ try{ const f=JSON.parse(localStorage.getItem('amv_favs')||'[]')
 const DV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'padrao'};
 const SORTS=[{k:'padrao',n:'Padrão'},{k:'nome',n:'Nome (A-Z)'},{k:'rar_d',n:'Raridade ↓'},{k:'rar_a',n:'Raridade ↑'},{k:'atk_d',n:'ATQ alto → baixo'},{k:'atk_a',n:'ATQ baixo → alto'}];
 const CATS=[['char','Personagem'],['poder','Poder'],['field','Campo'],['support','Apoiador'],['tool','Ferramenta'],['item','Item']];
-const filterCount=v=>(v.q?1:0)+(v.fav?1:0)+v.stars.size+v.cat.size+v.el.size+v.arq.size;
+const ALLARQ=()=>[...new Set(Object.values(DEFS).flatMap(d=>d.arq||[]))];
+const UNI={stars:()=>[1,2,3,4,5], cat:()=>CATS.map(c=>c[0]), el:()=>Object.keys(ELEM), arq:ALLARQ};
+const act=(v,k)=> v[k].size>0 && !UNI[k]().every(x=>v[k].has(x));   // "Tudo" marcado = sem restrição
+const filterCount=v=>(v.q?1:0)+(v.fav?1:0)+['stars','cat','el','arq'].reduce((t,k)=>t+(act(v,k)?v[k].size:0),0);
 function deckView(v){
   const q=v.q.trim().toLowerCase(), F=favs(), st=d=>STARS[d.id]||1, nm=(a,b)=>a.name.localeCompare(b.name,'pt');
   let L=Object.values(DEFS).filter(d=>{
     if(q && !d.name.toLowerCase().includes(q)) return false;
     if(v.fav==='fav' && !F.includes(d.id)) return false;
     if(v.fav==='nfav' && F.includes(d.id)) return false;
-    if(v.stars.size && !v.stars.has(st(d))) return false;
-    if(v.cat.size && !(v.cat.has(d.kind) || (d.kind!=='char' && v.cat.has('poder')))) return false;
-    if(v.el.size && !v.el.has(d.el)) return false;
-    if(v.arq.size && !(d.arq||[]).some(a=>v.arq.has(a))) return false;
+    if(act(v,'stars') && !v.stars.has(st(d))) return false;
+    if(act(v,'cat') && !(v.cat.has(d.kind) || (d.kind!=='char' && v.cat.has('poder')))) return false;
+    if(act(v,'el') && !v.el.has(d.el)) return false;
+    if(act(v,'arq') && !(d.arq||[]).some(a=>v.arq.has(a))) return false;
     return true;
   });
   const atk=d=>d.kind==='char'?d.atk:-1;
@@ -1818,7 +1968,10 @@ function filterSheet(v, done){
     const pills=items.map(([k,label])=>{ const pl=el('div','pill',label); const on=()=>single?w.fav===k:set.has(k);
       pl.classList.toggle('on',on()); pl.onclick=()=>{ if(single) w.fav=(w.fav===k?null:k); else (set.has(k)?set.delete(k):set.add(k)); pills.forEach(x=>x.sync()); };
       pl.sync=()=>pl.classList.toggle('on',on()); bx.appendChild(pl); return pl; });
-    if(!single){ const all=el('div','pill all','Tudo'); all.onclick=()=>{ set.clear(); pills.forEach(x=>x.sync()); }; h.appendChild(all); }
+    if(!single){ const all=el('div','pill all','Tudo'); const keys=items.map(i=>i[0]);
+      const syncAll=()=>all.classList.toggle('on', keys.every(k=>set.has(k)));
+      all.onclick=()=>{ if(keys.every(k=>set.has(k))) set.clear(); else keys.forEach(k=>set.add(k)); pills.forEach(x=>x.sync()); syncAll(); };
+      pills.forEach(x=>{ const o=x.sync; x.sync=()=>{ o(); syncAll(); }; }); syncAll(); h.appendChild(all); }
   };
   sec('Favoritas',[['fav','Favoritas'],['nfav','Não favoritas']],null,true);
   sec('Raridade',[1,2,3,4,5].map(n=>[n,`<img src="Icones/16.png" alt="">×${n}`]),w.stars);
@@ -1870,6 +2023,21 @@ function rps(msg){
 }
 
 titleScreen();
+/* ---- aviso de nova versão: confere o version.json do servidor de tempos em tempos ---- */
+(function(){
+  const box=document.createElement('div'); box.id='upd'; $('#stage').appendChild(box);
+  let found=null;
+  const show=v=>{ found=v; box.innerHTML='Nova versão disponível — toque para atualizar'+(G&&!G.over?'<small>A partida atual será encerrada.</small>':''); box.classList.add('on'); };
+  box.onclick=()=>{ if(found) location.replace(location.pathname+'?v='+encodeURIComponent(found)); };
+  async function check(){
+    if(location.protocol==='file:' || APP_VER.startsWith('__')) return;   // aberto direto do computador: sem servidor para conferir
+    try{ const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return; const j=await r.json();
+      if(j && j.v && j.v!==APP_VER) show(j.v); }catch(e){}
+  }
+  setTimeout(check,5000); setInterval(check,60000);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
+  window.__updCheck=check;
+})();
 window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets, clashVals};   // útil para depurar
 })();
 </script>
