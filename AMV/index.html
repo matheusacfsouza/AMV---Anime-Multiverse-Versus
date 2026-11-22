@@ -251,7 +251,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 /* ============================================================
    CONFIGURAÇÃO (fácil de mexer quando suas regras chegarem)
    ============================================================ */
-const MAX_LIFE = 4000;     // vida inicial e máxima
+const MAX_LIFE = 5000;     // vida inicial e máxima
 const DECK_MIN = 20, DECK_MAX = 30, COPY_MAX = 3;
 const HAND_START = 5;      // cartas iniciais
 const DEFAULT_DECK = {1:3,2:2,3:2,4:2,5:2,6:2,7:2,8:1,9:1,10:1,11:2,12:1,13:1,14:1,15:1,16:1,17:2,18:1,19:1,20:1};  // 30 cartas
@@ -278,21 +278,55 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   18:{id:18,name:'Senhor Kaioh',kind:'support',img:'Cartas/Apoiador - Senhor Kaioh.jpg'},
   19:{id:19,name:'Kaioken aumentado 4x',kind:'item',img:'Cartas/Item - Kaioken aumentado 4x.jpg'},
   20:{id:20,name:'Kamehameha',kind:'item',img:'Cartas/Item - Kamehameha.jpg'},
-  21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1400,arq:['Emissor','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
+  21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1400,arq:['Elemental','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
   22:{id:22,name:'Cajado do Zé',kind:'tool',img:'Cartas/Ferramenta - Cajado do Zé.jpg'},
   23:{id:23,name:'Sabrina',kind:'char',atk:1300,arq:['Controlador','Máquina'],el:'escuridao',fios:true,troca:true,img:'Cartas/Sabrina.jpg'},
   24:{id:24,name:'Fios invisíveis',kind:'item',img:'Cartas/Item - Fios invisíveis.jpg'},
-  25:{id:25,name:'Troca de Marionetes',kind:'item',img:'Cartas/Item - Troca de marionetes.jpg'}
+  25:{id:25,name:'Troca de Marionetes',kind:'item',img:'Cartas/Item - Troca de marionetes.jpg'},
+  26:{id:26,name:'Nainai Ma Mei',kind:'support',img:'Cartas/Apoiador - Nainai Ma Mei.jpg'},
+  27:{id:27,name:'Pastelaria Ma Mei',kind:'field',img:'Cartas/Campo - Pastelaria Ma Mei.jpg'},
+  28:{id:28,name:'Da Shui Long Zhi Gui',kind:'item',img:'Cartas/Item - Da Shui Long Zhi Gui.jpg'},
+  29:{id:29,name:'Da Shui Long',kind:'item',img:'Cartas/Item - Da Shui Long.jpg'},
+  30:{id:30,name:'Irmãos Ma Mei',kind:'item',img:'Cartas/Item - Irmãos Ma Mei.jpg'},
+  31:{id:31,name:'Lee Ma Mei',kind:'char',atk:1400,arq:['Lutador'],el:'agua',img:'Cartas/Lee Ma Mei.jpg'},
+  32:{id:32,name:'Mee Ma Mei',kind:'char',atk:1600,arq:['Elemental','Lutador'],el:'agua',img:'Cartas/Mee Ma Mei.jpg'},
+  33:{id:33,name:'Shifu Ma Mei',kind:'char',atk:1700,arq:['Lutador','Mestre'],el:'agua',dsl:true,img:'Cartas/Shifu Ma Mei.jpg'},
+  34:{id:34,name:'Shizu Ma Mei - Velha Guarda',kind:'char',atk:800,arq:['Elemental','Mestre'],el:'agua',dsl:true,img:'Cartas/Shizu Ma Mei - Velha Guarda.jpg'},
+  35:{id:35,name:'Taishizu Ma Mei',kind:'char',atk:2000,arq:['Mestre','Lenda'],el:'agua',dsl:true,dslzg:true,img:'Cartas/Taishizu Ma Mei.jpg'},
+  36:{id:36,name:'Tee Ma Mei',kind:'char',atk:1300,arq:['Atirador'],el:'agua',img:'Cartas/Tee Ma Mei.jpg'}
 };
+/* estrelas: 1 a 3 = até 3 cópias, 4 = até 2, 5 = 1 cópia */
+const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:2,22:3,23:3,24:2,25:4,26:2,27:2,28:4,29:4,30:2,31:1,32:2,33:3,34:3,35:5,36:2};
+const maxCopies=id=>{ const st=STARS[id]||1; return st>=5?1:st===4?2:3; };
+const isMaMei=c=>/Ma Mei/.test(c.def.name);
+const DS={31:200,32:300,33:500,36:100};                         // Duplo Sentido (valor fixo)
+const DS_MASTER=new Set([34,35]);                               // Mestre do Duplo Sentido (metade do ATQ do alvo)
+function clashVals(p, att, q, tgt){                              // ATQ de batalha [atacante, defensor]
+  let a=atkOf(p,att), d=atkOf(q,tgt);
+  if(att.id===5) a+=300;                                        // Tenshinhan - Kikoho
+  if(tgt.id===7) d=Math.max(0,d-300);                           // Yamcha - Autodestruição
+  const ds = DS_MASTER.has(att.id) ? Math.floor(d/2) : (DS[att.id]||0);
+  return [a+ds, Math.max(0,d-ds)];
+}
+/* Mestre da Água (Shizu/Taishizu): Personagens Água do dono não são afetados por Itens do oponente.
+   Aprendiz da Água (Mee): 1x por turno não é afetado por Itens do oponente. */
+const waterShield=(q,t)=> t.def.el==='agua' && chars(q).some(c=>DS_MASTER.has(c.id));
+function itemBlocked(q,t){
+  if(waterShield(q,t)){ log(`Mestre da Água: ${t.def.name} não é afetado.`); toast('Mestre da Água: sem efeito'); return true; }
+  if(t.id===32 && !t.imm){ t.imm=true; log('Aprendiz da Água: Mee Ma Mei não é afetado por este Item.'); toast('Aprendiz da Água: sem efeito'); return true; }
+  return false;
+}
+const itemTargets=(q,list)=>list.filter(t=>!waterShield(q,t));
 for(const i in DEFS) DEFS[i].gz=/Guerreiros Z/.test(DEFS[i].name);
 const isGZ=c=>!!(c&&c.def.gz);
+const isDSL=c=>/Da Shui Long/.test(c.def.name);
+const oppPowers=q=>[...P(q).powers.filter(Boolean), ...(P(q).field?[P(q).field]:[]), ...chars(q).flatMap(c=>c.equips)];
 const TOOL_FOR={17:1,22:21};                                   // Ferramenta -> Personagem que pode equipá-la
 const canEquip=(t,c)=>!!c && c.id===TOOL_FOR[t.id] && c.equips.length<2;
-const ELEM = {terra:{n:'Terra',c:'#410e00',adv:['fogo','ar','raio']},planta:{n:'Planta',c:'#32bf0b',adv:['agua','terra']},agua:{n:'Água',c:'#0796de',adv:['terra','fogo']},fogo:{n:'Fogo',c:'#ff0803',adv:['ar','planta','metal','escuridao']},ar:{n:'Ar',c:'#f2efe9',adv:['planta']},raio:{n:'Raio',c:'#fdcd00',adv:['agua','ar','escuridao']},metal:{n:'Metal',c:'#677d82',adv:['terra','raio','planta']},escuridao:{n:'Escuridão',c:'#28003b',adv:['ar','planta']},divino:{n:'Divino',c:'#fb9e23',adv:['divino']}};
+const ELEM = {terra:{n:'Terra',c:'#410e00'},planta:{n:'Planta',c:'#32bf0b'},agua:{n:'Água',c:'#0796de'},fogo:{n:'Fogo',c:'#ff0803'},ar:{n:'Ar',c:'#f2efe9'},raio:{n:'Raio',c:'#fdcd00'},metal:{n:'Metal',c:'#677d82'},escuridao:{n:'Escuridão',c:'#28003b'},divino:{n:'Divino',c:'#fb9e23'}};
 for(const i in DEFS) if(DEFS[i].kind==='char' && !DEFS[i].el) DEFS[i].el = (i==3?'planta':'terra');
 const EL_ICO={agua:2,terra:3,fogo:4,ar:5,raio:6,planta:7,metal:8,escuridao:9,divino:10}, KIND_ICO={support:12,item:13,tool:14,field:15};
 const elIco=k=>`<img class="tico" src="Icones/${EL_ICO[k]}.png" alt="">`, kindIco=k=>KIND_ICO[k]?`<img class="tico" src="Icones/${KIND_ICO[k]}.png" alt="">`:'';
-const hasAdv=(a,b)=>a.def.el&&b.def.el&&ELEM[a.def.el].adv.includes(b.def.el);
 const KIND = {char:'Personagem',field:'Campo',support:'Apoiador',item:'Item',tool:'Ferramenta'};
 
 /* posições (extraídas do esboço 1080x1920) */
@@ -371,6 +405,7 @@ function atkOf(p, inst){
   }
   a += 400 * inst.equips.length;                                                 // Kaioken: +400 cada (pode ter vários)
   a += inst.boost||0;                                                            // Kaioken aumentado 4x: +1000 até o fim do turno
+  if(inst.id===33 && P(p).chars.some(c=>c&&[31,32,36].includes(c.id))) a+=200;   // Shifu - Pai Protetor
   return Math.max(0, a - intim);
 }
 function canAttack(p){ return !(p===G.first && P(p).turns===1); }   // quem começa não ataca no 1º turno
@@ -429,6 +464,13 @@ const A = {
         if(t){ const g=t.equipTo; if(g) g.equips=g.equips.filter(k=>k!==t); t.equipTo=null; ownPl(t,P(1-p)).void.push(t); log(`Kienzan! ${t.def.name} é destruída.`); }
       }
     }
+    if(c.id===36){  // Tee Ma Mei - Gêmeos Ma Mei: pode invocar 1 Lee Ma Mei do baralho
+      const lee=pl.deck.find(x=>x.id===31);
+      if(lee && freeIdx(pl.chars)>=0){
+        let ok=true; if(p===0){ render(); ok=!!(await chooseFromList('Gêmeos Ma Mei: invocar "Lee Ma Mei" do baralho? (feche para recusar)',[lee])); }
+        if(ok){ render(); await activateFx(p,c,true); await deckToField(p,lee,freeIdx(pl.chars)); shuffle(pl.deck); log(`Gêmeos Ma Mei! ${p?'Oponente invoca':'Você invoca'} Lee Ma Mei do baralho.`); render(); }
+      }
+    }
     if(c.id===23){  // Sabrina - Marionete Humana: pode tomar o controle do personagem da coluna da frente
       const i=pl.chars.indexOf(c), t=P(1-p).chars[i], fi=freeIdx(pl.chars);
       if(t && fi>=0){
@@ -443,11 +485,13 @@ const A = {
       }
     }
   },
-  async fios(p, c, t){ const q=1-p, v=atkOf(q,t); toVoid(P(p),c); render(); log(`Fios invisíveis: ${p?'você perde':'o oponente perde'} ${v} de vida (ATQ de ${t.def.name}).`); await damage(q, v); },
+  async fios(p, c, t){ const q=1-p, v=atkOf(q,t); toVoid(P(p),c); render(); if(itemBlocked(q,t)) return; log(`Fios invisíveis: ${p?'você perde':'o oponente perde'} ${v} de vida (ATQ de ${t.def.name}).`); await damage(q, v); },
   async troca(p, c, mine, theirs){
     const q=1-p, i=P(p).chars.indexOf(mine), j=P(q).chars.indexOf(theirs); toVoid(P(p),c); render();
     await moveCtl([[mine,[p,i],[q,j]],[theirs,[q,j],[p,i]]]);
+    if(itemBlocked(q,theirs)){ render(); return; }
     P(p).chars[i]=theirs; P(q).chars[j]=mine; mine.ctrlBy=null; theirs.ctrlBy=null;
+    theirs.attacked=false; theirs.direct=false; mine.attacked=false; mine.direct=false;   // quem muda de lado pode atacar (exceto no turno 1)
     log(`Troca de Marionetes: ${mine.def.name} e ${theirs.def.name} trocam de controle.`); render();
   },
   async field(p, c){ const pl=P(p); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
@@ -461,11 +505,29 @@ const A = {
   async radar(p, c, e){ const pl=P(p); toVoid(pl,c); await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} Esferas do dragão com o Radar.`); },
   async esferas(p, c, e){ const pl=P(p); toVoid(pl,c); pl.esf=true; await toHand(p,e); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} as Esferas do dragão e busca ${p?'uma carta':e.def.name}.`); },
   auto(p, c, g, pc){ const pl=P(p); const v=Math.round((atkOf(p,g)+atkOf(p,pc))/2); toVoid(pl,c); g.tmp=v; pc.tmp=v; log(`Autoescola! Goku e Piccolo ficam com ATQ ${v} até o fim do turno.`); },
-  async casa(p, chosen, fld){ const pl=P(p); fld.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'um Guerreiro Z':chosen.def.name} com a Casa do Kame.`); },
+  async casa(p, chosen, fld){ const pl=P(p); fld.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente busca':'Você busca'} ${p?'uma carta':chosen.def.name} com ${fld.def.name}.`); },
   yaji(p, c){ const pl=P(p); const ch=chars(p).filter(isGZ)[0]; ch.direct=true; toVoid(pl,c); log(`Yajirobe! ${ch.def.name} pode atacar diretamente.`); },
   async kaioh(p, c, chosen){ const pl=P(p); c.used=true; await toHand(p,chosen); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} o Senhor Kaioh e busca ${p?'uma carta':chosen.def.name}.`); },
   kaio4(p, c, g){ const pl=P(p); toVoid(pl,c); g.boost=(g.boost||0)+1000; g.doom=true; log(`Kaioken aumentado 4x! ${g.def.name} ganha 1000 de ATQ e vai para o vazio na Fase Final.`); },
-  async kame(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Kamehameha destrói ${t.def.name}!`); },
+  async dsl(p, c){                                        // Da Shui Long: todos os Poderes do oponente em campo vão para o vazio
+    const q=1-p; toVoid(P(p),c); render();
+    for(const ch of chars(q)) for(const k of [...ch.equips]){ ch.equips=ch.equips.filter(x=>x!==k); k.equipTo=null; ownPl(k,P(q)).void.push(k); }
+    for(const w of P(q).powers.filter(Boolean)) await sendVoid(q,w);
+    if(P(q).field) await sendVoid(q,P(q).field);
+    log('Da Shui Long! Todas as cartas de Poder do oponente vão para o vazio.'); render();
+  },
+  async dslzg(p, c, t){                                   // pega um Poder do vazio do oponente e o seu Da Shui Long do vazio
+    const q=1-p, pl=P(p); toVoid(pl,c); render();
+    detach(P(q),t); render();
+    await slideCard(pileRect(q,'void'), handSlot(p, pl.hand.length+1), mini(t), 560, 0, backOf(p), true);
+    pl.hand.push(t); seen.add(t.uid); render();
+    const dl=pl.void.find(x=>x.id===29); if(dl) await toHand(p,dl);
+    log(`Da Shui Long Zhi Gui: ${p?'oponente pega':'você pega'} ${t.def.name} do vazio${dl?' e recupera Da Shui Long':''}.`);
+  },
+  irmaos(p, c, ch){ ch.direct=true; toVoid(P(p),c); log(`Irmãos Ma Mei! ${ch.def.name} pode atacar diretamente.`); },
+  async taishizu(p, t, r){ t.used=true; await activateFx(p,t,true); await toHand(p,r); shuffle(P(p).deck); log(`${p?'Oponente busca':'Você busca'} ${p?'uma carta':r.def.name} com "Venha! Da Shui Long".`); },
+  async nainai(p, c){ const pl=P(p), v=300*chars(p).filter(isMaMei).length; c.used=true; log(`Nainai Ma Mei: ${p?'oponente ganha':'você ganha'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
+  async kame(p, c, t){ toVoid(P(p),c); render(); if(itemBlocked(1-p,t)) return; await sendVoid(1-p,t); log(`Kamehameha destrói ${t.def.name}!`); },
   async picc(p, picc, g){ const pl=P(p); await activateFx(p,picc,true); await sendVoid(p,g); picc.direct=true; picc.used=true; log(`Piccolo envia Goku ao vazio e pode atacar diretamente.`); }
 };
 
@@ -475,12 +537,11 @@ const A = {
 async function doAttack(p, att, tgt){
   const q=1-p;
   att.attacked = true; G.atkUid = att.uid;
-  const a = atkOf(p,att) + (tgt && att.id===5 ? 300 : 0);          // Tenshinhan - Kikoho (+300 ao atacar personagem)
-  const d = tgt ? atkOf(q,tgt) - (tgt.id===7 ? 300 : 0) : 0;       // Yamcha - Autodestruição (-300 ao ser atacado)
+  const [a,d] = tgt ? clashVals(p,att,q,tgt) : [atkOf(p,att),0];   // Kikoho, Autodestruição e Duplo Sentido
   log(`Etapa de dano: ${att.def.name} (${a}) ataca ${tgt?tgt.def.name+' ('+d+')':'diretamente'}!`);
   render();
-  if(tgt && att.id===5) await tweenChip(att.uid, atkOf(p,att), a);     // Kikoho: mostra 1600, não "1300 +300"
-  if(tgt && tgt.id===7) await tweenChip(tgt.uid, atkOf(q,tgt), d);     // Yamcha: mostra 1000
+  if(tgt && a!==atkOf(p,att)) await tweenChip(att.uid, atkOf(p,att), a);   // mostra o ATQ de batalha (Kikoho, Duplo Sentido...)
+  if(tgt && d!==atkOf(q,tgt)) await tweenChip(tgt.uid, atkOf(q,tgt), d);
   await clash(att, tgt, p);
   if(!tgt){ await damage(q, a); G.atkUid=null; render(); return; }
   if(a>d){
@@ -489,10 +550,10 @@ async function doAttack(p, att, tgt){
     if(G.over) return;
     await afterBattle(p,att,q,tgt,false,true);
   } else if(a===d){
-    if(hasAdv(att,tgt)){
-      log(`Empate anulado! ${att.def.name} tem vantagem de Tipo: ${tgt.def.name} vai para o vazio.`);
-      await vanish(tgt.uid,q); toVoid(P(q),tgt); render(); await afterBattle(p,att,q,tgt,false,false);
-    } else { log('Empate! Nenhum personagem é destruído.'); toast('Empate: ninguém é destruído'); }
+    log(`Empate! ${att.def.name} e ${tgt.def.name} vão para o vazio.`); toast('Empate: os dois vão para o vazio');
+    await Promise.all([vanish(att.uid,p), vanish(tgt.uid,q)]);
+    toVoid(P(p),att); toVoid(P(q),tgt); render();
+    await afterBattle(p,att,q,tgt,true,false);
   } else {
     await vanish(att.uid,p); toVoid(P(p),att); render();
     await damage(p, d-a);
@@ -675,7 +736,7 @@ async function activateFx_raw(p, card, back, src){
   await sleep(480);
   wrap.remove();
 }
-const FX_CARD_ARG={fios:1,troca:1,semente:1,yaji:1,kaio4:1,kame:1,disparo:1,radar:1,esferas:1,caminho:1,auto:1,tool:1,bulma:1,kaioh:1,casa:2};
+const FX_CARD_ARG={dsl:1,dslzg:1,irmaos:1,nainai:1,fios:1,troca:1,semente:1,yaji:1,kaio4:1,kame:1,disparo:1,radar:1,esferas:1,caminho:1,auto:1,tool:1,bulma:1,kaioh:1,casa:2};
 for(const n in FX_CARD_ARG){ const orig=A[n];
   A[n]=function(...args){
     if(window.__NOFX) return orig.apply(A,args);
@@ -873,24 +934,44 @@ function actionsFor(p, inst, where){
         });
       }
       if(inst.id===20){
-        const tg=chars(q).filter(t=>atkOf(q,t)<=2000);
+        const tg=itemTargets(q,chars(q)).filter(t=>atkOf(q,t)<=2000);
         add('Usar', !chars(p).some(c=>c.def.kame)?'Um dos seus Personagens precisa ter a habilidade "Kamehameha".':(tg.length?null:'O oponente não tem Personagem com 2000 de ATQ ou menos.'), async()=>{
           const r=await pickTarget(tg,{prompt:'Kamehameha: escolha o Personagem a destruir.'}); if(!r) return;
           await A.kame(p,inst,r.target);
         });
       }
       if(inst.id===24){
-        const tg=chars(q).filter(t=>atkOf(q,t)<=1000);
+        const tg=itemTargets(q,chars(q)).filter(t=>atkOf(q,t)<=1000);
         add('Usar', !chars(p).some(c=>c.def.fios)?'Um dos seus Personagens precisa ter a habilidade "Fios Invisíveis".':(tg.length?null:'O oponente não tem Personagem com 1000 de ATQ ou menos.'), async()=>{
           const r=await pickTarget(tg,{prompt:'Fios invisíveis: escolha o Personagem do oponente.'}); if(!r) return;
           await A.fios(p,inst,r.target);
         });
       }
       if(inst.id===25){
-        add('Usar', !chars(p).some(c=>c.def.troca)?'Um dos seus Personagens precisa ter a habilidade "Troca de Marionetes".':(chars(q).length?null:'O oponente não tem Personagem em campo.'), async()=>{
-          const r1=await pickTarget(chars(q),{prompt:'Troca de Marionetes: escolha o Personagem do oponente.'}); if(!r1) return;
+        const tq=itemTargets(q,chars(q));
+        add('Usar', !chars(p).some(c=>c.def.troca)?'Um dos seus Personagens precisa ter a habilidade "Troca de Marionetes".':(tq.length?null:'O oponente não tem Personagem que possa ser escolhido.'), async()=>{
+          const r1=await pickTarget(tq,{prompt:'Troca de Marionetes: escolha o Personagem do oponente.'}); if(!r1) return;
           render(); const r2=await pickTarget(chars(p),{prompt:'Agora escolha o seu Personagem que irá para o oponente.'}); if(!r2) return;
           await A.troca(p,inst,r2.target,r1.target);
+        });
+      }
+      if(inst.id===29){   // Da Shui Long
+        const pw=oppPowers(q);
+        add('Usar', !chars(p).some(c=>c.def.dsl)?'Um dos seus Personagens precisa ter a habilidade "Da Shui Long".':(pw.length?null:'O oponente não tem cartas de Poder em campo.'), async()=>await A.dsl(p,inst));
+      }
+      if(inst.id===28){   // Da Shui Long Zhi Gui
+        const op=P(q).void.filter(c=>c.def.kind!=='char');
+        add('Usar', !chars(p).some(c=>c.def.dslzg)?'Um dos seus Personagens precisa ter a habilidade "Da Shui Long Zhi Gui".':(!pl.void.some(c=>c.id===29)?'"Da Shui Long" precisa estar no seu vazio.':(op.length?null:'Não há cartas de Poder no vazio do oponente.')), async()=>{
+          const r=await chooseFromList('Escolha uma carta de Poder do vazio do oponente',op); if(!r) return;
+          await A.dslzg(p,inst,r);
+        });
+      }
+      if(inst.id===30){   // Irmãos Ma Mei
+        const bros=chars(p).filter(c=>[31,32,36].includes(c.id));
+        const all3=[31,32,36].every(id=>bros.some(c=>c.id===id)), ok=bros.filter(c=>!c.attacked);
+        add('Usar', !all3?'Precisa de "Mee Ma Mei", "Lee Ma Mei" e "Tee Ma Mei" em campo.':(!canAttack(p)?'Você ainda não pode atacar.':(ok.length?null:'Os três já atacaram neste turno.')), async()=>{
+          const r=await pickTarget(ok,{prompt:'Irmãos Ma Mei: escolha quem pode atacar diretamente.'}); if(!r) return;
+          await A.irmaos(p,inst,r.target);
         });
       }
       if(inst.id===12){
@@ -950,7 +1031,17 @@ function actionsFor(p, inst, where){
       }
     }
     if(inst.id===21) add('Efeito: Me dá meu cajado', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===22)?null:'Não há "Cajado do Zé" no baralho.'), async()=>await A.ze(p,inst,pl.deck.find(x=>x.id===22)));
-    if(d.kind==='field') add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(isGZ)?null:'Não há cartas "Guerreiros Z" no baralho.'), async()=>{
+    if(inst.id===35) add('Efeito: Venha! Da Shui Long', inst.used?'Já usado neste turno.':(pl.deck.some(isDSL)?null:'Não há cartas "Da Shui Long" no baralho.'), async()=>{
+      const r=await chooseFromList('Escolha uma carta "Da Shui Long" do baralho',pl.deck.filter(isDSL)); if(!r) return;
+      await A.taishizu(p,inst,r);
+    });
+    if(inst.id===27) add('Efeito: buscar carta "Ma Mei"', inst.used?'Já usado neste turno.':(pl.deck.some(isMaMei)?null:'Não há cartas "Ma Mei" no baralho.'), async()=>{
+      const r=await chooseFromList('Escolha uma carta "Ma Mei" do baralho',pl.deck.filter(isMaMei)); if(!r) return;
+      await A.casa(p,r,inst);
+    });
+    if(inst.id===26){ const n=chars(p).filter(isMaMei).length;
+      add('Efeito: ganhar vida', inst.used?'Já usado neste turno.':(n?null:'Não há Personagens "Ma Mei" no seu campo.'), async()=>await A.nainai(p,inst)); }
+    if(inst.id===8) add('Efeito: buscar Guerreiro Z', inst.used?'Já usado neste turno.':(pl.deck.some(isGZ)?null:'Não há cartas "Guerreiros Z" no baralho.'), async()=>{
       const r=await chooseFromList('Escolha um "Guerreiro Z" do baralho',pl.deck.filter(isGZ)); if(!r) return;
       await A.casa(p,r,inst);
     });
@@ -1078,10 +1169,10 @@ function rulesModal(){
   <li>Cada Personagem ataca 1 vez por turno. Itens vão para o vazio depois de usados.</li>
   <li>Efeitos "até o fim do turno" (Autoescola, Kaioken aumentado 4x) e "durante a fase de dano" (Tenshinhan, Yamcha) já são aplicados automaticamente.</li>
   <li>Arraste as cartas da mão até o slot onde quer colocá-las.</li></ul>
-  <h3>Combate</h3><ul><li>ATQ maior destrói o menor e a diferença é tirada da vida de quem perdeu. Empate: nenhum é destruído (exceto se o atacante tem vantagem de Tipo: o defensor vai ao vazio).</li>
+  <h3>Combate</h3><ul><li>ATQ maior destrói o menor e a diferença é tirada da vida de quem perdeu. Empate: os dois vão para o vazio e ninguém perde vida.</li>
   <li>Só dá para atacar direto se o oponente não tiver Personagens, ou por efeito (Piccolo, Yajirobe).</li></ul>
-  <h3>Tipos</h3><ul><li>Cada Personagem tem um Tipo (Terra, Planta, Água...). A vantagem de Tipo só decide empates.</li><li>Os Arquétipos (Lutador, Espacial...) aparecem no zoom da carta.</li></ul>
-  <h3>Baralho</h3><ul><li>${DECK_MIN} a ${DECK_MAX} cartas, no máximo ${COPY_MAX} cópias de cada.</li></ul>`));
+  <h3>Tipos</h3><ul><li>Cada Personagem tem um Tipo (Terra, Planta, Água...), usado por efeitos de cartas.</li><li>Os Arquétipos (Lutador, Espacial...) aparecem no zoom da carta.</li></ul>
+  <h3>Baralho</h3><ul><li>${DECK_MIN} a ${DECK_MAX} cartas, até 3 cópias de cartas de 1 a 3 estrelas, 2 de cartas de 4 estrelas e 1 de cartas de 5 estrelas.</li></ul>`));
   box.appendChild(btn('Fechar','sec',()=>{ if(!G && history.state && history.state.s==='rules') history.back(); else closeModal(); })); showModal(box);
 }
 function histModal(){
@@ -1327,7 +1418,7 @@ async function startTurn(p){
   if(G.over) return;
   G.turn=p; G.phase='prep'; G.turnNo++; const pl=P(p); pl.turns++; timerStart();
   pl.esf=false;
-  [...P(0).chars,...P(1).chars].filter(Boolean).forEach(c=>{c.tmp=null;});   // efeitos 'até o fim do turno' terminam
+  [...P(0).chars,...P(1).chars].filter(Boolean).forEach(c=>{c.tmp=null; c.imm=false;});   // efeitos 'até o fim do turno' terminam
   [...pl.chars,...pl.powers].filter(Boolean).forEach(c=>{c.attacked=false;c.direct=false;c.used=false;});
   [P(0).field,P(1).field].filter(Boolean).forEach(c=>{c.used=false;});   // efeito do campo: 1x por turno, vale para quem estiver jogando
   G.busy=true; render();
@@ -1410,6 +1501,7 @@ async function botTurn(){
   const projAtk=c=>atkOf(p,c);
   const bAtk=a=>atkOf(p,a)+(a.id===5?300:0);
   const bDef=t=>atkOf(q,t)-(t.id===7?300:0);
+  const cv=(a,t)=>clashVals(p,a,q,t), wins=(a,t)=>{ const v=cv(a,t); return v[0]>v[1]; }, ties=(a,t)=>{ const v=cv(a,t); return v[0]===v[1]; };
   await sleep(500);
   const summonAll=async()=>{
     while(freeC()){
@@ -1428,6 +1520,17 @@ async function botTurn(){
     const opts=pl.deck.filter(isGZ).sort((a,b)=>projAtk(b)-projAtk(a));
     if(opts.length){ await A.casa(p,opts[0],fld); if(!await pause(800)) return; }
   }
+  // 1b) Pastelaria Ma Mei
+  c=hand(27);
+  if(c && !P(0).field && !pl.field){ await A.field(p,c); if(!await pause(800)) return; }
+  const f2=P(0).field||P(1).field;
+  if(f2 && f2.id===27 && !f2.used){
+    const opts=pl.deck.filter(isMaMei).sort((a,b)=>(b.def.kind==='char'?atkOf(p,b):0)-(a.def.kind==='char'?atkOf(p,a):0));
+    if(opts.length){ await A.casa(p,opts[0],f2); if(!await pause(800)) return; }
+  }
+  // 1c) Taishizu: busca Da Shui Long
+  const ts=chars(p).find(x=>x.id===35&&!x.used);
+  if(ts){ const r=pl.deck.find(x=>x.id===29)||pl.deck.find(isDSL); if(r){ await A.taishizu(p,ts,r); if(!await pause(800)) return; } }
   // 2) Bulma -> Radar -> Esferas
   c=hand(10);
   if(c && freeP() && pl.deck.some(x=>x.id===13)){ A.support(p,c); if(!await pause(800)) return; }
@@ -1457,12 +1560,22 @@ async function botTurn(){
   }
   c=hand(15);
   if(c && pl.void.some(x=>x.id===1) && freeC()){ await A.caminho(p,c); if(!await pause(900)) return; }
+  // 5b) Nainai Ma Mei
+  c=hand(26);
+  if(c && freeP() && chars(p).some(isMaMei)){ A.support(p,c); if(!await pause(700)) return; }
+  const nn=pl.powers.find(x=>x&&x.id===26&&!x.used);
+  if(nn && chars(p).some(isMaMei)){ await A.nainai(p,nn); if(!await pause(800)) return; }
+  // 5c) Da Shui Long / Zhi Gui
+  c=hand(28);
+  if(c && chars(p).some(x=>x.def.dslzg) && pl.void.some(x=>x.id===29)){ const t=P(q).void.find(x=>x.def.kind!=='char'); if(t){ await A.dslzg(p,c,t); if(!await pause(900)) return; } }
+  c=hand(29);
+  if(c && chars(p).some(x=>x.def.dsl) && oppPowers(q).length>=1){ await A.dsl(p,c); if(!await pause(900)) return; }
   // 6) Semente
   c=hand(11);
   if(c && chars(p).length && pl.life<=2500){ await A.semente(p,c); if(!await pause(900)) return; }
   // 6b) Kamehameha: destrói o Personagem mais forte com até 2000 de ATQ
   c=hand(20);
-  if(c && chars(p).some(x=>x.def.kame)){ const t=chars(q).filter(x=>atkOf(q,x)<=2000).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.kame(p,c,t); if(!await pause(900)) return; } }
+  if(c && chars(p).some(x=>x.def.kame)){ const t=itemTargets(q,chars(q)).filter(x=>atkOf(q,x)<=2000&&!(x.id===32&&!x.imm)).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.kame(p,c,t); if(!await pause(900)) return; } }
   // 7) Disparo de Ki
   c=hand(12);
   if(c && chars(p).length && supports(q).length){ await A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
@@ -1474,12 +1587,12 @@ async function botTurn(){
   if(c && zt){ await A.tool(p,c,zt); if(!await pause(900)) return; }
   // 8b) Fios invisíveis: dano igual ao ATQ do alvo (pega o maior até 1000)
   c=hand(24);
-  if(c && chars(p).some(x=>x.def.fios)){ const t=chars(q).filter(x=>atkOf(q,x)<=1000).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.fios(p,c,t); if(G.over||!await pause(900)) return; } }
+  if(c && chars(p).some(x=>x.def.fios)){ const t=itemTargets(q,chars(q)).filter(x=>atkOf(q,x)<=1000&&!(x.id===32&&!x.imm)).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0]; if(t){ await A.fios(p,c,t); if(G.over||!await pause(900)) return; } }
   // 8c) Troca de Marionetes: troca o meu mais fraco pelo mais forte dele, se valer a pena
   c=hand(25);
   if(c && chars(p).some(x=>x.def.troca) && chars(q).length){
     const mine=chars(p).filter(x=>!x.def.troca||chars(p).filter(y=>y.def.troca).length>1).sort((a,b)=>atkOf(p,a)-atkOf(p,b))[0];
-    const theirs=chars(q).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0];
+    const theirs=itemTargets(q,chars(q)).filter(x=>!(x.id===32&&!x.imm)).sort((a,b)=>atkOf(q,b)-atkOf(q,a))[0];
     if(mine && theirs && atkOf(q,theirs)>atkOf(p,mine)+200){ await A.troca(p,c,mine,theirs); if(!await pause(900)) return; }
   }
   // 9) Kaioken
@@ -1505,6 +1618,12 @@ async function botTurn(){
     const turns  = tg.length && !tg.some(t=>bDef(t)<now) && tg.some(t=>bDef(t)<now+1000);
     if(lethal||turns){ await A.kaio4(p,c,gk); if(!await pause(900)) return; }
   }
+  // 10b) Irmãos Ma Mei: o mais forte dos três ataca direto
+  c=hand(30);
+  if(c && canAttack(p) && [31,32,36].every(id=>chars(p).some(x=>x.id===id))){
+    const b=chars(p).filter(x=>[31,32,36].includes(x.id)&&!x.attacked).sort((a,b)=>atkOf(p,b)-atkOf(p,a))[0];
+    if(b && chars(q).length){ await A.irmaos(p,c,b); if(!await pause(900)) return; }
+  }
   // 11) Yajirobe (item)
   c=hand(9);
   if(c && canAttack(p) && pl.life<=500 && chars(p).length===1 && !chars(p)[0].attacked){ await A.yaji(p,c); if(!await pause(900)) return; }
@@ -1524,8 +1643,19 @@ async function botTurn(){
       const a=atts[0], tg=atkTargets(q);
       let choice=null;
       if(!tg.length) choice={direct:true};
-      else if(a.direct && (atkOf(p,a)>=ql.life || !tg.some(t=>bDef(t)<bAtk(a)))) choice={direct:true};
-      else { const w=tg.filter(t=>bDef(t)<bAtk(a)||(bDef(t)===bAtk(a)&&hasAdv(a,t))).sort((x,y)=>bDef(y)-bDef(x)); if(w.length) choice={target:w[0]}; }
+      else if(a.direct && (atkOf(p,a)>=ql.life || !tg.some(t=>wins(a,t)))) choice={direct:true};
+      else {
+        const w=tg.filter(t=>wins(a,t)||(ties(a,t)&&a.doom)).sort((x,y)=>bDef(y)-bDef(x));
+        if(w.length) choice={target:w[0]};
+        else {
+          // Lei da vantagem: empatar (os dois vão pro vazio) vale a pena se depois os outros atacantes
+          // conseguem vencer tudo que sobrar no campo do oponente (ou atacar direto se o campo ficar vazio)
+          const others=pl.chars.filter(x=>x&&x!==a&&!x.attacked);
+          const tie=tg.filter(t=>ties(a,t) && others.length && tg.filter(u=>u!==t).every(u=>others.some(o=>wins(o,u))))
+                      .sort((x,y)=>bDef(y)-bDef(x))[0];
+          if(tie) choice={target:tie};
+        }
+      }
       if(!choice){ skipped.add(a.uid); continue; }
       await doAttack(p,a,choice.direct?null:choice.target);
       if(G.over) return;
@@ -1550,7 +1680,7 @@ function loadDeck(){
 function saveDeck(c){ try{localStorage.setItem('amv_deck2',JSON.stringify(c));}catch(e){} }
 function validDeck(c){
   let t=0, ch=0;
-  for(const id in c){ const n=c[id]|0; if(n<0||n>COPY_MAX) return 'Máximo de '+COPY_MAX+' cópias por carta.'; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
+  for(const id in c){ const n=c[id]|0; if(n<0||n>maxCopies(id)) return `Máximo de ${maxCopies(id)} cópia(s) de "${DEFS[id]?DEFS[id].name:id}".`; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
   if(t<DECK_MIN) return `Faltam ${DECK_MIN-t} cartas (mínimo ${DECK_MIN}).`;
   if(t>DECK_MAX) return `Sobram ${t-DECK_MAX} cartas (máximo ${DECK_MAX}).`;
   if(ch<1) return 'O baralho precisa de pelo menos 1 Personagem.';
@@ -1602,7 +1732,7 @@ function deckScreen(){
     const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
     ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
     ctl.appendChild(nb);
-    ctl.appendChild(btn('+','',()=>{ if(counts[d.id]<COPY_MAX){counts[d.id]++;upd();} }));
+    ctl.appendChild(btn('+','',()=>{ if(counts[d.id]<maxCopies(d.id)){counts[d.id]++;upd();} else toast(`Máximo de ${maxCopies(d.id)} cópia(s) desta carta.`); }));
     t.appendChild(im); t.appendChild(ctl); grid.appendChild(t);
   });
   // verso do baralho
@@ -1659,7 +1789,7 @@ function rps(msg){
 }
 
 titleScreen();
-window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets};   // útil para depurar
+window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets, clashVals};   // útil para depurar
 })();
 </script>
 </body>
