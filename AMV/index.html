@@ -214,6 +214,22 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .gbtn{display:flex;align-items:center;justify-content:center;gap:18px;width:820px;background:#fff;color:#222;border-radius:20px;font-size:38px;font-weight:700;padding:20px;cursor:pointer;border:0;font-family:inherit}
 .gbtn svg{width:46px;height:46px}
 .form .link{font-size:34px;color:#7fd6f5;text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
+.lvl{background:linear-gradient(90deg,#ffd84d,#ffa31a);color:#2a1a00;font-weight:900;font-size:28px;border-radius:30px;padding:4px 14px;white-space:nowrap}
+.xpbar{width:780px;height:34px;border-radius:20px;background:#1b1f27;border:3px solid #3a4352;overflow:hidden;position:relative}
+.xpbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#3d9bd6,#2bc2d4);width:0;transition:width .9s ease-out}
+.xpbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;text-shadow:0 2px 4px #000}
+.rew{display:flex;flex-direction:column;align-items:center;gap:14px;width:900px;padding:40px;background:#0d0f14f5;border:2px solid #343a46;border-radius:44px}
+.rew .ln{display:flex;justify-content:space-between;width:740px;font-size:38px}
+.rew .ln b{color:#7fd6f5}
+.rew .tot{font-size:56px;font-weight:900;color:#ffd84d}
+.rew .up{font-size:60px;font-weight:900;color:#2ee66b;animation:upPop .6s ease-out}
+.rew .note{font-size:30px;color:#ffd84d;text-align:center}
+@keyframes upPop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.evt{position:absolute;right:30px;top:42px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
+@keyframes evtPulse{50%{transform:scale(1.06)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:780px}
+.stats div{background:#1b1f27;border-radius:24px;padding:18px;text-align:center;font-size:28px;color:#bbb}
+.stats b{display:block;font-size:52px;color:#fff}
 .mbox{display:flex;flex-direction:column;align-items:center;gap:16px;max-width:1000px}
 .mbox .bigcard{width:760px;height:1064px;border-radius:16px;background-size:100% 100%;box-shadow:0 0 50px #000}
 .acts{display:flex;flex-direction:column;gap:12px;width:760px}
@@ -398,7 +414,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-182124';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-190646';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -1496,13 +1512,44 @@ async function endTurnHuman(){            // botão da direita: preparação -> 
 }
 function endGame(winner){
   if(G.over) return; G.over=true; G.busy=true; musicStop(); render();
-  setTimeout(()=>{
+  const won=winner===0, life=Math.max(0,P(0).life);
+  const reward=matchReward(won, life);
+  setTimeout(async()=>{
     const box=el('div','mbox');
-    box.appendChild(el('div','big',`<span style="font-size:130px;font-weight:900;color:${winner===0?'#2ee66b':'#e60012'}">${winner===0?'VITÓRIA!':'DERROTA'}</span>`));
-    box.appendChild(btn('Jogar de novo','',()=>{ leaveMatch(); startFlow(); }));
-    box.appendChild(btn('Menu inicial','sec',goHome));
+    box.appendChild(el('div','big',`<span style="font-size:130px;font-weight:900;color:${won?'#2ee66b':'#e60012'}">${won?'VITÓRIA!':'DERROTA'}</span>`));
+    const rw=el('div','rew'); rw.appendChild(el('div','note','Calculando XP...')); box.appendChild(rw);
+    const row=el('div','row'); row.appendChild(btn('Jogar de novo','',()=>{ leaveMatch(); startFlow(); })); row.appendChild(btn('Menu inicial','sec',goHome)); box.appendChild(row);
     showModal(box);
+    showReward(rw, await reward);
   },900);
+}
+
+/* ---- XP no fim da partida ---- */
+async function matchReward(won, life){
+  if(SB && ACC.user){
+    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life}); if(error) throw error;
+      if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true}; }
+      return {ok:false, reason:data&&data.reason};
+    }catch(e){ return {ok:false, reason:'erro'}; }
+  }
+  // convidado: mostra quanto ganharia (não salva)
+  const today=new Date().toLocaleDateString('sv-SE',{timeZone:'America/Sao_Paulo'}); let last=null; try{ last=localStorage.getItem('amv_gw'); }catch(e){}
+  const base=won?100:25, tags=[]; let bonus=0;
+  if(won){ if(last!==today){ bonus+=100; tags.push('Primeira vitória do dia +100'); try{ localStorage.setItem('amv_gw',today); }catch(e){} }
+    if(life>=10000){ bonus+=100; tags.push('Perfect +100'); } else if(life<=100){ bonus+=500; tags.push('Imortal +500'); } else if(life<=1000){ bonus+=50; tags.push('Foi por pouco +50'); } }
+  return {ok:true, guest:true, base, bonus, tags, mult:MULT, total:(base+bonus)*MULT};
+}
+function showReward(rw, r){
+  rw.replaceChildren();
+  if(!r.ok){ rw.appendChild(el('div','note', r.reason==='rapida_demais'?'Partida muito curta: o XP não foi contado.':r.reason==='sem_partida'?'Não foi possível registrar esta partida.':'Sem conexão: o XP desta partida não foi salvo.')); return; }
+  rw.appendChild(el('div','ln',`<span>${r.base===100?'Vitória':'Derrota'}</span><b>+${r.base} XP</b>`));
+  (r.tags||[]).forEach(t=>{ const m=t.match(/^(.*) \+(\d+)$/); rw.appendChild(el('div','ln',`<span>${m?m[1]:t}</span><b>+${m?m[2]:''} XP</b>`)); });
+  if(r.mult>1) rw.appendChild(el('div','ln',`<span>Multiplicador</span><b>×${r.mult}</b>`));
+  rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
+  if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ leaveMatch(); goHome(); setTimeout(()=>authModal('signup'),300); })); return; }
+  const a=levelInfo(r.xp_before), b=levelInfo(r.xp_after);
+  rw.appendChild(el('span','lvl','Nível '+b.lvl)); const bar=xpBar(r.xp_after); rw.appendChild(bar);
+  if(b.lvl>a.lvl) rw.appendChild(el('div','up',`Subiu de nível! ${b.lvl>a.lvl+1?`(+${b.lvl-a.lvl}) `:''}Nível ${b.lvl}`));
 }
 
 async function beginMatch(first){
@@ -1511,6 +1558,7 @@ async function beginMatch(first){
   if(si && !si.complete) await new Promise(r=>{ si.addEventListener('load',r,{once:true}); si.addEventListener('error',r,{once:true}); setTimeout(r,6000); });
   if(si && si.decode) await si.decode().catch(()=>{});
   LF=[MAX_LIFE,MAX_LIFE];
+  if(SB && ACC.user) SB.rpc('start_match').then(()=>{},()=>{});       // o servidor marca o início (confere a duração no fim)
   G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
   G.p.forEach((pl,i)=>pl.deck.forEach(c=>{ c.own=i; }));        // dono da carta (o vazio é sempre o do dono)
   for(const p of [0,1]){
@@ -1749,6 +1797,12 @@ let SB=null; try{ if(window.supabase && location.protocol!=='file:') SB=window.s
 const ACC={user:null, profile:null, ready:false};
 const AVATARS=[31,32,36,33,34,35,21,23];                          // Personagens que podem ser avatar
 const NICK_RE=/^[A-Za-z0-9_À-ÿ]{3,16}$/;
+/* ---- níveis: 500 XP para o nível 2 e cada nível pede 5% a mais; máximo 100 ---- */
+const LVL_MAX=100, xpNeed=L=>Math.round(500*Math.pow(1.05,L-1));
+function levelInfo(xp){ let L=1, rest=Math.max(0,xp|0); while(L<LVL_MAX && rest>=xpNeed(L)){ rest-=xpNeed(L); L++; } return {lvl:L, into:L>=LVL_MAX?0:rest, need:L>=LVL_MAX?0:xpNeed(L)}; }
+function xpBar(xp){ const li=levelInfo(xp), b=el('div','xpbar'); const f=el('i'); b.appendChild(f); b.appendChild(el('span','',li.need?`${li.into.toLocaleString('pt-BR')} / ${li.need.toLocaleString('pt-BR')} XP`:'Nível máximo'));
+  requestAnimationFrame(()=>{ f.style.width=(li.need?100*li.into/li.need:100)+'%'; }); return b; }
+let MULT=1;                                                      // multiplicador ativo (evento, passe ou propaganda)
 const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
 function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize='230%'; a.style.backgroundPosition='50% 22%'; } return a; }
 const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
@@ -1756,7 +1810,7 @@ const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Ema
   [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
   [/rate limit|too many/i,'Muitas tentativas. Espere um pouco e tente de novo.'],[/Failed to fetch|NetworkError/i,'Sem conexão com o servidor. Verifique sua internet.']];
 const errPt=e=>{ const m=(e&&(e.message||e.error_description))||String(e); const f=ERR_PT.find(([r])=>r.test(m)); return f?f[1]:'Algo deu errado: '+m; };
-const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
+const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar,xp,games,wins,losses').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
 async function loadProfile(){
   ACC.profile=null; if(!SB||!ACC.user) return;
   try{
@@ -1770,7 +1824,7 @@ let accBusy=null;
 function accRefresh(){
   if(accBusy) return accBusy;
   accBusy=(async()=>{ try{
-    await loadProfile(); accChip();
+    await loadProfile(); accChip(); loadMult();
     if(ACC.user && ACC.profile && !ACC.profile.nickname && !G && !$('#modal').classList.contains('on')) profileEdit(true);   // conta nova (ex.: Google) sem apelido
   } finally { accBusy=null; } })();
   return accBusy;
@@ -1779,11 +1833,14 @@ function accChip(){
   const home=document.querySelector('.scr.home'); if(!home) return;
   let c=home.querySelector('.acc'); if(c) c.remove();
   c=el('div','acc');
-  if(ACC.user && ACC.profile && ACC.profile.nickname){ c.appendChild(avatarEl(ACC.profile.avatar)); c.appendChild(el('b','',ACC.profile.nickname)); c.onclick=profileModal; }
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ c.appendChild(avatarEl(ACC.profile.avatar)); c.appendChild(el('b','',ACC.profile.nickname)); c.appendChild(el('span','lvl','Nv. '+levelInfo(ACC.profile.xp).lvl)); c.onclick=profileModal; }
   else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
     c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
   home.appendChild(c);
+  let e=home.querySelector('.evt'); if(e) e.remove();
+  if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
 }
+async function loadMult(){ if(!SB) return; try{ const {data}=await SB.rpc('my_mult'); MULT=Math.max(1,data|0); }catch(e){} accChip(); }
 function authModal(mode){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
   if(!SB){ f.appendChild(el('h2','','Conta'));
@@ -1845,6 +1902,8 @@ function profileModal(){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
   f.appendChild(avatarEl(ACC.profile.avatar,'big')); f.appendChild(el('h2','',ACC.profile.nickname));
   f.appendChild(el('div','lbl',ACC.user.email||''));
+  const pf=ACC.profile; f.appendChild(el('span','lvl','Nível '+levelInfo(pf.xp).lvl)); f.appendChild(xpBar(pf.xp));
+  f.appendChild(el('div','stats',`<div><b>${pf.games|0}</b>Partidas</div><div><b>${pf.wins|0}</b>Vitórias</div><div><b>${pf.losses|0}</b>Derrotas</div>`));
   const row=el('div','row');
   row.appendChild(btn('Editar perfil','',()=>profileEdit(false)));
   row.appendChild(btn('Sair da conta','sec',async()=>{ await SB.auth.signOut(); closeModal(); toast('Você saiu da conta.'); }));
@@ -2072,7 +2131,7 @@ titleScreen();
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
   window.__updCheck=check;
 })();
-window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets, clashVals};   // útil para depurar
+window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets, clashVals, endGame, levelInfo};   // útil para depurar
 })();
 </script>
 </body>
