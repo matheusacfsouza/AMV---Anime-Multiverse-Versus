@@ -398,7 +398,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-173650';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-181449';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -1806,13 +1806,20 @@ function authModal(mode){
     const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
     nick=inp('Apelido (3 a 16 letras ou números)');
   }
-  const em=inp('E-mail','email'), pw=inp('Senha (mínimo 6 caracteres)','password');
+  const em=mode==='login'?inp('E-mail ou nome de usuário'):inp('E-mail','email'), pw=inp('Senha (mínimo 6 caracteres)','password');
+  if(mode==='login'){ em.autocomplete='username'; em.autocapitalize='none'; }
   const err=el('div','err'); f.appendChild(err);
   const go=btn(mode==='login'?'Entrar':'Criar conta','',async()=>{
     err.textContent=''; go.disabled=true;
     try{
       if(mode==='login'){
-        const {error}=await SB.auth.signInWithPassword({email:em.value.trim(), password:pw.value});
+        let email=em.value.trim();
+        if(!email.includes('@')){                                           // entrou com o nome de usuário: o servidor devolve o e-mail só se a senha bater
+          const {data:e2,error:e3}=await SB.rpc('login_email',{n:email, p:pw.value}); if(e3) throw e3;
+          if(!e2){ err.textContent='Nome de usuário ou senha incorretos.'; return; }
+          email=e2;
+        }
+        const {error}=await SB.auth.signInWithPassword({email, password:pw.value});
         if(error) throw error; closeModal(); toast('Bem-vindo de volta!');
       } else {
         const n=nick.value.trim();
@@ -1846,10 +1853,14 @@ function profileModal(){
 function profileEdit(first){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
   f.appendChild(el('h2','',first?'Complete seu perfil':'Editar perfil'));
-  let av=(ACC.profile&&ACC.profile.avatar)||AVATARS[0];
+  const md=(ACC.user&&ACC.user.user_metadata)||{};                   // o que foi escolhido no cadastro
+  let av=(ACC.profile&&ACC.profile.avatar)||(+md.avatar||0)||AVATARS[0]; if(!AVATARS.includes(av)) av=AVATARS[0];
   f.appendChild(el('div','lbl','Escolha seu avatar'));
   const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
-  const nk=document.createElement('input'); nk.placeholder='Apelido (3 a 16 letras ou números)'; nk.value=(ACC.profile&&ACC.profile.nickname)||''; f.appendChild(nk);
+  const nk=document.createElement('input'); nk.placeholder='Apelido (3 a 16 letras ou números)'; nk.value=(ACC.profile&&ACC.profile.nickname)||md.nickname||''; f.appendChild(nk);
+  if(first) fetchProfile().then(pf=>{ if(!pf) return;                    // confere de novo no servidor: se o perfil já estiver completo, fecha
+    if(pf.nickname){ ACC.profile=pf; if(box.isConnected){ closeModal(); accChip(); } return; }
+    if(pf.avatar && AVATARS.includes(pf.avatar)){ av=pf.avatar; g.querySelectorAll('.av').forEach((x,k)=>x.classList.toggle('sel',AVATARS[k]===av)); } }).catch(()=>{});
   const err=el('div','err'); f.appendChild(err);
   const sv=btn('Salvar','',async()=>{
     err.textContent=''; const n=nk.value.trim();
