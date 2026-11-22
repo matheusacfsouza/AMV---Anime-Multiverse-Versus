@@ -225,7 +225,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rew .up{font-size:60px;font-weight:900;color:#2ee66b;animation:upPop .6s ease-out}
 .rew .note{font-size:30px;color:#ffd84d;text-align:center}
 @keyframes upPop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-.evt{position:absolute;right:30px;top:42px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
+.gear{position:absolute;right:30px;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:56px;cursor:pointer}
+.evt{position:absolute;right:30px;top:160px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:780px}
 .stats div{background:#1b1f27;border-radius:24px;padding:18px;text-align:center;font-size:28px;color:#bbb}
@@ -236,8 +237,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .pid{text-align:right;font-size:40px;font-weight:700;color:#cfd6e0}.pid small{display:block;font-size:28px;font-weight:500;color:#8b95a5}
 .pround{width:96px;height:96px;border-radius:50%;border:0;background:#2a303b;color:#fff;font-size:42px;box-shadow:0 6px 16px #0008;cursor:pointer;flex:none}
 .pround.big{width:150px;height:150px;font-size:64px}
-.pring{--p:0%;position:relative;width:500px;height:500px;border-radius:50%;background:conic-gradient(#2bc2d4 0 var(--p),#3a4352 var(--p) 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px #000a}
-.pring .pav{width:400px;height:400px;border:10px solid #12151c}
+.pring{--p:0%;position:relative;width:500px;height:500px;border-radius:50%;background:conic-gradient(#8fe3ff 0%,#5ee3c1 calc(var(--p) * .6),#47e68a var(--p),#3d4656 var(--p) 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 18px #1b1f27,0 10px 40px #000a}
+.pring .pav{width:390px;height:390px;border:14px solid #1b1f27}
 .pring .pen{position:absolute;right:70px;bottom:70px;width:84px;height:84px;border-radius:50%;border:0;background:#eef2f7;font-size:38px;cursor:pointer;box-shadow:0 4px 12px #0009}
 .plv{font-size:76px;font-weight:900;margin-top:30px}
 .pxp{font-size:38px;color:#9aa4b4;font-weight:700;margin-bottom:30px}
@@ -260,6 +261,16 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .favgrid .fc.on{opacity:1;border-color:#ffd84d;box-shadow:0 0 20px #ffd84d}
 .favgrid .fc b{position:absolute;right:-10px;top:-10px;width:56px;height:56px;border-radius:50%;background:#ffd84d;color:#222;display:flex;align-items:center;justify-content:center;font-size:32px}
 .stats.one{grid-template-columns:1fr}
+.hmode{align-self:flex-start;margin:18px 0 0 40px;font-size:38px;font-weight:700;color:#7fd6f5}
+.pstatus small{display:block;font-size:24px;color:#8b95a5;margin-bottom:2px}
+.pstatus.locked{opacity:.55}.pstatus.locked small{display:inline;margin-left:10px}
+.cfg .tgl{width:820px;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;background:#1d2129;border-radius:28px;padding:26px 36px;font-size:40px;cursor:pointer}
+.cfg .tgl i{width:110px;height:58px;border-radius:30px;background:#3a4352;position:relative;transition:.2s;flex:none}
+.cfg .tgl i::after{content:'';position:absolute;left:6px;top:6px;width:46px;height:46px;border-radius:50%;background:#fff;transition:.2s}
+.cfg .tgl.on i{background:linear-gradient(90deg,#3d9bd6,#2bc2d4)}.cfg .tgl.on i::after{left:58px}
+.cfg .tgl b{font-size:32px;color:#9aa4b4}.cfg .tgl.go b{font-size:50px}
+.socials{display:flex;gap:20px}.soc{background:#1d2129;border-radius:28px;padding:22px 40px;font-size:36px;color:#fff;text-decoration:none}
+.btn.danger{border-color:#ff8a7a;color:#ff8a7a}
 .mbox{display:flex;flex-direction:column;align-items:center;gap:16px;max-width:1000px}
 .mbox .bigcard{width:760px;height:1064px;border-radius:16px;background-size:100% 100%;box-shadow:0 0 50px #000}
 .acts{display:flex;flex-direction:column;gap:12px;width:760px}
@@ -425,7 +436,21 @@ let uidN = 1;
 const mk = id => ({uid:uidN++, id, def:DEFS[id], attacked:false, direct:false, used:false, equips:[], equipTo:null, tmp:null});
 
 const MUSIC=new Audio('Músicas/Música de batalha - Pokémon Sword Shield OST - Gym Leader Battle.mp3'); MUSIC.loop=true; MUSIC.volume=.4;
-let musicOn=true;
+const CFG=(()=>{ try{ return Object.assign({music:true,sfx:true,vib:true},JSON.parse(localStorage.getItem('amv_cfg')||'{}')); }catch(e){ return {music:true,sfx:true,vib:true}; } })();
+const saveCfg=()=>{ try{ localStorage.setItem('amv_cfg',JSON.stringify(CFG)); }catch(e){} };
+let musicOn=CFG.music;
+/* efeitos sonoros sintetizados (sem arquivos) */
+let ACX=null;
+function sfx(kind){
+  if(!CFG.sfx) return;
+  try{ ACX=ACX||new (window.AudioContext||window.webkitAudioContext)(); if(ACX.state==='suspended') ACX.resume();
+    const t=ACX.currentTime, o=ACX.createOscillator(), g=ACX.createGain(); o.connect(g); g.connect(ACX.destination);
+    const S={hit:['square',160,40,.28,.22], play:['triangle',520,1040,.18,.25], heal:['sine',600,900,.15,.3], dmg:['sawtooth',220,90,.18,.25], click:['triangle',800,600,.08,.06]}[kind]||['sine',440,440,.1,.1];
+    o.type=S[0]; o.frequency.setValueAtTime(S[1],t); o.frequency.exponentialRampToValueAtTime(S[2],t+S[4]);
+    g.gain.setValueAtTime(S[3],t); g.gain.exponentialRampToValueAtTime(.001,t+S[4]); o.start(t); o.stop(t+S[4]+.02);
+  }catch(e){}
+}
+const vib=pat=>{ if(CFG.vib && navigator.vibrate) try{ navigator.vibrate(pat); }catch(e){} };
 function musicStart(){ if(musicOn) MUSIC.play().catch(()=>{}); }
 function musicStop(){ MUSIC.pause(); try{MUSIC.currentTime=0;}catch(e){} }
 addEventListener('pointerdown',()=>{ if(G && !G.over && musicOn && MUSIC.paused) musicStart(); });
@@ -444,7 +469,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-191947';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-205624';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -684,7 +709,7 @@ async function lifeFx_raw(who, delta, apply){
   await sleep(420);                                      // desliza rápido até a barra
   f.classList.add('hit'); setTimeout(()=>f.remove(),260);
   if(lb){ lb.classList.remove('flash'); void lb.offsetWidth; lb.classList.add('flash'); }
-  apply();                                               // agora a barra começa a descer/subir
+  apply(); sfx(delta<0?'dmg':'heal'); if(delta<0 && who===0) vib(80);   // agora a barra começa a descer/subir
   const target=P(who).life, t0=Date.now();
   while(Math.round(LF[who])!==target && Date.now()-t0<1800) await sleep(40);
 }
@@ -779,6 +804,7 @@ async function sendVoid(owner, inst){ if(!inst) return; await vanish(inst.uid, o
 /* ---------- ativação de efeito (Item, Apoiador, Campo, Ferramenta): a carta cresce, brilha e explode em luz ---------- */
 async function activateFx_raw(p, card, back, src){
   if(window.__NOFX || !card || card.fxDone) return;
+  sfx('play');
   const st=$('#stage');
   let from=src||G.fxFrom; if(!src) G.fxFrom=null; const dropped=!src&&!!from;
   const e=document.querySelector(`[data-uid="${card.uid}"]`);
@@ -893,7 +919,7 @@ async function clash_raw(att, tgt, p){
   await sleep(90);
   // 3) impacto + parada no golpe
   const ix=ax+dx*(te?.9:.6), iy=ay+dy*(te?.9:.6);
-  impactFrame(); impactFx(ix,iy,ux,uy); shake(te?26:18);
+  impactFrame(); impactFx(ix,iy,ux,uy); shake(te?26:18); sfx('hit'); vib(te?[60,30,60]:40);
   if(te){ te.style.transition='transform .08s ease-out'; te.style.transform=`translate(${ux*40}px,${uy*40}px) rotate(${(Math.random()<.5?-1:1)*7}deg)`; te.classList.add('hit'); }
   await sleep(130);
   // 4) volta
@@ -1269,7 +1295,7 @@ function menuModal(){
   const acts=el('div','acts');
   acts.appendChild(btn('Continuar','',closeModal));
   acts.appendChild(btn('Histórico da partida','sec',histModal));
-  acts.appendChild(btn(musicOn?'Música: ligada':'Música: desligada','sec',()=>{ musicOn=!musicOn; if(musicOn) musicStart(); else MUSIC.pause(); menuModal(); }));
+  acts.appendChild(btn(musicOn?'Música: ligada':'Música: desligada','sec',()=>{ musicOn=CFG.music=!musicOn; saveCfg(); if(musicOn) musicStart(); else MUSIC.pause(); menuModal(); }));
   acts.appendChild(btn('Regras desta versão','sec',rulesModal));
   acts.appendChild(btn('Desistir (voltar ao início)','sec',goHome));
   box.appendChild(acts); showModal(box);
@@ -1557,7 +1583,7 @@ function endGame(winner){
 /* ---- XP no fim da partida ---- */
 async function matchReward(won, life){
   if(SB && ACC.user){
-    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life}); if(error) throw error;
+    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve'}); if(error) throw error;
       if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true}; }
       return {ok:false, reason:data&&data.reason};
     }catch(e){ return {ok:false, reason:'erro'}; }
@@ -1578,8 +1604,15 @@ function showReward(rw, r){
   rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
   if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ leaveMatch(); goHome(); setTimeout(()=>authModal('signup'),300); })); return; }
   const a=levelInfo(r.xp_before), b=levelInfo(r.xp_after);
-  rw.appendChild(el('span','lvl','Nível '+b.lvl)); const bar=xpBar(r.xp_after); rw.appendChild(bar);
-  if(b.lvl>a.lvl) rw.appendChild(el('div','up',`Subiu de nível! ${b.lvl>a.lvl+1?`(+${b.lvl-a.lvl}) `:''}Nível ${b.lvl}`));
+  const tag=el('span','lvl','Nível '+a.lvl); rw.appendChild(tag);
+  const bar=el('div','xpbar'), fill=el('i'), lbl=el('span'); bar.appendChild(fill); bar.appendChild(lbl); rw.appendChild(bar);
+  const setBar=(into,need,anim)=>{ fill.style.transition=anim?'width .9s ease-out':'none'; fill.style.width=(need?100*into/need:100)+'%'; lbl.textContent=need?`${into.toLocaleString('pt-BR')} / ${need.toLocaleString('pt-BR')} XP`:'Nível máximo'; };
+  setBar(a.into,a.need,false);
+  (async()=>{ await sleep(250);
+    for(let L=a.lvl; L<b.lvl; L++){ setBar(xpNeed(L),xpNeed(L),true); await sleep(1000); tag.textContent='Nível '+(L+1); setBar(0,xpNeed(L+1),false); await sleep(60); }   // enche, zera e a sobra começa o próximo
+    setBar(b.into,b.need,true);
+    if(b.lvl>a.lvl) rw.appendChild(el('div','up',`Subiu de nível! ${b.lvl>a.lvl+1?`(+${b.lvl-a.lvl}) `:''}Nível ${b.lvl}`));
+  })();
 }
 
 async function beginMatch(first){
@@ -1867,6 +1900,7 @@ function accChip(){
   else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
     c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
   home.appendChild(c);
+  if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
 }
@@ -1929,7 +1963,7 @@ function authModal(mode){
   showModal(box);
 }
 /* ---- tela de perfil (referência: perfil do Pokémon TCG Pocket, em versão escura) ---- */
-const STATUS_LIST=['É um prazer te conhecer!','Bora duelar?','Família Ma Mei para sempre!','Colecionando todas as cartas.','Treinando todos os dias.','Aceito qualquer desafio!','Ninguém segura a Velha Guarda!','Jogando por diversão.'];
+const TITLES=[{t:'Aprendiz',lvl:1},{t:'Mestre',lvl:50}];                 // títulos; o servidor confere o nível
 const playerId=uid=>{ const h=(uid||'').replace(/-/g,''); let n=''; for(let i=0;i<16;i++) { const c=h[i]||'0'; const v=parseInt(c,16); n+=((isNaN(v)?c.charCodeAt(0):v)%10); } return n.replace(/(\d{4})(?=\d)/g,'$1-'); };
 function profileModal(){
   const pf=ACC.profile||{}; const li=levelInfo(pf.xp);
@@ -1942,12 +1976,10 @@ function profileModal(){
   const pen=el('button','pen','✏️'); pen.onclick=()=>avatarPick(); ring.appendChild(pen); sc.appendChild(ring);
   sc.appendChild(el('div','plv',`Nv. ${li.lvl}`));
   sc.appendChild(el('div','pxp',li.need?`${li.into.toLocaleString('pt-BR')}/${li.need.toLocaleString('pt-BR')}`:'Nível máximo'));
-  const nm=el('div','ppill pname',`<span>${pf.nickname||''}</span><b>✏️</b>`); nm.onclick=()=>profileEdit(false); sc.appendChild(nm);
-  const st=el('div','ppill pstatus',pf.status||STATUS_LIST[0]); st.onclick=()=>statusPick(); sc.appendChild(st);
+  const nm=el('div','ppill pname',`<span>${pf.nickname||''}</span><b>✏️</b>`); nm.onclick=()=>nameEdit(); sc.appendChild(nm);
+  const st=el('div','ppill pstatus',`<small>Título</small>${pf.status||'Aprendiz'}`); st.onclick=()=>statusPick(); sc.appendChild(st);
   const hb=el('div','pact'); const hbtn=el('button','pround big','📜'); hbtn.onclick=()=>battleHistory(); hb.appendChild(hbtn); hb.appendChild(el('div','',`Histórico de Batalha`)); sc.appendChild(hb);
   // emblemas (futuro: conquistas)
-  sc.appendChild(el('div','psec','Emblemas'));
-  const em=el('div','pemb'); for(let i=0;i<3;i++) em.appendChild(el('div','emb','<span>🔒</span><small>Em breve</small>')); sc.appendChild(em);
   // destaque: as 3 favoritas
   sc.appendChild(el('div','psec','Destaque de Jogador'));
   const dz=el('div','pdest'); const fv=favs();
@@ -1957,15 +1989,44 @@ function profileModal(){
   const de=el('button','pround dedit','✏️'); de.onclick=()=>favPick(ov); dz.appendChild(de); sc.appendChild(dz);
   sc.appendChild(el('div','psec','Cartas que possui'));
   sc.appendChild(el('div','ppill pcount',`<span>🃏</span><b>${Object.keys(DEFS).length.toLocaleString('pt-BR')}</b>`));
-  const out=el('button','plink','Sair da conta'); out.onclick=async()=>{ await SB.auth.signOut(); ov.remove(); toast('Você saiu da conta.'); }; sc.appendChild(out);
   const x=el('button','pclose','✕'); x.onclick=()=>ov.remove(); ov.appendChild(x);
   const old=document.querySelector('.profscr'); if(old) old.remove();
   $('#stage').appendChild(ov);
 }
 const reopenProfile=()=>{ if(document.querySelector('.profscr')) profileModal(); };
 async function saveProfile(patch){
-  const {error}=await SB.from('profiles').update(patch).eq('id',ACC.user.id); if(error){ toast(errPt(error)); return false; }
+  const {error}=await SB.from('profiles').update(patch).eq('id',ACC.user.id); if(error){ toast(/titulo_bloqueado/.test(error.message||'')?'Você ainda não liberou esse título.':errPt(error)); return false; }
   Object.assign(ACC.profile,patch); accChip(); reopenProfile(); return true;
+}
+function nameEdit(){
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Mudar apelido'));
+  const nk=document.createElement('input'); nk.placeholder='Apelido (3 a 16 letras ou números)'; nk.value=ACC.profile.nickname||''; f.appendChild(nk);
+  const err=el('div','err'); f.appendChild(err);
+  const sv=btn('Salvar','',async()=>{
+    const n=nk.value.trim(); err.textContent='';
+    if(!NICK_RE.test(n)){ err.textContent='O apelido precisa ter de 3 a 16 letras, números ou _ (sem espaços).'; return; }
+    if(n===ACC.profile.nickname){ closeModal(); return; }
+    sv.disabled=true;
+    try{ const {data:livre,error:e1}=await SB.rpc('nickname_available',{n}); if(e1) throw e1;
+      if(!livre){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; }
+      const {error}=await SB.from('profiles').update({nickname:n}).eq('id',ACC.user.id);
+      if(error){ if(/duplicate|unique/i.test(error.message||'')){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; } throw error; }
+      ACC.profile.nickname=n; closeModal(); accChip(); reopenProfile(); toast('Apelido alterado!');
+    }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
+  });
+  const row=el('div','row'); row.appendChild(sv); row.appendChild(btn('Cancelar','sec',closeModal)); f.appendChild(row); showModal(box); setTimeout(()=>nk.focus(),50);
+}
+function settingsModal(){
+  const box=el('div','mbox'); const f=el('div','form cfg'); box.appendChild(f); f.appendChild(el('h2','','Configurações'));
+  const tg=(label,key,after)=>{ const r=el('div','tgl'+(CFG[key]?' on':''),`<span>${label}</span><i></i>`); r.onclick=()=>{ CFG[key]=!CFG[key]; saveCfg(); r.classList.toggle('on',CFG[key]); if(after) after(); if(key==='sfx') sfx('click'); if(key==='vib') vib(40); }; f.appendChild(r); };
+  tg('🎵 Música','music',()=>{ musicOn=CFG.music; if(!musicOn) MUSIC.pause(); else if(G&&!G.over) musicStart(); });
+  tg('🔊 Som','sfx'); tg('📳 Vibração','vib');
+  if(ACC.user){ const pid=playerId(ACC.user.id); const r=el('div','tgl id',`<span>🆔 ID do jogador</span><b>${pid}</b>`); r.onclick=()=>{ try{ navigator.clipboard.writeText(pid); toast('ID copiado!'); }catch(e){} }; f.appendChild(r); }
+  const rb=el('div','tgl go','<span>📖 Regras</span><b>›</b>'); rb.onclick=()=>{ closeModal(); setTimeout(()=>{ nav('rules'); rulesModal(); },50); }; f.appendChild(rb);
+  const soc=el('div','socials'); [['Instagram','https://www.instagram.com/cofesoapp','📸'],['TikTok','https://www.tiktok.com/@cofesoapp','🎬']].forEach(([n,u,i])=>{ const a=document.createElement('a'); a.href=u; a.target='_blank'; a.rel='noopener'; a.className='soc'; a.innerHTML=`${i} ${n}`; soc.appendChild(a); }); f.appendChild(soc);
+  if(ACC.user){ const out=btn('Sair da conta','sec',async()=>{ await SB.auth.signOut(); closeModal(); toast('Você saiu da conta.'); }); out.classList.add('danger'); f.appendChild(out); }
+  else if(SB) f.appendChild(btn('Entrar / Criar conta','',()=>{ closeModal(); setTimeout(()=>authModal('login'),50); }));
+  f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
 }
 function avatarPick(){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Escolha seu avatar'));
@@ -1973,8 +2034,10 @@ function avatarPick(){
   f.appendChild(btn('Cancelar','sec',closeModal)); showModal(box);
 }
 function statusPick(){
-  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Mensagem do perfil'));
-  STATUS_LIST.forEach(t=>{ const b=el('div','ppill pstatus opt'+((ACC.profile.status||STATUS_LIST[0])===t?' on':''),t); b.onclick=async()=>{ closeModal(); await saveProfile({status:t}); }; f.appendChild(b); });
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Título'));
+  const lv=levelInfo(ACC.profile.xp).lvl, cur=ACC.profile.status||'Aprendiz';
+  TITLES.forEach(T=>{ const ok=lv>=T.lvl; const b=el('div','ppill pstatus opt'+(cur===T.t?' on':'')+(ok?'':' locked'), ok?T.t:`🔒 ${T.t} <small>libera no nível ${T.lvl}</small>`);
+    b.onclick=async()=>{ if(!ok){ toast(`O título ${T.t} libera no nível ${T.lvl}.`); return; } closeModal(); await saveProfile({status:T.t}); }; f.appendChild(b); });
   f.appendChild(btn('Cancelar','sec',closeModal)); showModal(box);
 }
 function favPick(ov){
@@ -1988,12 +2051,15 @@ function favPick(ov){
   const row=el('div','row'); row.appendChild(btn('Salvar','',()=>{ saveFavs(sel); closeModal(); reopenProfile(); })); row.appendChild(btn('Cancelar','sec',closeModal)); f.appendChild(row);
   showModal(box);
 }
-function battleHistory(){
-  const pf=ACC.profile||{}; const g=pf.games|0, w=pf.wins|0, l=pf.losses|0;
+const MODES=[{k:'pve',n:'Contra a máquina (PvE)'},{k:'pvp',n:'Contra jogadores (PvP)'}];   // novos modos entram aqui
+async function battleHistory(){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Histórico de Batalha'));
-  f.appendChild(el('div','stats',`<div><b>${g}</b>Partidas</div><div><b>${w}</b>Vitórias</div><div><b>${l}</b>Derrotas</div>`));
-  f.appendChild(el('div','stats one',`<div><b>${g?Math.round(100*w/g):0}%</b>Taxa de vitória</div>`));
-  f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+  const wait=el('div','lbl','Carregando...'); f.appendChild(wait); f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+  let rows=[]; try{ const {data}=await SB.from('mode_stats').select('mode,games,wins,losses').eq('user_id',ACC.user.id); rows=data||[]; }catch(e){}
+  wait.remove(); const close=f.lastChild;
+  MODES.forEach(M=>{ const r=rows.find(x=>x.mode===M.k)||{games:0,wins:0};
+    f.insertBefore(el('div','hmode',M.n),close);
+    f.insertBefore(el('div','stats',`<div><b>${r.games}</b>Partidas jogadas</div><div><b>${r.wins}</b>Partidas ganhas</div><div><b>${r.games?Math.round(100*r.wins/r.games):0}%</b>Vitórias</div>`),close); });
 }
 function profileEdit(first){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f);
@@ -2018,7 +2084,8 @@ function profileEdit(first){
         const {data:livre,error:e1}=await SB.rpc('nickname_available',{n}); if(e1) throw e1;
         if(!livre){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; }
       }
-      const {error}=await SB.from('profiles').upsert({id:ACC.user.id, nickname:n, avatar:av},{onConflict:'id'});
+      let {data:upd,error}=await SB.from('profiles').update({nickname:n, avatar:av}).eq('id',ACC.user.id).select('id');
+      if(!error && (!upd || !upd.length)) ({error}=await SB.from('profiles').insert({id:ACC.user.id, nickname:n, avatar:av}));
       if(error){ if(/duplicate|unique/i.test(error.message||'')){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; } throw error; }
       ACC.profile=Object.assign(ACC.profile||{}, {nickname:n, avatar:av}); closeModal(); accChip(); reopenProfile(); toast('Perfil salvo!');
     }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
