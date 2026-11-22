@@ -207,6 +207,27 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .actfx.ret .face{animation:actFlash .36s ease-out}
 .actfx.ret .ring{opacity:0;transition:opacity .3s}
 @keyframes actFlash{0%{filter:brightness(2.2)}100%{filter:brightness(1)}}
+.dtool{display:flex;gap:20px;justify-content:center;margin:4px 0 14px}
+.dtool .btn{font-size:36px;padding:14px 30px;border-radius:40px}
+.dtool .btn b{color:#7fd6f5}
+.tile{position:relative}
+.tile .fav{position:absolute;right:8px;top:48px;font-size:40px;filter:drop-shadow(0 2px 4px #000)}
+.sheetov{position:absolute;inset:0;background:#000a;z-index:900}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:1500px;background:#eef3f8;color:#2b3440;border-radius:56px 56px 0 0;box-shadow:0 -10px 40px #0008;display:flex;flex-direction:column;padding:26px 46px 30px}
+.sheet .grab{width:120px;height:10px;border-radius:6px;background:#c5d1de;margin:0 auto 22px}
+.sheet .search{display:flex;align-items:center;gap:14px;background:#e1e9f2;border-radius:50px;padding:16px 30px;box-shadow:inset 0 3px 8px #b9c6d4}
+.sheet .search input{flex:1;border:0;background:transparent;font:inherit;font-size:40px;color:#2b3440;outline:none}
+.sheet .body{overflow-y:auto;flex:1;min-height:0;margin-top:18px;padding-bottom:20px;-webkit-overflow-scrolling:touch}
+.sheet h4{font-size:46px;font-weight:700;margin:34px 6px 14px;display:flex;justify-content:space-between;align-items:center}
+.sheet .box{background:#f4f8fb;border-radius:36px;padding:22px;box-shadow:0 4px 14px #c9d5e2;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pill{background:#fff;border-radius:44px;padding:18px 10px;font-size:34px;text-align:center;box-shadow:0 4px 10px #c3cfdc;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;color:#4a5562}
+.pill.on{background:linear-gradient(90deg,#86cdf7,#6fe3f0);color:#fff;box-shadow:0 4px 14px #7fd6f5aa}
+.pill img{width:40px;height:40px}
+.pill.all{padding:12px 30px;font-size:30px}
+.sheet .foot{display:flex;align-items:center;justify-content:center;gap:30px;margin-top:14px}
+.sheet .ok{background:linear-gradient(90deg,#86cdf7,#6fe3f0);color:#fff;font-size:46px;font-weight:700;border-radius:60px;padding:22px 140px;box-shadow:0 6px 20px #7fd6f5aa;cursor:pointer}
+.sheet .x{width:110px;height:110px;border-radius:50%;background:#fff;box-shadow:0 4px 12px #c3cfdc;font-size:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sheet .clr{background:#fff;border-radius:50px;padding:20px 50px;font-size:36px;box-shadow:0 4px 12px #c3cfdc;cursor:pointer}
 .tile .stars{font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:4px;margin:4px 0}
 .tile .stars img{width:34px;height:34px}
 .tico{width:1.05em;height:1.05em;vertical-align:-.17em;margin-right:.22em}
@@ -1713,10 +1734,12 @@ function deckScreen(){
   const s=el('div','scr'); s.style.padding='30px 30px';
   s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">MONTAR BARALHO</div>`));
   const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; s.appendChild(info);
+  const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView));
+  tools.appendChild(fb); tools.appendChild(ob); s.appendChild(tools);
   const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
-  const nums={};
+  const nums={}, tiles={};
   Object.values(DEFS).forEach(d=>{
-    const t=el('div','tile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d);
+    const t=el('div','tile'); tiles[d.id]=t; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d,applyView);
     t.appendChild(el('div','stars',`<img src="Icones/16.png" alt="">×${STARS[d.id]||1}`));
     const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
     ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
@@ -1724,8 +1747,14 @@ function deckScreen(){
     ctl.appendChild(btn('+','',()=>{ const five=Object.keys(counts).reduce((t,k)=>t+((STARS[k]||0)>=5?counts[k]:0),0);
       if((STARS[d.id]||0)>=5 && five>=1) toast('Só pode ter 1 carta de 5 estrelas no baralho.');
       else if(counts[d.id]<maxCopies(d.id)){counts[d.id]++;upd();} else toast(`Máximo de ${maxCopies(d.id)} cópia(s) desta carta.`); }));
-    t.appendChild(im); t.appendChild(ctl); grid.appendChild(t);
+    t.appendChild(im); t.appendChild(ctl);
   });
+  function applyView(){
+    const list=deckView(DV); grid.replaceChildren(...list.map(d=>{ const t=tiles[d.id]; const f=t.querySelector('.fav'); if(f) f.remove(); if(favs().includes(d.id)) t.appendChild(el('div','fav','❤️')); return t; }));
+    if(!list.length) grid.appendChild(el('div','',`<span style="font-size:36px;color:#aaa">Nenhuma carta com esses filtros.</span>`));
+    const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`;
+  }
+  applyView();
   // verso do baralho
   let back=myBack();
   const bw=el('div','backs'); bw.appendChild(el('span','',`Verso do baralho:`));
@@ -1744,9 +1773,70 @@ function deckScreen(){
   }
   upd(); setScreen(s);
 }
-function cardModalView(d){
+function cardModalView(d, onChange){
   const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
-  box.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+  const row=el('div','row');
+  const fv=btn('','sec',()=>{ let f=favs(); if(f.includes(d.id)) f=f.filter(x=>x!==d.id); else { if(f.length>=3){ toast('Você pode favoritar até 3 cartas.'); return; } f.push(d.id); }
+    try{ localStorage.setItem('amv_favs',JSON.stringify(f)); }catch(e){} lbl(); if(onChange) onChange(); });
+  const lbl=()=>{ fv.textContent=favs().includes(d.id)?'❤️ Desfavoritar':`🤍 Favoritar (${favs().length}/3)`; }; lbl();
+  row.appendChild(fv); row.appendChild(btn('Fechar','sec',closeModal)); box.appendChild(row); showModal(box);
+}
+/* ---- organização e filtros do montador de baralho ---- */
+const favs=()=>{ try{ const f=JSON.parse(localStorage.getItem('amv_favs')||'[]'); return Array.isArray(f)?f.filter(id=>DEFS[id]).slice(0,3):[]; }catch(e){ return []; } };
+const DV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'padrao'};
+const SORTS=[{k:'padrao',n:'Padrão'},{k:'nome',n:'Nome (A-Z)'},{k:'rar_d',n:'Raridade ↓'},{k:'rar_a',n:'Raridade ↑'},{k:'atk_d',n:'ATQ alto → baixo'},{k:'atk_a',n:'ATQ baixo → alto'}];
+const CATS=[['char','Personagem'],['poder','Poder'],['field','Campo'],['support','Apoiador'],['tool','Ferramenta'],['item','Item']];
+const filterCount=v=>(v.q?1:0)+(v.fav?1:0)+v.stars.size+v.cat.size+v.el.size+v.arq.size;
+function deckView(v){
+  const q=v.q.trim().toLowerCase(), F=favs(), st=d=>STARS[d.id]||1, nm=(a,b)=>a.name.localeCompare(b.name,'pt');
+  let L=Object.values(DEFS).filter(d=>{
+    if(q && !d.name.toLowerCase().includes(q)) return false;
+    if(v.fav==='fav' && !F.includes(d.id)) return false;
+    if(v.fav==='nfav' && F.includes(d.id)) return false;
+    if(v.stars.size && !v.stars.has(st(d))) return false;
+    if(v.cat.size && !(v.cat.has(d.kind) || (d.kind!=='char' && v.cat.has('poder')))) return false;
+    if(v.el.size && !v.el.has(d.el)) return false;
+    if(v.arq.size && !(d.arq||[]).some(a=>v.arq.has(a))) return false;
+    return true;
+  });
+  const atk=d=>d.kind==='char'?d.atk:-1;
+  const cmp={padrao:(a,b)=>st(a)-st(b)||nm(a,b), nome:nm, rar_d:(a,b)=>st(b)-st(a)||nm(a,b), rar_a:(a,b)=>st(a)-st(b)||nm(a,b),
+             atk_d:(a,b)=>atk(b)-atk(a)||nm(a,b), atk_a:(a,b)=>(a.kind==='char'?0:1)-(b.kind==='char'?0:1)||atk(a)-atk(b)||nm(a,b)}[v.sort];
+  return L.sort(cmp);
+}
+function sheetShell(title){
+  const ov=el('div','sheetov'); const sh=el('div','sheet'); sh.appendChild(el('div','grab')); ov.appendChild(sh);
+  ov.onclick=e=>{ if(e.target===ov) ov.remove(); }; $('#stage').appendChild(ov); return {ov,sh};
+}
+function filterSheet(v, done){
+  const w={q:v.q, fav:v.fav, stars:new Set(v.stars), cat:new Set(v.cat), el:new Set(v.el), arq:new Set(v.arq)};
+  const {ov,sh}=sheetShell();
+  const sr=el('div','search','<span style="font-size:40px">🔍</span>'); const inp=document.createElement('input'); inp.placeholder='Pesquisar pelo nome'; inp.value=w.q; inp.oninput=()=>{ w.q=inp.value; }; sr.appendChild(inp); sh.appendChild(sr);
+  const body=el('div','body'); sh.appendChild(body);
+  const sec=(title,items,set,single)=>{
+    const h=el('h4','',title); body.appendChild(h); const bx=el('div','box'); body.appendChild(bx);
+    const pills=items.map(([k,label])=>{ const pl=el('div','pill',label); const on=()=>single?w.fav===k:set.has(k);
+      pl.classList.toggle('on',on()); pl.onclick=()=>{ if(single) w.fav=(w.fav===k?null:k); else (set.has(k)?set.delete(k):set.add(k)); pills.forEach(x=>x.sync()); };
+      pl.sync=()=>pl.classList.toggle('on',on()); bx.appendChild(pl); return pl; });
+    if(!single){ const all=el('div','pill all','Tudo'); all.onclick=()=>{ set.clear(); pills.forEach(x=>x.sync()); }; h.appendChild(all); }
+  };
+  sec('Favoritas',[['fav','Favoritas'],['nfav','Não favoritas']],null,true);
+  sec('Raridade',[1,2,3,4,5].map(n=>[n,`<img src="Icones/16.png" alt="">×${n}`]),w.stars);
+  sec('Categoria',CATS,w.cat);
+  sec('Tipo',Object.keys(ELEM).map(k=>[k,`<img src="Icones/${EL_ICO[k]}.png" alt="">${ELEM[k].n}`]),w.el);
+  const arqs=[...new Set(Object.values(DEFS).flatMap(d=>d.arq||[]))].sort((a,b)=>a.localeCompare(b,'pt'));
+  sec('Arquétipo',arqs.map(a=>[a,a]),w.arq);
+  const foot=el('div','foot');
+  const x=el('div','x','✕'); x.onclick=()=>ov.remove();
+  const ok=el('div','ok','OK'); ok.onclick=()=>{ Object.assign(v,w); ov.remove(); done(); };
+  const clr=el('div','clr','Limpar'); clr.onclick=()=>{ Object.assign(v,{q:'',fav:null,stars:new Set(),cat:new Set(),el:new Set(),arq:new Set()}); ov.remove(); done(); };
+  foot.appendChild(x); foot.appendChild(ok); foot.appendChild(clr); sh.appendChild(foot);
+}
+function sortSheet(v, done){
+  const {ov,sh}=sheetShell(); sh.appendChild(el('h4','','Organizar por'));
+  const bx=el('div','box'); sh.appendChild(bx);
+  SORTS.forEach(o=>{ const pl=el('div','pill'+(v.sort===o.k?' on':''),o.n); pl.onclick=()=>{ v.sort=o.k; ov.remove(); done(); }; bx.appendChild(pl); });
+  const foot=el('div','foot'); const x=el('div','x','✕'); x.onclick=()=>ov.remove(); foot.appendChild(x); sh.appendChild(foot);
 }
 
 function startFlow(){
