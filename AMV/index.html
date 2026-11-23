@@ -229,6 +229,29 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mis span{width:150px;height:150px;border-radius:50%;background:#000b;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:70px}
 .mis small{font-size:32px;font-weight:700;text-shadow:0 2px 6px #000}
 .mis.dot span::after{content:'';position:absolute;right:14px;top:6px;width:34px;height:34px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
+.cry{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
+.crybox{position:absolute;right:160px;top:38px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
+.crybox b{font-weight:900}
+.crytot{display:flex;align-items:center;gap:10px}.crytot small{font-size:30px;color:#bbb;font-weight:600}
+.mscr .pbody{padding-top:70px}
+.mtitle{font-size:72px;font-weight:900;margin-bottom:36px}
+.mtabs{display:flex;gap:16px;margin-bottom:24px}
+.mtab{padding:20px 40px;border-radius:50px;background:#1d2129;font-size:38px;cursor:pointer;color:#cfd6e0}
+.mtab.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff;font-weight:700}
+.mtimer{font-size:34px;color:#9aa4b4;margin-bottom:26px}
+.mguest{display:flex;flex-direction:column;align-items:center;gap:18px;background:#2a1f12;border:3px solid #ffd84d;border-radius:30px;padding:28px 40px;margin-bottom:30px;font-size:38px;color:#ffd84d;text-align:center}
+.mlist{display:flex;flex-direction:column;gap:22px;width:960px}
+.mrow{display:flex;align-items:center;gap:24px;background:#1d2129;border-radius:30px;padding:26px 30px;box-shadow:0 6px 18px #0008}
+.mrow.done{border:3px solid #47e68a}.mrow.claimed{opacity:.55}
+.minfo{flex:1;min-width:0}.mname{font-size:40px;font-weight:700;margin-bottom:14px}
+.mbar{position:relative;height:40px;border-radius:22px;background:#0b0d12;overflow:hidden}
+.mbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#8fe3ff,#47e68a)}
+.mbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;text-shadow:0 2px 4px #000}
+.mend{font-size:26px;color:#9aa4b4;margin-top:8px}
+.mrew{display:flex;flex-direction:column;align-items:center;font-size:36px;min-width:130px}.mrew small{font-size:26px;color:#7fd6f5}
+.mstat{font-size:30px;color:#9aa4b4;min-width:200px;text-align:center}
+.mrow .btn{min-width:200px}
+.mempty{font-size:38px;color:#9aa4b4;text-align:center;padding:80px 0}
 .gear{position:absolute;right:30px;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:56px;cursor:pointer}
 .evt{position:absolute;right:30px;top:160px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
@@ -476,7 +499,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-211947';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-224512';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -1591,7 +1614,7 @@ function endGame(winner){
 async function matchReward(won, life){
   if(SB && ACC.user){
     try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve'}); if(error) throw error;
-      if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true}; }
+      if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; if(data.crystals_after!=null) ACC.profile.crystals=data.crystals_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true}; }
       return {ok:false, reason:data&&data.reason};
     }catch(e){ return {ok:false, reason:'erro'}; }
   }
@@ -1600,7 +1623,7 @@ async function matchReward(won, life){
   const base=won?100:25, tags=[]; let bonus=0;
   if(won){ if(last!==today){ bonus+=100; tags.push('Primeira vitória do dia +100'); try{ localStorage.setItem('amv_gw',today); }catch(e){} }
     if(life>=10000){ bonus+=100; tags.push('Perfect +100'); } else if(life<=100){ bonus+=500; tags.push('Imortal +500'); } else if(life<=1000){ bonus+=50; tags.push('Foi por pouco +50'); } }
-  return {ok:true, guest:true, base, bonus, tags, mult:MULT, total:(base+bonus)*MULT};
+  return {ok:true, guest:true, base, bonus, tags, mult:MULT, total:(base+bonus)*MULT, crystals:won?100:0};
 }
 function showReward(rw, r){
   rw.replaceChildren();
@@ -1609,6 +1632,8 @@ function showReward(rw, r){
   (r.tags||[]).forEach(t=>{ const m=t.match(/^(.*) \+(\d+)$/); rw.appendChild(el('div','ln',`<span>${m?m[1]:t}</span><b>+${m?m[2]:''} XP</b>`)); });
   if(r.mult>1) rw.appendChild(el('div','ln',`<span>Multiplicador</span><b>×${r.mult}</b>`));
   rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
+  if(r.crystals) rw.appendChild(el('div','tot crytot',`+${CRYSTAL_SVG}<b>${r.crystals}</b> <small>Cristais AMV</small>`));
+  if(!r.guest) setTimeout(loadMissions,300);
   if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ leaveMatch(); goHome(); setTimeout(()=>authModal('signup'),300); })); return; }
   const a=levelInfo(r.xp_before), b=levelInfo(r.xp_after);
   const tag=el('span','lvl','Nível '+a.lvl); rw.appendChild(tag);
@@ -1891,7 +1916,10 @@ const LVL_MAX=100, xpNeed=L=>Math.round(500*Math.pow(1.05,L-1));
 function levelInfo(xp){ let L=1, rest=Math.max(0,xp|0); while(L<LVL_MAX && rest>=xpNeed(L)){ rest-=xpNeed(L); L++; } return {lvl:L, into:L>=LVL_MAX?0:rest, need:L>=LVL_MAX?0:xpNeed(L)}; }
 function xpBar(xp){ const li=levelInfo(xp), b=el('div','xpbar'); const f=el('i'); b.appendChild(f); b.appendChild(el('span','',li.need?`${li.into.toLocaleString('pt-BR')} / ${li.need.toLocaleString('pt-BR')} XP`:'Nível máximo'));
   requestAnimationFrame(()=>{ f.style.width=(li.need?100*li.into/li.need:100)+'%'; }); return b; }
-let MULT=1;                                                      // multiplicador ativo (evento, passe ou propaganda)
+let MULT=1;
+/* ---- Cristais AMV: ícone provisório (será trocado pela arte definitiva) ---- */
+const CRYSTAL_SVG='<svg class="cry" viewBox="0 0 64 64"><defs><linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9f3ff"/><stop offset=".5" stop-color="#5aa8ff"/><stop offset="1" stop-color="#8a4dff"/></linearGradient></defs><path d="M32 3 54 22 32 61 10 22Z" fill="url(#cg1)" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 22h44M32 3l-9 19 9 39 9-39z" fill="none" stroke="#ffffffaa" stroke-width="2" stroke-linejoin="round"/></svg>';
+const crys=n=>`${CRYSTAL_SVG}<b>${(n|0).toLocaleString('pt-BR')}</b>`;                                                      // multiplicador ativo (evento, passe ou propaganda)
 const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
 function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize='230%'; a.style.backgroundPosition='50% 22%'; } return a; }
 const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
@@ -1899,7 +1927,7 @@ const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Ema
   [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
   [/rate limit|too many/i,'Muitas tentativas. Espere um pouco e tente de novo.'],[/Failed to fetch|NetworkError/i,'Sem conexão com o servidor. Verifique sua internet.']];
 const errPt=e=>{ const m=(e&&(e.message||e.error_description))||String(e); const f=ERR_PT.find(([r])=>r.test(m)); return f?f[1]:'Algo deu errado: '+m; };
-const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar,xp,games,wins,losses,status,favs').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
+const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar,xp,games,wins,losses,status,favs,crystals').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
 async function loadProfile(){
   ACC.profile=null; if(!SB||!ACC.user) return;
   try{
@@ -1913,7 +1941,7 @@ let accBusy=null;
 function accRefresh(){
   if(accBusy) return accBusy;
   accBusy=(async()=>{ try{
-    await loadProfile(); accChip(); loadMult();
+    await loadProfile(); accChip(); loadMult(); if(ACC.user) touchLogin(); else loadMissions();
     if(ACC.user && ACC.profile && !ACC.profile.nickname && !G && !$('#modal').classList.contains('on')) profileEdit(true);   // conta nova (ex.: Google) sem apelido
   } finally { accBusy=null; } })();
   return accBusy;
@@ -1926,8 +1954,11 @@ function accChip(){
   else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
     c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
   home.appendChild(c);
-  if(!home.querySelector('.mis')){ const mb=el('button','mis','<span>📋</span><small>Missões</small>'); mb.setAttribute('aria-label','Missões'); mb.onclick=missionsScreen; home.appendChild(mb); }
+  if(!home.querySelector('.mis')){ const mb=el('button','mis','<span>📋</span><small>Missões</small>'); mb.setAttribute('aria-label','Missões'); mb.onclick=()=>missionsScreen(); home.appendChild(mb); }
   if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
+  let cc=home.querySelector('.crybox'); if(cc) cc.remove();
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ cc=el('div','crybox',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; home.appendChild(cc); }
+  const mb=home.querySelector('.mis'); if(mb) mb.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed));
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
 }
@@ -2046,11 +2077,49 @@ function nameEdit(){
   const row=el('div','row'); row.appendChild(sv); row.appendChild(btn('Cancelar','sec',closeModal)); f.appendChild(row); showModal(box); setTimeout(()=>nk.focus(),50);
 }
 /* ---- missões (estrutura; o conteúdo será definido) ---- */
-const missionsPending=()=>false;                                 // vira verdadeiro quando houver missões diárias incompletas
-function missionsScreen(){
-  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Lista de Missões'));
-  f.appendChild(el('div','lbl','Em breve: missões diárias, de tempo limitado e regulares.'));
-  f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
+let MIS=[];                                                     // missões com o progresso do jogador
+const missionsPending=()=>!!(ACC.user && MIS.some(m=>m.kind==='daily' && !m.claimed));
+async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
+let LOGIN_TOUCHED=false;
+async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
+function resetIn(kind){                                          // tempo até renovar (horário de Brasília, UTC-3)
+  const now=Date.now(), br=new Date(now-3*3600e3); const d=new Date(Date.UTC(br.getUTCFullYear(),br.getUTCMonth(),br.getUTCDate()));
+  if(kind==='daily') d.setUTCDate(d.getUTCDate()+1); else d.setUTCDate(d.getUTCDate()+(7-br.getUTCDay()));   // semanal: domingo
+  const ms=d.getTime()+3*3600e3-now, h=Math.floor(ms/3600e3), m=Math.floor(ms%3600e3/60e3);
+  return h>=24?`${Math.floor(h/24)} d ${String(h%24).padStart(2,'0')} h`:`${String(h).padStart(2,'0')} h ${String(m).padStart(2,'0')} m`;
+}
+const MIS_TABS=[{k:'daily',n:'Diárias'},{k:'weekly',n:'Semanais'},{k:'event',n:'Tempo limitado'}];
+async function missionsScreen(tab){
+  if(typeof tab!=='string') tab='daily';
+  const old=document.querySelector('.profscr'); if(old) old.remove();
+  const ov=el('div','profscr mscr'); const sc=el('div','pbody'); ov.appendChild(sc);
+  sc.appendChild(el('div','mtitle','Lista de Missões'));
+  const tabs=el('div','mtabs'); MIS_TABS.forEach(T=>{ const b=el('div','mtab'+(T.k===tab?' on':''),T.n); b.onclick=()=>missionsScreen(T.k); tabs.appendChild(b); }); sc.appendChild(tabs);
+  if(tab!=='event') sc.appendChild(el('div','mtimer',`🕒 Renova em ${resetIn(tab)}`));
+  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta e pegue os seus prêmios</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); sc.appendChild(g); }
+  const list=el('div','mlist'); sc.appendChild(list);
+  const x=el('button','pclose','✕'); x.onclick=()=>ov.remove(); ov.appendChild(x);
+  $('#stage').appendChild(ov);
+  await loadMissions();
+  const L=MIS.filter(m=>m.kind===tab);
+  if(!L.length){ list.appendChild(el('div','mempty',tab==='event'?'Nenhum evento no momento. Fique de olho!':'Nenhuma missão.')); return; }
+  L.forEach(m=>{
+    const done=m.progress>=m.goal, row=el('div','mrow'+(m.claimed?' claimed':done?' done':''));
+    const info=el('div','minfo'); info.appendChild(el('div','mname',m.title));
+    const bar=el('div','mbar'); const f=el('i'); f.style.width=Math.min(100,100*m.progress/m.goal)+'%'; bar.appendChild(f); bar.appendChild(el('span','',`${m.progress}/${m.goal}`)); info.appendChild(bar);
+    if(m.kind==='event' && m.ends_at) info.appendChild(el('div','mend',`Termina em ${new Date(m.ends_at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`));
+    row.appendChild(info);
+    const rw=el('div','mrew'); rw.innerHTML=(m.reward_crystals?crys(m.reward_crystals):'')+(m.reward_xp?`<small>+${m.reward_xp} XP</small>`:''); row.appendChild(rw);
+    let act;
+    if(m.claimed) act=el('div','mstat','✓ Resgatado');
+    else if(done && ACC.user){ act=btn('Resgatar','',async()=>{ act.disabled=true;
+        const {data,error}=await SB.rpc('claim_mission',{p_id:m.id});
+        if(error||!data||!data.ok){ toast('Não foi possível resgatar agora.'); act.disabled=false; return; }
+        if(ACC.profile){ ACC.profile.crystals=data.total_crystals; ACC.profile.xp=(ACC.profile.xp|0)+(data.xp|0); }
+        sfx('heal'); toast(`+${data.crystals} Cristais AMV!`); missionsScreen(tab); }); }
+    else act=el('div','mstat',done?'Completa':'Em andamento');
+    row.appendChild(act); list.appendChild(row);
+  });
 }
 function settingsModal(){
   const box=el('div','mbox'); const f=el('div','form cfg'); box.appendChild(f); f.appendChild(el('h2','','Configurações'));
