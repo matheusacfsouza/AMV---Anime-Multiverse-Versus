@@ -446,6 +446,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .itemzone.over{background:rgba(255,212,0,.28);box-shadow:inset 0 0 0 8px var(--gold),0 0 60px rgba(255,212,0,.45)}
 /* carta grande ao segurar o dedo sobre ela na mão */
 .asback{position:absolute;inset:0;z-index:45}
+.ctxm{position:absolute;display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:30px;background:#0d0f14ee;border:3px solid var(--gold);box-shadow:0 16px 40px #000c;animation:popIn .25s cubic-bezier(.2,1.5,.4,1)}
+.ctxm .btn{font-size:34px;padding:16px 20px;width:100%}
 .actsheet{position:absolute;left:0;right:0;bottom:0;background:#0d0f14f7;border-top:4px solid var(--gold);border-radius:40px 40px 0 0;padding:28px 34px 40px;box-shadow:0 -20px 60px #000c;animation:sheetUp .22s cubic-bezier(.2,1.2,.4,1)}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
 .astop{display:flex;gap:26px;align-items:flex-start}
@@ -476,7 +478,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 @keyframes tutIn{from{transform:scale(.7);opacity:0}}
 .tutring{position:absolute;z-index:43;border:6px solid var(--gold);border-radius:18px;pointer-events:none;animation:ring 1s ease-in-out infinite}
 @keyframes ring{50%{box-shadow:0 0 0 14px #ffd84d55}}
-.peek{position:absolute;left:250px;top:560px;width:580px;height:812px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
+.peek{position:absolute;left:195px;top:470px;width:690px;height:966px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
   box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
 @keyframes peekIn{from{transform:scale(.85);opacity:0}}
 .lifefx{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:150px;font-weight:900;line-height:1;white-space:nowrap;pointer-events:none;
@@ -627,7 +629,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-014210';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-020239';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1423,10 +1425,10 @@ function tutDone(){ try{ localStorage.setItem('amv_tut','1'); }catch(e){} if(G) 
 function tutHide(){ document.querySelectorAll('.tut,.tutring').forEach(e=>e.remove()); }
 const TUT_STEPS=[
   {k:'start', when:()=>G.turn===0&&G.phase==='prep'&&canAct(), top:640, txt:'<b>Bem-vindo à sua primeira batalha!</b> Cada jogador começa com <b>10000</b> de vida. Zere a vida do oponente para vencer. Vou te mostrar o básico.', ok:'Vamos lá'},
-  {k:'hand', when:()=>G.turn===0&&G.phase==='prep'&&canAct()&&P(0).hand.length, top:1170, arrow:'down', ring:[60,1630,960,290], txt:'Esta é a sua <b>mão</b>. <b>Arraste</b> uma carta para cima até um espaço que brilha para jogá-la, ou <b>toque</b> nela para ver as ações. <b>Segure</b> o dedo para ampliar.'},
-  {k:'played', when:()=>G.turn===0&&canAct()&&P(0).chars.some(Boolean), top:560, arrow:'down', txt:'Seus <b>Personagens</b> ficam nesta fileira e são eles que atacam. <b>Apoiadores</b>, <b>Ferramentas</b> e <b>Itens</b> dão bônus e efeitos. Toque em qualquer carta para ver o que ela faz.'},
+  {k:'hand', when:()=>G.turn===0&&G.phase==='prep'&&canAct()&&P(0).hand.length, top:1170, arrow:'down', ring:[60,1630,960,290], txt:'Esta é a sua <b>mão</b>. <b>Arraste</b> uma carta para cima até um espaço que brilha para jogá-la. <b>Segure</b> o dedo sobre a carta para ver ela grande.'},
+  {k:'played', when:()=>G.turn===0&&canAct()&&P(0).chars.some(Boolean), top:560, arrow:'down', txt:'Seus <b>Personagens</b> ficam nesta fileira e são eles que atacam. <b>Apoiadores</b>, <b>Ferramentas</b> e <b>Itens</b> dão bônus e efeitos. Segure o dedo sobre qualquer carta para ver o que ela faz.'},
   {k:'gotoatk', when:()=>G.turn===0&&G.phase==='prep'&&canAct()&&P(0).chars.some(c=>c&&canAtk(0,c)), top:600, arrow:'down', ax:'91%', ring:[925,878,128,173], txt:'Terminou de preparar? Toque em <b>Ir para o ataque</b>.'},
-  {k:'attack', when:()=>G.turn===0&&G.phase==='attack'&&canAct(), top:330, txt:'Toque no seu Personagem e escolha <b>Atacar</b>. Se o ATQ dele for <b>maior</b>, o alvo vai para o vazio. Se for <b>igual</b>, os dois vão. Sem Personagens para defender, o ataque vai <b>direto</b> na vida.'},
+  {k:'attack', when:()=>G.turn===0&&G.phase==='attack'&&canAct(), top:330, txt:'Toque no seu Personagem para <b>atacar</b>. Se o ATQ dele for <b>maior</b>, o alvo vai para o vazio. Se for <b>igual</b>, os dois vão. Sem Personagens para defender, o ataque vai <b>direto</b> na vida.'},
   {k:'endturn', when:()=>G.turn===0&&G.phase==='attack'&&canAct()&&!P(0).chars.some(c=>c&&!c.attacked&&canAtk(0,c)), top:600, arrow:'down', ax:'91%', ring:[925,878,128,173], txt:'Quando acabar os ataques, toque em <b>Fim da batalha</b> para passar a vez.'},
   {k:'opp', when:()=>G.turn===1, top:140, arrow:'up', ax:'50%', txt:'Agora é a vez do <b>oponente</b>. Acompanhe a vida de vocês dois aqui no topo. Boa sorte!', last:true}
 ];
@@ -1441,6 +1443,34 @@ function tutCheck(){
   if(st.ring){ const g=el('div','tutring'); g.style.cssText=`left:${st.ring[0]}px;top:${st.ring[1]}px;width:${st.ring[2]}px;height:${st.ring[3]}px`; GL().appendChild(g); }
   GL().appendChild(b); sfx('click');
 }
+function cardTap(r, ce){                           // toque numa carta do campo: faz a ação direto
+  if(r.zone==='hand') return;
+  if(r.zone==='void'){ voidModal(r.p); return; }
+  const where='field', inst=r.inst, p=r.p;
+  if(!(canAct() && (p===0 || inst.def.kind==='field'))) return;
+  const all=actionsFor(0,inst,where), ok=all.filter(a=>!a.reason);
+  if(ok.length===1){ sfx('click'); runAction(ok[0]); return; }
+  if(!ok.length){ if(all.length) toast(all[0].reason); return; }
+  closeSheet();                                    // mais de uma ação: botões ao lado da carta
+  const ov=el('div','asback'); ov.onclick=e=>{ if(e.target===ov) closeSheet(); };
+  const m=el('div','ctxm'); ok.forEach(a=>m.appendChild(btn(a.label,'sm2',()=>{ closeSheet(); runAction(a); })));
+  ov.appendChild(m); $('#stage').appendChild(ov);
+  const q=stageRectS(ce), mw=Math.max(320,q.w+80), x=Math.min(1080-mw-20,Math.max(20,q.x+q.w/2-mw/2));
+  m.style.width=mw+'px'; m.style.left=x+'px';
+  const mh=m.offsetHeight; m.style.top=(q.y-mh-16>20 ? q.y-mh-16 : q.y+q.h+16)+'px';
+  sfx('click');
+}
+/* segurar o dedo sobre uma carta do campo: mostra a carta grande */
+const FP={};
+$('#board').addEventListener('pointerdown', e=>{
+  const ce=e.target.closest('[data-uid]'); if(!ce || ce.closest('.hand') || !G || G.over) return;
+  const r=G.index.get(+ce.dataset.uid); if(!r) return;
+  clearTimeout(FP.t); FP.x=e.clientX; FP.y=e.clientY; FP.suppress=false;
+  FP.t=setTimeout(()=>{ FP.peek=el('div','peek'); FP.peek.style.backgroundImage=`url("${r.inst.def.img}")`; GL().appendChild(FP.peek); FP.suppress=true; }, 400);
+});
+const fpEnd=()=>{ clearTimeout(FP.t); if(FP.peek){ FP.peek.remove(); FP.peek=null; } };
+addEventListener('pointerup', fpEnd); addEventListener('pointercancel', fpEnd);
+addEventListener('pointermove', e=>{ if(FP.t && !FP.peek && Math.hypot(e.clientX-FP.x,e.clientY-FP.y)>12) clearTimeout(FP.t); });
 function closeSheet(){ const o=document.querySelector('.asback'); if(o) o.remove(); }
 function actSheet(inst, p, where){                 // ações da carta na parte de baixo da tela (zona do polegar)
   closeSheet();
@@ -1486,7 +1516,7 @@ function rulesModal(){
   <h3>Turno</h3><ul><li><b>Fase de preparação:</b> compre 1 carta e jogue quantas couberem nos slots (3 Personagens, 3 Poderes, 1 Campo compartilhado). Os efeitos de Ferramentas, Campos e Apoiadores só podem ser ativados nesta fase (os bônus que já estão valendo continuam na batalha). Itens podem ser usados na preparação e na batalha.</li>
   <li><b>Fase de ataque:</b> ataques (etapa de dano) e Itens. A fase só termina quando você aperta "Fim da batalha".</li>
   <li><b>Fase final:</b> automática. Efeitos "até o fim do turno" terminam.</li>
-  <li>Toque em qualquer carta para ver em tamanho grande e ver as ações possíveis.</li>
+  <li>Segure o dedo sobre qualquer carta para ver ela em tamanho grande. Arraste as cartas da mão para o campo e toque nos seus Personagens para atacar ou usar efeitos.</li>
   <li>Cada Personagem ataca 1 vez por turno. Itens vão para o vazio depois de usados.</li>
   <li>Efeitos "até o fim do turno" e "durante a fase de dano" (como o Duplo Sentido) já são aplicados automaticamente.</li>
   <li>Arraste as cartas da mão até o slot onde quer colocá-las.</li></ul>
@@ -1637,7 +1667,7 @@ $('#board').addEventListener('click', e=>{
     return;
   }
   if(e.target.closest('.hand')) return;   // a mão usa o gesto de deslizar/arrastar
-  if(ce){ const r=G.index.get(+ce.dataset.uid); if(r) actSheet(r.inst,r.p,(r.zone==='hand'||r.zone==='void')?r.zone:'field'); return; }
+  if(ce){ if(FP.suppress){ FP.suppress=false; return; } const r=G.index.get(+ce.dataset.uid); if(r) cardTap(r, ce); return; }
   if(ve){ voidModal(+ve.dataset.void); return; }
   const de=e.target.closest('[data-deck]'); if(de){ toast(`Baralho ${+de.dataset.deck?'do oponente':'seu'}: ${P(+de.dataset.deck).deck.length} cartas`); }
 });
@@ -1708,7 +1738,7 @@ addEventListener('pointerup', e=>{ if(!H.on || e.pointerId!==H.id) return;
   const okItem = drag && inst && inst.def.kind==='item' && inItemZone(e.clientX,e.clientY);
   const gr = H.ghost ? stageRect(H.ghost) : null;
   endHand();
-  if(!drag){ if(!moved && !peeked && inst) actSheet(inst,0,'hand'); return; }      // toque simples: abre a carta
+  if(!drag) return;      // toque simples na mão: só levanta a carta (segure para ver grande, arraste para jogar)
   if(okItem && gr) G.fxFrom=gr;                                                     // a ativação começa de onde a carta foi solta
   dropPlay(inst, z?z.dataset.drop:null, p.y, okItem);
 });
@@ -1787,7 +1817,7 @@ function endGame(winner){
     const box=el('div','mbox');
     box.appendChild(el('div','big',`<span style="font-size:130px;font-weight:900;color:${won?'#2ee66b':'#e60012'}">${won?'VITÓRIA!':'DERROTA'}</span>`));
     const rw=el('div','rew'); rw.appendChild(el('div','note','Calculando XP...')); box.appendChild(rw);
-    const row=el('div','row'); const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); startFlow(); }); row.appendChild(again); row.appendChild(btn('Menu inicial','sec',goHome)); box.appendChild(row);
+    const row=el('div','row'); const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); startFlow(); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
     showModal(box);
     showReward(rw, await reward);
   },900);
@@ -1826,7 +1856,7 @@ function showReward(rw, r){
   rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
   if(r.crystals){ const ct=el('div','tot crytot',`+${CRYSTAL_SVG}<b>${r.crystals}</b> <small>Cristais AMV</small>`); rw.appendChild(ct); setTimeout(()=>{ if(!ct.isConnected) return; const q=stageRectS(ct); flyCrystals({x:q.x+q.w/2,y:q.y+q.h/2},r.crystals); },700); }
   if(!r.guest) setTimeout(loadMissions,300);
-  if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ leaveMatch(); goHome(); setTimeout(()=>authModal('signup'),300); })); return; }
+  if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ quitToModes(); setTimeout(()=>authModal('signup'),300); })); return; }
   const a=levelInfo(r.xp_before), b=levelInfo(r.xp_after);
   const tag=el('span','lvl','Nível '+a.lvl); rw.appendChild(tag);
   const bar=el('div','xpbar'), fill=el('i'), lbl=el('span'); bar.appendChild(fill); bar.appendChild(lbl); rw.appendChild(bar);
