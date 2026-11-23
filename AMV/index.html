@@ -69,7 +69,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .chip.tag{bottom:auto;top:6px;font-size:24px;border-color:var(--red);color:#fff;background:#b00010}
 .chip.tag2{bottom:auto;top:46px;font-size:24px;border-color:var(--gold);color:var(--gold)}
 .badge{position:absolute;right:-6px;top:-6px;min-width:44px;height:44px;border-radius:22px;background:var(--red);border:3px solid #fff;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
-.hand{position:absolute;width:190px;height:266px;touch-action:none}
+.hand{position:absolute;width:224px;height:314px;touch-action:none}
 .hand.lift{z-index:60!important}
 .hand.lift .card{transform:translateY(-120px) scale(1.42);transition:transform .14s ease-out;box-shadow:0 20px 40px #000}
 .hand.dragging{opacity:.25}
@@ -147,7 +147,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 #msg.pick .btn.sm{font-size:21px;padding:3px 12px;border-width:3px}
 #msg.pick .t{flex:1;font-size:23px;font-weight:700;color:var(--gold);line-height:1.1}
 .btn{font-family:inherit;font-weight:800;color:#fff;background:var(--red);border:4px solid #fff;border-radius:20px;font-size:42px;padding:16px 30px;cursor:pointer}
-.btn:active{transform:scale(.97)}
+.btn,.tab,.tbn,.gear,.modec,.shopc,.mtab,.acc,.hf,.asbtn{transition:transform .32s cubic-bezier(.34,1.9,.5,1)}
+.btn:active,.tbn:active,.gear:active,.mtab:active,.acc:active,.hf:active,.asbtn:active{transform:scale(.9);transition:transform .07s}
+.tab:active{transform:scale(.86);transition:transform .07s}
+.btn:disabled:active{transform:none}
 .btn.sec{background:#2a2a2a}
 .btn.sm{font-size:24px;padding:6px 12px;border-radius:12px}
 .btn[disabled]{opacity:.35;pointer-events:none}
@@ -173,7 +176,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .backs .bk{width:96px;height:134px;border-radius:8px;background-size:100% 100%;cursor:pointer;border:5px solid transparent;opacity:.6}
 .backs .bk.sel{border-color:var(--gold);opacity:1;box-shadow:0 0 22px var(--gold)}
 .scr.home{background:#000;padding:0}
-.scr.home .spin{position:absolute;left:-590px;top:-168px;width:2240px;height:2240px;background:url("Menus/Menu - Tela inicial - Giro.jpg") center/100% 100% no-repeat;animation:spin 60s linear infinite;will-change:transform;pointer-events:none}
+.scr.home .spin{position:absolute;left:-590px;top:-168px;width:2240px;height:2240px;background:url("Menus/Menu - Tela inicial - Giro.jpg") center/100% 100% no-repeat;animation:spin 60s linear infinite;will-change:transform;pointer-events:none;filter:brightness(.5) saturate(.9)}
 @keyframes spin{to{transform:rotate(-360deg)}}
 .scr.home .ui{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none;clip-path:inset(0 0 71% 0)}
 .tabbar{position:absolute;left:0;right:0;bottom:0;height:170px;z-index:8;display:flex;background:#0b0d12f2;border-top:2px solid #2a303c;box-shadow:0 -10px 30px #0009}
@@ -189,7 +192,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tbn.dot::after,.gear.dot::after{content:'';position:absolute;right:0;top:0;width:30px;height:30px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
 .shopc{position:absolute;right:60px;top:1180px;z-index:5;width:560px;height:300px;border-radius:40px;border:3px solid #ffffffcc;background:linear-gradient(160deg,#2a3550ee,#141823ee);color:#fff;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 14px 40px #000a}
 .shopc span{font-size:120px;line-height:1}.shopc b{font-size:52px}.shopc small{font-size:28px;color:#ffd84d}
-.shopc:active,.modec:active{transform:scale(.97)}
+.shopc:active,.modec:active{transform:scale(.93);transition:transform .07s}
 .modelist{display:flex;flex-direction:column;gap:30px;width:980px}
 .modec{display:flex;align-items:center;gap:30px;padding:40px 40px;border-radius:36px;border:3px solid #3d9bd6;background:linear-gradient(120deg,#1d2a3d,#141823);color:#fff;font-family:inherit;text-align:left;cursor:pointer;box-shadow:0 10px 30px #0009}
 .modec span{font-size:100px;line-height:1}.modec div{flex:1}.modec b{display:block;font-size:48px;margin-bottom:8px}.modec small{font-size:30px;color:#aab3c2}
@@ -387,6 +390,36 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
   background:rgba(255,212,0,.16);box-shadow:inset 0 0 0 6px rgba(255,212,0,.55),0 0 40px rgba(255,212,0,.25);transition:background .15s}
 .itemzone.over{background:rgba(255,212,0,.28);box-shadow:inset 0 0 0 8px var(--gold),0 0 60px rgba(255,212,0,.45)}
 /* carta grande ao segurar o dedo sobre ela na mão */
+.asback{position:absolute;inset:0;z-index:45}
+.actsheet{position:absolute;left:0;right:0;bottom:0;background:#0d0f14f7;border-top:4px solid var(--gold);border-radius:40px 40px 0 0;padding:28px 34px 40px;box-shadow:0 -20px 60px #000c;animation:sheetUp .22s cubic-bezier(.2,1.2,.4,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+.astop{display:flex;gap:26px;align-items:flex-start}
+.asimg{position:relative;flex:none;width:170px;height:238px;border-radius:12px;background:#000 center/100% 100%;box-shadow:0 8px 20px #000;cursor:pointer}
+.asimg span{position:absolute;right:-10px;bottom:-10px;width:56px;height:56px;border-radius:50%;background:#000;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:28px}
+.asinfo{flex:1;min-width:0}.asn{font-size:46px;font-weight:900;line-height:1.1;margin:6px 0 12px}.asi{font-size:32px;color:#bbb;line-height:1.4}.asi b{color:#fff}.aso{margin-top:10px;font-size:28px;color:#ff8b8b;font-weight:700}
+.asx{flex:none;width:84px;height:84px;border-radius:50%;border:3px solid #fff;background:#000;color:#fff;font-size:40px;cursor:pointer}
+.asacts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+.asa{display:flex;flex-direction:column;gap:6px}.asa .btn{width:100%;font-size:38px;padding:22px 10px}.asa .why{font-size:24px;color:#ffb347;text-align:center}
+.asacts .asa:only-child{grid-column:1/-1}
+.asnone{grid-column:1/-1;font-size:30px;color:#9aa4b4;text-align:center;padding:10px}
+.flycry{position:absolute;z-index:70;width:64px;height:64px;transform:translate(-50%,-50%);transition:left .8s cubic-bezier(.5,-0.3,.7,1),top .8s cubic-bezier(.2,0,.4,1),transform .8s;pointer-events:none;filter:drop-shadow(0 0 10px #7df)}
+.flycry svg{width:100%;height:100%}
+.crybox.bump{animation:bump .35s cubic-bezier(.34,1.9,.5,1)}
+@keyframes bump{50%{transform:translateX(-50%) scale(1.25)}}
+.dtabs{display:flex;gap:12px;overflow-x:auto;width:100%;padding:4px 4px 14px;box-sizing:border-box;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.dtabs::-webkit-scrollbar{display:none}
+.dtab{flex:none;padding:16px 30px;border-radius:40px;background:#1d2129;color:#cfd6e0;font-size:32px;cursor:pointer;white-space:nowrap}
+.dtab.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff;font-weight:700}
+.tut{position:absolute;z-index:44;left:60px;right:60px;background:#fffdf3;color:#1b1b1b;border:5px solid var(--gold);border-radius:30px;padding:28px 34px;font-size:34px;line-height:1.4;box-shadow:0 20px 50px #000c;animation:tutIn .3s cubic-bezier(.34,1.6,.5,1)}
+.tut b{color:#c4001a}
+.tut .tr{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:16px}
+.tut .tr small{font-size:26px;color:#777;text-decoration:underline;cursor:pointer}
+.tut .btn{font-size:32px;padding:12px 30px}
+.tut::after{content:'';position:absolute;left:var(--ax,50%);width:0;height:0;border:22px solid transparent;transform:translateX(-50%)}
+.tut.down::after{top:100%;border-top-color:var(--gold)}.tut.up::after{bottom:100%;border-bottom-color:var(--gold)}
+@keyframes tutIn{from{transform:scale(.7);opacity:0}}
+.tutring{position:absolute;z-index:43;border:6px solid var(--gold);border-radius:18px;pointer-events:none;animation:ring 1s ease-in-out infinite}
+@keyframes ring{50%{box-shadow:0 0 0 14px #ffd84d55}}
 .peek{position:absolute;left:250px;top:560px;width:580px;height:812px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
   box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
 @keyframes peekIn{from{transform:scale(.85);opacity:0}}
@@ -528,7 +561,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-000449';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-001638';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -771,7 +804,7 @@ async function lifeFx_raw(who, delta, apply){
   await sleep(420);                                      // desliza rápido até a barra
   f.classList.add('hit'); setTimeout(()=>f.remove(),260);
   if(lb){ lb.classList.remove('flash'); void lb.offsetWidth; lb.classList.add('flash'); }
-  apply(); sfx(delta<0?'dmg':'heal'); if(delta<0 && who===0) vib(80);   // agora a barra começa a descer/subir
+  apply(); sfx(delta<0?'dmg':'heal'); if(delta<=-1000){ shake(delta<=-2000?34:24); vib(who===0?[90,40,140]:[50]); } else if(delta<0 && who===0) vib(80);   // agora a barra começa a descer/subir
   const target=P(who).life, t0=Date.now();
   while(Math.round(LF[who])!==target && Date.now()-t0<1800) await sleep(40);
 }
@@ -801,8 +834,8 @@ function flyCard(a, bx, img, ms, spin){
 }
 function handSlot(p, n){                       // onde a n-ésima carta (1..n) fica na mão
   if(p===1){ const st=n>1?Math.min(70,(810-90)/(n-1)):0,t=(n-1)*st+90; return {x:(1080-t)/2+(n-1)*st,y:150,w:84,h:118}; }
-  const W=190, st=n>1?Math.min(W+12,(930-W)/(n-1)):0, t=(n-1)*st+W;
-  return {x:(1080-t)/2+(n-1)*st, y:1674, w:W, h:266};
+  const W=224, st=n>1?Math.min(W-30,(1000-W)/(n-1)):0, t=(n-1)*st+W;
+  return {x:(1080-t)/2+(n-1)*st, y:1610, w:W, h:314};
 }
 function slideCard(a, bx, img, ms, rot, back, faceUp){       // desliza em curva, virando no caminho
   return new Promise(res=>{
@@ -1297,7 +1330,7 @@ function closeModal(){ const m=$('#modal'); m.classList.remove('on'); m.innerHTM
 function canAct(){ return G && !G.over && !G.busy && G.turn===0 && !G.pick; }
 
 function bigArt(e,d){ e.style.backgroundImage=`url("${d.mini}")`; if(d.mini===d.img) return; const im=new Image(); im.onload=()=>{ e.style.backgroundImage=`url("${d.img}")`; }; im.src=d.img; }
-function cardModal(inst, p, where){
+function cardModal(inst, p, where, noActs){
   const box=el('div','mbox');
   const big=el('div','bigcard'); bigArt(big,inst.def); box.appendChild(big);
   const info = inst.def.kind==='char'
@@ -1305,7 +1338,7 @@ function cardModal(inst, p, where){
     : kindIco(inst.def.kind)+KIND[inst.def.kind];
   box.appendChild(el('div','',`<div style="font-size:34px;color:#bbb;line-height:1.4">${info}</div>`));
   const acts=el('div','acts');
-  if(canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || inst.def.kind==='field')))){
+  if(!noActs && canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || inst.def.kind==='field')))){
     actionsFor(0,inst,where).forEach(a=>{
       const b=btn(a.label,'',()=>runAction(a)); if(a.reason) b.disabled=true; acts.appendChild(b);
       if(a.reason) acts.appendChild(el('div','why',a.reason));
@@ -1314,6 +1347,53 @@ function cardModal(inst, p, where){
   box.appendChild(acts);
   box.appendChild(btn('Fechar','sec',closeModal));
   showModal(box);
+}
+// ===== Primeira partida guiada =====
+const tutOn=()=>{ try{ return !localStorage.getItem('amv_tut'); }catch(e){ return false; } };
+function tutDone(){ try{ localStorage.setItem('amv_tut','1'); }catch(e){} if(G) G.tut=null; tutHide(); }
+function tutHide(){ document.querySelectorAll('.tut,.tutring').forEach(e=>e.remove()); }
+const TUT_STEPS=[
+  {k:'start', when:()=>G.turn===0&&G.phase==='prep'&&canAct(), top:640, txt:'<b>Bem-vindo à sua primeira batalha!</b> Cada jogador começa com <b>10000</b> de vida. Zere a vida do oponente para vencer. Vou te mostrar o básico.', ok:'Vamos lá'},
+  {k:'hand', when:()=>G.turn===0&&G.phase==='prep'&&canAct()&&P(0).hand.length, top:1170, arrow:'down', ring:[24,1600,1032,320], txt:'Esta é a sua <b>mão</b>. <b>Arraste</b> uma carta para cima até um espaço que brilha para jogá-la, ou <b>toque</b> nela para ver as ações. <b>Segure</b> o dedo para ampliar.'},
+  {k:'played', when:()=>G.turn===0&&canAct()&&P(0).chars.some(Boolean), top:560, arrow:'down', txt:'Seus <b>Personagens</b> ficam nesta fileira e são eles que atacam. <b>Apoiadores</b>, <b>Ferramentas</b> e <b>Itens</b> dão bônus e efeitos. Toque em qualquer carta para ver o que ela faz.'},
+  {k:'gotoatk', when:()=>G.turn===0&&G.phase==='prep'&&canAct()&&P(0).chars.some(c=>c&&canAtk(0,c)), top:600, arrow:'down', ax:'91%', ring:[925,878,128,173], txt:'Terminou de preparar? Toque em <b>Ir para o ataque</b>.'},
+  {k:'attack', when:()=>G.turn===0&&G.phase==='attack'&&canAct(), top:330, txt:'Toque no seu Personagem e escolha <b>Atacar</b>. Se o ATQ dele for <b>maior</b>, o alvo vai para o vazio. Se for <b>igual</b>, os dois vão. Sem Personagens para defender, o ataque vai <b>direto</b> na vida.'},
+  {k:'endturn', when:()=>G.turn===0&&G.phase==='attack'&&canAct()&&!P(0).chars.some(c=>c&&!c.attacked&&canAtk(0,c)), top:600, arrow:'down', ax:'91%', ring:[925,878,128,173], txt:'Quando acabar os ataques, toque em <b>Fim da batalha</b> para passar a vez.'},
+  {k:'opp', when:()=>G.turn===1, top:140, arrow:'up', ax:'50%', txt:'Agora é a vez do <b>oponente</b>. Acompanhe a vida de vocês dois aqui no topo. Boa sorte!', last:true}
+];
+function tutCheck(){
+  if(!G||!G.tut||G.over||G.pick||document.querySelector('.tut,.asback')||$('#modal').classList.contains('on')) return;
+  const st=TUT_STEPS.find(t=>!G.tut.shown.has(t.k) && t.when()); if(!st) return;
+  if(st.k==='played' && !G.tut.shown.has('hand')) return;
+  G.tut.shown.add(st.k);
+  const b=el('div','tut'+(st.arrow?' '+st.arrow:'')); b.style.top=st.top+'px'; if(st.ax) b.style.setProperty('--ax',st.ax);
+  b.appendChild(el('div','',st.txt)); const r=el('div','tr'); const sk=el('small','','Pular tutorial'); sk.onclick=()=>{ tutDone(); };
+  r.appendChild(st.last?el('span'):sk); r.appendChild(btn(st.ok||'Entendi','',()=>{ tutHide(); if(st.last) tutDone(); else setTimeout(tutCheck,250); })); b.appendChild(r);
+  if(st.ring){ const g=el('div','tutring'); g.style.cssText=`left:${st.ring[0]}px;top:${st.ring[1]}px;width:${st.ring[2]}px;height:${st.ring[3]}px`; $('#stage').appendChild(g); }
+  $('#stage').appendChild(b); sfx('click');
+}
+function closeSheet(){ const o=document.querySelector('.asback'); if(o) o.remove(); }
+function actSheet(inst, p, where){                 // ações da carta na parte de baixo da tela (zona do polegar)
+  closeSheet();
+  const ov=el('div','asback'); ov.onclick=e=>{ if(e.target===ov) closeSheet(); };
+  const sh=el('div','actsheet');
+  const top=el('div','astop');
+  const th=el('div','asimg'); th.style.backgroundImage=`url("${mini(inst)}")`; th.onclick=()=>{ closeSheet(); cardModal(inst,p,where,true); };
+  th.appendChild(el('span','','🔍')); top.appendChild(th);
+  const d=inst.def, info=d.kind==='char' ? `${elIco(d.el)}${ELEM[d.el].n} · ${d.arq.join(' / ')}<br><b>ATQ ${atkOf(p,inst)}</b>` : kindIco(d.kind)+KIND[d.kind];
+  top.appendChild(el('div','asinfo',`<div class="asn">${d.name}</div><div class="asi">${info}</div>${p===1?'<div class="aso">Carta do oponente</div>':''}`));
+  const x=el('button','asx','✕'); x.onclick=closeSheet; top.appendChild(x);
+  sh.appendChild(top);
+  const acts=el('div','asacts');
+  if(canAct() && ((p===0 && where==='hand') || (where==='field' && (p===0 || d.kind==='field')))){
+    actionsFor(0,inst,where).forEach(a=>{
+      const w=el('div','asa'); const b=btn(a.label,'asbtn',()=>{ closeSheet(); runAction(a); }); if(a.reason){ b.disabled=true; b.classList.add('sec'); }
+      w.appendChild(b); if(a.reason) w.appendChild(el('div','why',a.reason)); acts.appendChild(w);
+    });
+  }
+  if(!acts.children.length) acts.appendChild(el('div','asnone', where==='hand'&&!canAct() ? 'Aguarde a sua vez para jogar.' : 'Toque na imagem para ver a carta em tamanho grande.'));
+  sh.appendChild(acts);
+  ov.appendChild(sh); $('#stage').appendChild(ov); sfx('click');
 }
 function voidModal(p){
   const pl=P(p); const box=el('div','mbox');
@@ -1325,7 +1405,7 @@ function voidModal(p){
   showModal(box);
 }
 async function runAction(a){
-  closeModal(); G.busy=true; render();
+  closeModal(); closeSheet(); G.busy=true; render();
   try{ await a.run(); } finally { if(!G.over && G.turn===0) G.busy=false; render(); checkWin(); }
 }
 function rulesModal(){
@@ -1428,11 +1508,11 @@ function render(){
     const c=el('div','card back img'); c.style.cssText=`inset:auto;left:${x}px;top:150px;width:84px;height:118px;cursor:default;background-image:url("${backOf(1)}")`; frag.appendChild(c);
   }
   // mão do jogador
-  const h=P(0).hand, n=h.length, W=190;
-  const step=n>1?Math.min(W+12,(930-W)/(n-1)):0, total=(n-1)*step+W, x0=(1080-total)/2;
+  const h=P(0).hand, n=h.length, W=224;
+  const step=n>1?Math.min(W-30,(1000-W)/(n-1)):0, total=(n-1)*step+W, x0=(1080-total)/2;
   const can=canAct();
   h.forEach((inst,i)=>{
-    const m=n>1?(i-(n-1)/2)/((n-1)/2):0; const d=el('div','hand'); d.dataset.hi=i; d.style.cssText=`left:${x0+i*step}px;top:${1648+m*m*26}px;z-index:${i};transform:rotate(${m*4}deg);transform-origin:50% 150%`;
+    const m=n>1?(i-(n-1)/2)/((n-1)/2):0; const d=el('div','hand'); d.dataset.hi=i; d.style.cssText=`left:${x0+i*step}px;top:${1594+m*m*40}px;z-index:${i};transform:rotate(${m*(n>2?9:5)}deg);transform-origin:50% 160%`;
     const ce=cardEl(inst,0,'hand'); d.appendChild(ce);
     if(can && actionsFor(0,inst,'hand').some(a=>!a.reason)) d.classList.add('playable');
     frag.appendChild(d);
@@ -1465,6 +1545,8 @@ function render(){
   }
   frag.appendChild(msg);
   b.replaceChildren(frag);
+  if(G.busy||G.pick||G.over) closeSheet();
+  tutCheck();
   if(G.settle){ const se=b.querySelector(`[data-uid="${G.settle}"]`); if(se) se.classList.add('settle'); seen.add(G.settle); G.settle=null; }
   const now=new Set();
   G.index.forEach((r,u)=>{ now.add(u); if(!seen.has(u) && seen.size){ const e=b.querySelector(`[data-uid="${u}"]`); if(!e) return;
@@ -1486,7 +1568,7 @@ $('#board').addEventListener('click', e=>{
     return;
   }
   if(e.target.closest('.hand')) return;   // a mão usa o gesto de deslizar/arrastar
-  if(ce){ const r=G.index.get(+ce.dataset.uid); if(r) cardModal(r.inst,r.p,(r.zone==='hand'||r.zone==='void')?r.zone:'field'); return; }
+  if(ce){ const r=G.index.get(+ce.dataset.uid); if(r) actSheet(r.inst,r.p,(r.zone==='hand'||r.zone==='void')?r.zone:'field'); return; }
   if(ve){ voidModal(+ve.dataset.void); return; }
   const de=e.target.closest('[data-deck]'); if(de){ toast(`Baralho ${+de.dataset.deck?'do oponente':'seu'}: ${P(+de.dataset.deck).deck.length} cartas`); }
 });
@@ -1516,7 +1598,7 @@ $('#board').addEventListener('pointerdown', e=>{
   H.on=true; H.id=e.pointerId; H.x0=e.clientX; H.y0=e.clientY; H.moved=false; H.drag=false; H.h=h; H.peeked=false;
   H.inst=P(0).hand[+h.dataset.hi]; setLift(h); peekArm();
 });
-const PEEK_MS=550;                                 // tempo com o dedo parado sobre a carta até ela aparecer grande
+const PEEK_MS=400;                                 // tempo com o dedo parado sobre a carta até ela aparecer grande
 function peekHide(){ clearTimeout(H.pt); if(H.peek){ H.peek.remove(); H.peek=null; } }
 function peekArm(){ peekHide(); H.pt=setTimeout(()=>{ if(!H.on || H.drag || !H.inst) return;
   H.peek=el('div','peek'); H.peek.style.backgroundImage=`url("${H.inst.def.img}")`; $('#stage').appendChild(H.peek); H.peeked=true; }, PEEK_MS); }
@@ -1557,7 +1639,7 @@ addEventListener('pointerup', e=>{ if(!H.on || e.pointerId!==H.id) return;
   const okItem = drag && inst && inst.def.kind==='item' && inItemZone(e.clientX,e.clientY);
   const gr = H.ghost ? stageRect(H.ghost) : null;
   endHand();
-  if(!drag){ if(!moved && !peeked && inst) cardModal(inst,0,'hand'); return; }      // toque simples: abre a carta
+  if(!drag){ if(!moved && !peeked && inst) actSheet(inst,0,'hand'); return; }      // toque simples: abre a carta
   if(okItem && gr) G.fxFrom=gr;                                                     // a ativação começa de onde a carta foi solta
   dropPlay(inst, z?z.dataset.drop:null, p.y, okItem);
 });
@@ -1629,7 +1711,7 @@ async function endTurnHuman(){            // botão da direita: preparação -> 
   }
 }
 function endGame(winner){
-  if(G.over) return; G.over=true; G.busy=true; musicStop(); render();
+  if(G.over) return; if(G.tut) tutDone(); G.over=true; G.busy=true; musicStop(); render();
   const won=winner===0, life=Math.max(0,P(0).life);
   const reward=matchReward(won, life);
   setTimeout(async()=>{
@@ -1664,7 +1746,7 @@ function showReward(rw, r){
   (r.tags||[]).forEach(t=>{ const m=t.match(/^(.*) \+(\d+)$/); rw.appendChild(el('div','ln',`<span>${m?m[1]:t}</span><b>+${m?m[2]:''} XP</b>`)); });
   if(r.mult>1) rw.appendChild(el('div','ln',`<span>Multiplicador</span><b>×${r.mult}</b>`));
   rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
-  if(r.crystals) rw.appendChild(el('div','tot crytot',`+${CRYSTAL_SVG}<b>${r.crystals}</b> <small>Cristais AMV</small>`));
+  if(r.crystals){ const ct=el('div','tot crytot',`+${CRYSTAL_SVG}<b>${r.crystals}</b> <small>Cristais AMV</small>`); rw.appendChild(ct); setTimeout(()=>{ if(!ct.isConnected) return; const q=stageRect(ct); flyCrystals({x:q.x+q.w/2,y:q.y+q.h/2},r.crystals); },700); }
   if(!r.guest) setTimeout(loadMissions,300);
   if(r.guest){ rw.appendChild(el('div','note','Crie uma conta para salvar seu progresso.')); if(SB) rw.appendChild(btn('Criar conta','',()=>{ leaveMatch(); goHome(); setTimeout(()=>authModal('signup'),300); })); return; }
   const a=levelInfo(r.xp_before), b=levelInfo(r.xp_after);
@@ -1687,6 +1769,7 @@ async function beginMatch(first){
   LF=[MAX_LIFE,MAX_LIFE];
   if(SB && ACC.user) SB.rpc('start_match').then(()=>{},()=>{});       // o servidor marca o início (confere a duração no fim)
   G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
+  G.tut=tutOn()?{shown:new Set()}:null;
   G.p.forEach((pl,i)=>pl.deck.forEach(c=>{ c.own=i; }));        // dono da carta (o vazio é sempre o do dono)
   for(const p of [0,1]){
     const pl=P(p);
@@ -1904,7 +1987,7 @@ function validDeck(c){
 function setScreen(node){ const s=$('#screen'); s.innerHTML=''; s.appendChild(node); }
 /* botão voltar do celular: regras/baralho -> início; na partida -> abre o menu */
 function nav(where){ try{ history.pushState({s:where},''); }catch(e){} }
-function leaveMatch(){ closeModal(); musicStop(); if(G) G.over=true; G=null; $('#board').innerHTML=''; setScenario(false); }
+function leaveMatch(){ closeModal(); closeSheet(); tutHide(); musicStop(); if(G) G.over=true; G=null; $('#board').innerHTML=''; setScenario(false); }
 function goHome(){ leaveMatch(); if(history.state && history.state.s && history.state.s!=='home') history.back(); else titleScreen(); }
 const onHome=()=>!!document.querySelector('.scr.home') && !G;
 const guardHome=()=>{ try{ if(!history.state || history.state.s!=='guard') history.pushState({s:'guard'},''); }catch(e){} };
@@ -1913,7 +1996,7 @@ addEventListener('popstate', ()=>{
   if(EXITING) return;
   if(G && !G.over){                                 // dentro da partida
     nav('game');
-    if($('#modal').classList.contains('on')) closeModal(); else menuModal();
+    if(document.querySelector('.asback')) closeSheet(); else if($('#modal').classList.contains('on')) closeModal(); else menuModal();
     return;
   }
   const ov=document.querySelector('.sheetov,.profscr');
@@ -1951,6 +2034,15 @@ function xpBar(xp){ const li=levelInfo(xp), b=el('div','xpbar'); const f=el('i')
 let MULT=1;
 /* ---- Cristais AMV: ícone provisório (será trocado pela arte definitiva) ---- */
 const CRYSTAL_SVG='<svg class="cry" viewBox="0 0 64 64"><defs><linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9f3ff"/><stop offset=".5" stop-color="#5aa8ff"/><stop offset="1" stop-color="#8a4dff"/></linearGradient></defs><path d="M32 3 54 22 32 61 10 22Z" fill="url(#cg1)" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 22h44M32 3l-9 19 9 39 9-39z" fill="none" stroke="#ffffffaa" stroke-width="2" stroke-linejoin="round"/></svg>';
+function flyCrystals(from, n){                      // cristais voando até o contador do topo
+  const cb=document.querySelector('.crybox'); const t=cb?stageRect(cb):{x:480,y:44,w:120,h:70};
+  const tx=t.x+34, ty=t.y+t.h/2, k=Math.max(6,Math.min(14,Math.round(n/15)));
+  for(let i=0;i<k;i++){ const c=el('div','flycry',CRYSTAL_SVG); const sx=from.x+(Math.random()-.5)*90, sy=from.y+(Math.random()-.5)*50;
+    c.style.cssText=`left:${sx}px;top:${sy}px`; $('#stage').appendChild(c);
+    setTimeout(()=>{ c.style.transitionDuration=(700+Math.random()*250)+'ms'; c.style.left=tx+'px'; c.style.top=ty+'px'; c.style.transform='translate(-50%,-50%) scale(.6)'; }, 30+i*55);
+    setTimeout(()=>{ c.remove(); if(i===k-1 && cb){ cb.classList.remove('bump'); void cb.offsetWidth; cb.classList.add('bump'); } }, 1100+i*55); }
+  setTimeout(()=>sfx('heal'),700); vib([20,40,20]);
+}
 const crys=n=>`${CRYSTAL_SVG}<b>${(n|0).toLocaleString('pt-BR')}</b>`;                                                      // multiplicador ativo (evento, passe ou propaganda)
 const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
 function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize='230%'; a.style.backgroundPosition='50% 22%'; } return a; }
@@ -2156,7 +2248,7 @@ async function missionsScreen(tab){
         const {data,error}=await SB.rpc('claim_mission',{p_id:m.id});
         if(error||!data||!data.ok){ toast('Não foi possível resgatar agora.'); act.disabled=false; return; }
         if(ACC.profile){ ACC.profile.crystals=data.total_crystals; ACC.profile.xp=(ACC.profile.xp|0)+(data.xp|0); }
-        sfx('heal'); toast(`+${data.crystals} Cristais AMV!`); missionsScreen(tab); }); }
+        const r0=stageRect(act); flyCrystals({x:r0.x+r0.w/2,y:r0.y+r0.h/2},data.crystals); toast(`+${data.crystals} Cristais AMV!`); setTimeout(()=>{ accChip(); missionsScreen(tab); },1300); }); }
     else act=el('div','mstat',done?'Completa':'Em andamento');
     row.appendChild(act); list.appendChild(row);
   });
@@ -2167,6 +2259,7 @@ function settingsModal(){
   tg('🎵 Música','music',()=>{ musicOn=CFG.music; if(!musicOn) MUSIC.pause(); else if(G&&!G.over) musicStart(); });
   tg('🔊 Som','sfx'); tg('📳 Vibração','vib');
   if(ACC.user){ const pid=playerId(ACC.user.id); const r=el('div','tgl id',`<span>🆔 ID do jogador</span><b>${pid}</b>`); r.onclick=()=>{ try{ navigator.clipboard.writeText(pid); toast('ID copiado!'); }catch(e){} }; f.appendChild(r); }
+  const tb=el('div','tgl go','<span>🎓 Rever o tutorial</span><b>›</b>'); tb.onclick=()=>{ try{ localStorage.removeItem('amv_tut'); }catch(e){} toast('O tutorial vai aparecer na próxima partida contra a máquina.'); }; f.appendChild(tb);
   const rb=el('div','tgl go','<span>📖 Regras</span><b>›</b>'); rb.onclick=()=>{ closeModal(); setTimeout(()=>{ nav('rules'); rulesModal(); },50); }; f.appendChild(rb);
   const soc=el('div','socials'); [['Instagram','https://www.instagram.com/cofesoapp','📸'],['TikTok','https://www.tiktok.com/@cofesoapp','🎬']].forEach(([n,u,i])=>{ const a=document.createElement('a'); a.href=u; a.target='_blank'; a.rel='noopener'; a.className='soc'; a.innerHTML=`${i} ${n}`; soc.appendChild(a); }); f.appendChild(soc);
   if(ACC.user){ const out=btn('Sair da conta','sec',async()=>{ await SB.auth.signOut(); closeModal(); toast('Você saiu da conta.'); }); out.classList.add('danger'); f.appendChild(out); }
@@ -2270,7 +2363,11 @@ function deckScreen(){
   s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">BARALHOS</div>`));
   const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; s.appendChild(info);
   const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView));
-  tools.appendChild(fb); tools.appendChild(ob); s.appendChild(tools);
+  tools.appendChild(fb); tools.appendChild(ob);
+  const dtabs=el('div','dtabs'); const TT=[['','Todos'],['char','Personagens'],['item','Itens'],['tool','Ferramentas'],['support','Apoiadores'],['field','Campos']];
+  const tabOn=()=>{ const one=DV.cat.size===1?[...DV.cat][0]:(DV.cat.size?null:''); dtabs.querySelectorAll('.dtab').forEach(t=>t.classList.toggle('on',t.dataset.k===one)); };
+  TT.forEach(([k,n])=>{ const t=el('div','dtab',n); t.dataset.k=k; t.onclick=()=>{ DV.cat=new Set(k?[k]:[]); sfx('click'); applyView(); }; dtabs.appendChild(t); });
+  s.appendChild(dtabs); s.appendChild(tools);
   const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
   const nums={}, tiles={};
   Object.values(DEFS).forEach(d=>{
@@ -2287,7 +2384,7 @@ function deckScreen(){
   function applyView(){
     const list=deckView(DV); grid.replaceChildren(...list.map(d=>{ const t=tiles[d.id]; const f=t.querySelector('.fav'); if(f) f.remove(); if(favs().includes(d.id)) t.appendChild(el('div','fav','❤️')); return t; }));
     if(!list.length) grid.appendChild(el('div','',`<span style="font-size:36px;color:#aaa">Nenhuma carta com esses filtros.</span>`));
-    const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`;
+    tabOn(); const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`;
   }
   applyView();
   // verso do baralho
@@ -2461,7 +2558,7 @@ async function giftsScreen(){
         const {data,error}=await SB.rpc('claim_gift',{p_id:g.id});
         if(error||!data||!data.ok){ toast(data&&data.reason==='resgatado'?'Você já resgatou este presente.':'Não foi possível resgatar agora.'); act.disabled=false; return; }
         if(ACC.profile){ ACC.profile.crystals=data.total_crystals; ACC.profile.xp=(ACC.profile.xp|0)+(data.xp|0); }
-        sfx('heal'); toast(`+${data.crystals} Cristais AMV!`); giftsScreen(); }); }
+        const r0=stageRect(act); flyCrystals({x:r0.x+r0.w/2,y:r0.y+r0.h/2},data.crystals); toast(`+${data.crystals} Cristais AMV!`); setTimeout(()=>{ accChip(); giftsScreen(); },1300); }); }
     else act=el('div','mstat','Entre para resgatar');
     row.appendChild(act); list.appendChild(row);
   });
