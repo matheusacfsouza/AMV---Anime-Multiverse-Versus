@@ -179,14 +179,15 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tabbar{position:absolute;left:0;right:0;bottom:0;height:170px;z-index:8;display:flex;background:#0b0d12f2;border-top:2px solid #2a303c;box-shadow:0 -10px 30px #0009}
 .tab{flex:1;border:0;background:none;color:#8a93a3;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tab span{font-size:64px;filter:grayscale(1) brightness(.8);transition:transform .15s}
-.tab small{font-size:30px;font-weight:700}
+.tab small{font-size:27px;font-weight:700;white-space:nowrap}
+.tab.dot::after{content:'';position:absolute;top:16px;left:calc(50% + 22px);width:26px;height:26px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
 .tab.on{color:#7fd6f5}.tab.on span{filter:none;transform:translateY(-4px) scale(1.08)}
 .tab.on::before{content:'';position:absolute;top:0;width:120px;height:6px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,#8fe3ff,#47e68a)}
 .tab{position:relative}
 .tbn{position:absolute;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:54px;cursor:pointer;padding:0}
-.tbn.gift{right:155px}.tbn.mail{right:280px}
+.tbn.mail{right:30px;top:160px}.tbn.gift{right:30px;top:290px}
 .tbn.dot::after,.gear.dot::after{content:'';position:absolute;right:0;top:0;width:30px;height:30px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
-.shopc{position:absolute;left:60px;top:1180px;z-index:5;width:560px;height:300px;border-radius:40px;border:3px solid #ffffffcc;background:linear-gradient(160deg,#2a3550ee,#141823ee);color:#fff;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 14px 40px #000a}
+.shopc{position:absolute;right:60px;top:1180px;z-index:5;width:560px;height:300px;border-radius:40px;border:3px solid #ffffffcc;background:linear-gradient(160deg,#2a3550ee,#141823ee);color:#fff;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 14px 40px #000a}
 .shopc span{font-size:120px;line-height:1}.shopc b{font-size:52px}.shopc small{font-size:28px;color:#ffd84d}
 .shopc:active,.modec:active{transform:scale(.97)}
 .modelist{display:flex;flex-direction:column;gap:30px;width:980px}
@@ -212,7 +213,13 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tile .ctl .btn{width:76px;height:64px;padding:0;font-size:44px;border-radius:14px}
 
 /* modal bits */
-.acc{position:absolute;left:30px;top:30px;z-index:6;display:flex;align-items:center;gap:18px;background:#000b;border:3px solid #fff;border-radius:60px;padding:10px 34px 10px 10px;cursor:pointer;max-width:600px;box-sizing:border-box}
+.acc{position:absolute;left:30px;top:30px;z-index:6;display:flex;align-items:center;gap:18px;background:#000b;border:3px solid #fff;border-radius:60px;padding:10px 34px 10px 10px;cursor:pointer;max-width:400px;box-sizing:border-box}
+.acc>div:not(.av){min-width:0}.acc b{min-width:0}
+.avw{position:relative;flex:none}.avw .lvl{position:absolute;right:-8px;bottom:-6px;min-width:44px;height:44px;padding:0 6px;box-sizing:border-box;border-radius:22px;background:#ffd84d;color:#000;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #000}
+.acc .nk{min-width:0;display:flex;flex-direction:column}.acc .nk b{font-size:34px}.acc .nk small{color:#9fdcff}
+.hfav{position:absolute;left:34px;top:156px;z-index:6;display:flex;gap:14px}
+.hf{width:96px;height:134px;border-radius:10px;border:3px solid #fff;background:#000a center/100% 100%;box-shadow:0 6px 16px #000a;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff8}
+.hf.empty{border-style:dashed;border-color:#fff8}
 .acc b{font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acc small{display:block;font-size:26px;color:#ffd84d;font-weight:600}
 .av{width:86px;height:86px;border-radius:50%;border:4px solid #fff;flex:none;background:#333 center/cover}
@@ -251,7 +258,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mis small{font-size:32px;font-weight:700;text-shadow:0 2px 6px #000}
 .mis.dot span::after{content:'';position:absolute;right:14px;top:6px;width:34px;height:34px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
 .cry{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
-.crybox{position:absolute;right:30px;top:162px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
+.crybox{position:absolute;left:50%;transform:translateX(-50%);top:44px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
 .crybox b{font-weight:900}
 .crytot{display:flex;align-items:center;gap:10px}.crytot small{font-size:30px;color:#bbb;font-weight:600}
 .mscr .pbody{padding-top:70px}
@@ -274,7 +281,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mrow .btn{min-width:200px}
 .mempty{font-size:38px;color:#9aa4b4;text-align:center;padding:80px 0}
 .gear{position:absolute;right:30px;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:56px;cursor:pointer}
-.evt{position:absolute;right:30px;top:262px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
+.evt{position:absolute;left:50%;margin-left:-130px;top:150px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:780px}
 .stats div{background:#1b1f27;border-radius:24px;padding:18px;text-align:center;font-size:28px;color:#bbb}
@@ -521,7 +528,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-233925';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-000449';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1975,11 +1982,10 @@ function accChip(){
   const home=document.querySelector('.scr.home'); if(!home) return;
   let c=home.querySelector('.acc'); if(c) c.remove();
   c=el('div','acc');
-  if(ACC.user && ACC.profile && ACC.profile.nickname){ c.appendChild(avatarEl(ACC.profile.avatar)); c.appendChild(el('b','',ACC.profile.nickname)); c.appendChild(el('span','lvl','Nv. '+levelInfo(ACC.profile.xp).lvl)); c.onclick=profileModal; }
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ const aw=el('div','avw'); aw.appendChild(avatarEl(ACC.profile.avatar)); aw.appendChild(el('span','lvl',String(levelInfo(ACC.profile.xp).lvl))); c.appendChild(aw); c.appendChild(el('div','nk',`<b>${esc(ACC.profile.nickname)}</b><small>Nível ${levelInfo(ACC.profile.xp).lvl}</small>`)); c.onclick=profileModal; }
   else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
     c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
   home.appendChild(c);
-  if(!home.querySelector('.mis')){ const mb=el('button','mis','<span>📋</span><small>Missões</small>'); mb.setAttribute('aria-label','Missões'); mb.onclick=()=>missionsScreen(); home.appendChild(mb); }
   if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
   if(!home.querySelector('.tbn.gift')){ const b=el('button','tbn gift','🎁'); b.setAttribute('aria-label','Presentes'); b.onclick=giftsScreen; home.appendChild(b); }
   if(!home.querySelector('.tbn.mail')){ const b=el('button','tbn mail','✉️'); b.setAttribute('aria-label','Notícias'); b.onclick=newsScreen; home.appendChild(b); }
@@ -1987,7 +1993,12 @@ function accChip(){
   home.querySelector('.tbn.mail').classList.toggle('dot', NEWS.length>0 && NEWS[0].id>newsSeen());
   let cc=home.querySelector('.crybox'); if(cc) cc.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ cc=el('div','crybox',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; home.appendChild(cc); }
-  const mb=home.querySelector('.mis'); if(mb) mb.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed));
+  document.querySelectorAll('.tab.t-mis').forEach(t=>t.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed)));
+  let fv=home.querySelector('.hfav'); if(fv) fv.remove();
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ fv=el('div','hfav'); const F=favs();
+    for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d) c.style.backgroundImage=`url("${d.mini}")`;
+      c.onclick=()=>d?cardModalView(d,()=>accChip()):profileModal(); fv.appendChild(c); }
+    home.appendChild(fv); }
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
 }
@@ -2377,13 +2388,15 @@ function sortSheet(v, done){
 
 // ===== Barra inferior: Início · Baralhos · Modos de batalha =====
 let CUR_TAB='home', DECK_LEAVE=null;
-const TABS=[['home','🏠','Início'],['deck','🃏','Baralhos'],['modes','⚔️','Modos de batalha']];
+const TABS=[['home','🏠','Início'],['mis','📋','Missões'],['deck','🃏','Baralhos'],['modes','⚔️','Modos de batalha']];
 function tabBar(scr,on){
   const b=el('nav','tabbar');
-  TABS.forEach(([k,ic,n])=>{ const t=el('button','tab'+(k===on?' on':''),`<span>${ic}</span><small>${n}</small>`); t.onclick=()=>goTab(k); b.appendChild(t); });
+  TABS.forEach(([k,ic,n])=>{ const t=el('button','tab t-'+k+(k===on?' on':''),`<span>${ic}</span><small>${n}</small>`); t.onclick=()=>goTab(k); b.appendChild(t); });
+  b.querySelector('.t-mis').classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed));
   scr.appendChild(b);
 }
 function goTab(k){
+  if(k==='mis'){ sfx('click'); missionsScreen(); return; }
   if(k===CUR_TAB) return;
   if(CUR_TAB==='deck' && DECK_LEAVE && !DECK_LEAVE()) return;
   sfx('click');
