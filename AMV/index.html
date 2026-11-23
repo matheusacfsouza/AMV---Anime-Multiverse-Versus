@@ -225,6 +225,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rew .up{font-size:60px;font-weight:900;color:#2ee66b;animation:upPop .6s ease-out}
 .rew .note{font-size:30px;color:#ffd84d;text-align:center}
 @keyframes upPop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.mis{position:absolute;right:40px;bottom:60px;z-index:6;width:160px;height:190px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-family:inherit}
+.mis span{width:150px;height:150px;border-radius:50%;background:#000b;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:70px}
+.mis small{font-size:32px;font-weight:700;text-shadow:0 2px 6px #000}
+.mis.dot span::after{content:'';position:absolute;right:14px;top:6px;width:34px;height:34px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
 .gear{position:absolute;right:30px;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:56px;cursor:pointer}
 .evt{position:absolute;right:30px;top:160px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
@@ -237,8 +241,11 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .pid{text-align:right;font-size:40px;font-weight:700;color:#cfd6e0}.pid small{display:block;font-size:28px;font-weight:500;color:#8b95a5}
 .pround{width:96px;height:96px;border-radius:50%;border:0;background:#2a303b;color:#fff;font-size:42px;box-shadow:0 6px 16px #0008;cursor:pointer;flex:none}
 .pround.big{width:150px;height:150px;font-size:64px}
-.pring{--p:0%;position:relative;width:500px;height:500px;border-radius:50%;background:conic-gradient(#8fe3ff 0%,#5ee3c1 calc(var(--p) * .6),#47e68a var(--p),#3d4656 var(--p) 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 18px #1b1f27,0 10px 40px #000a}
-.pring .pav{width:390px;height:390px;border:14px solid #1b1f27}
+.pring{--p:0%;position:relative;width:520px;height:520px;border-radius:50%;background:#1b1f27;box-shadow:0 10px 40px #000a,inset 0 0 0 2px #2c3442;flex:none}
+.pring .rg{position:absolute;inset:16px;border-radius:50%;background:conic-gradient(#8fe3ff 0%,#5fe2c4 calc(var(--p) * .55),#47e68a var(--p),#353d4b var(--p) 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 44px),#000 calc(100% - 43px));mask:radial-gradient(farthest-side,transparent calc(100% - 44px),#000 calc(100% - 43px))}
+.pring .cap{position:absolute;left:50%;top:16px;width:44px;height:44px;margin-left:-22px;border-radius:50%;transform-origin:22px 244px}
+.pring .cap.s{background:#8fe3ff}.pring .cap.e{background:#47e68a;box-shadow:0 0 12px #47e68a99}
+.pring .pav{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:380px;height:380px;border:0;box-shadow:0 0 0 10px #1b1f27}
 .pring .pen{position:absolute;right:70px;bottom:70px;width:84px;height:84px;border-radius:50%;border:0;background:#eef2f7;font-size:38px;cursor:pointer;box-shadow:0 4px 12px #0009}
 .plv{font-size:76px;font-weight:900;margin-top:30px}
 .pxp{font-size:38px;color:#9aa4b4;font-weight:700;margin-bottom:30px}
@@ -469,7 +476,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-205624';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-211947';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
@@ -1842,13 +1849,32 @@ function setScreen(node){ const s=$('#screen'); s.innerHTML=''; s.appendChild(no
 function nav(where){ try{ history.pushState({s:where},''); }catch(e){} }
 function leaveMatch(){ closeModal(); musicStop(); if(G) G.over=true; G=null; $('#board').innerHTML=''; setScenario(false); }
 function goHome(){ leaveMatch(); if(history.state && history.state.s && history.state.s!=='home') history.back(); else titleScreen(); }
+const onHome=()=>!!document.querySelector('.scr.home') && !G;
+const guardHome=()=>{ try{ if(!history.state || history.state.s!=='guard') history.pushState({s:'guard'},''); }catch(e){} };
+let EXITING=false;
 addEventListener('popstate', ()=>{
+  if(EXITING) return;
   if(G && !G.over){                                 // dentro da partida
     nav('game');
     if($('#modal').classList.contains('on')) closeModal(); else menuModal();
     return;
   }
-  leaveMatch(); titleScreen();
+  const ov=document.querySelector('.sheetov,.profscr');
+  if($('#modal').classList.contains('on') || ov){   // primeiro fecha o que estiver aberto
+    if($('#modal').classList.contains('on')) closeModal(); else ov.remove();
+    if(onHome()) guardHome(); return;
+  }
+  if(!onHome()){ leaveMatch(); titleScreen(); return; }
+  // na tela inicial: confirma a saída se ainda houver missões diárias
+  if(missionsPending()){
+    guardHome();
+    const box=el('div','mbox'); box.appendChild(el('div','big','<span style="font-size:52px">Você ainda não finalizou as missões diárias, pretende sair?</span>'));
+    const row=el('div','row');
+    row.appendChild(btn('Sim','sec',()=>{ closeModal(); EXITING=true; history.go(-2); }));
+    row.appendChild(btn('Não','',closeModal)); box.appendChild(row); showModal(box);
+    return;
+  }
+  EXITING=true; history.back();                     // sem missões pendentes: sai normalmente
 });
 try{ history.replaceState({s:'home'},''); }catch(e){}
 
@@ -1900,6 +1926,7 @@ function accChip(){
   else { const a=el('div','av'); a.style.cssText='display:flex;align-items:center;justify-content:center;font-size:48px'; a.textContent='👤'; c.appendChild(a);
     c.appendChild(el('div','',`<b>${ACC.user?'Complete seu perfil':'Entrar'}</b>${ACC.user?'':'<small>Crie uma conta para salvar seu progresso</small>'}`)); c.onclick=()=>ACC.user?profileEdit(true):authModal('login'); }
   home.appendChild(c);
+  if(!home.querySelector('.mis')){ const mb=el('button','mis','<span>📋</span><small>Missões</small>'); mb.setAttribute('aria-label','Missões'); mb.onclick=missionsScreen; home.appendChild(mb); }
   if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
@@ -1971,7 +1998,9 @@ function profileModal(){
   const top=el('div','ptop'); top.appendChild(el('div','pid',`<small>ID de jogador</small>${playerId(ACC.user&&ACC.user.id)}`));
   const sb=el('button','pround','🔍'); sb.onclick=()=>toast('Busca de jogadores: em breve!'); top.appendChild(sb); sc.appendChild(top);
   // avatar com o anel de XP
-  const ring=el('div','pring'); ring.style.setProperty('--p',(li.need?100*li.into/li.need:100)+'%');
+  const fr=li.need?li.into/li.need:1, ring=el('div','pring'); ring.style.setProperty('--p',(fr*100)+'%');
+  ring.appendChild(el('div','rg'));
+  if(fr>0.004){ ring.appendChild(el('i','cap s')); const ce=el('i','cap e'); ce.style.transform=`rotate(${fr*360}deg)`; ring.appendChild(ce); }   // pontas arredondadas
   const av=avatarEl(pf.avatar,'pav'); ring.appendChild(av);
   const pen=el('button','pen','✏️'); pen.onclick=()=>avatarPick(); ring.appendChild(pen); sc.appendChild(ring);
   sc.appendChild(el('div','plv',`Nv. ${li.lvl}`));
@@ -2015,6 +2044,13 @@ function nameEdit(){
     }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
   });
   const row=el('div','row'); row.appendChild(sv); row.appendChild(btn('Cancelar','sec',closeModal)); f.appendChild(row); showModal(box); setTimeout(()=>nk.focus(),50);
+}
+/* ---- missões (estrutura; o conteúdo será definido) ---- */
+const missionsPending=()=>false;                                 // vira verdadeiro quando houver missões diárias incompletas
+function missionsScreen(){
+  const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Lista de Missões'));
+  f.appendChild(el('div','lbl','Em breve: missões diárias, de tempo limitado e regulares.'));
+  f.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
 }
 function settingsModal(){
   const box=el('div','mbox'); const f=el('div','form cfg'); box.appendChild(f); f.appendChild(el('h2','','Configurações'));
@@ -2118,7 +2154,7 @@ function titleScreen(){
   const link=(x,url,lab)=>{ const a=el('a','hot'); a.href=url; a.target='_blank'; a.rel='noopener'; a.setAttribute('aria-label',lab); a.style.cssText=`left:${x}px;top:1655px;width:100px;height:104px`; s.appendChild(a); };
   link(432,'https://www.instagram.com/cofesoapp','Instagram');
   link(558,'https://www.tiktok.com/@cofesoapp','TikTok');
-  setScreen(s); accChip();
+  setScreen(s); accChip(); guardHome();
 }
 
 function deckScreen(){
