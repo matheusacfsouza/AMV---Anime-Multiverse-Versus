@@ -40,7 +40,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 #stage.scen .zone.slot{background:transparent;border-color:transparent}
 #stage.scen .zone.slot>.lbl{opacity:0}
 #stage.scen .zone.life,#stage.scen .zone.turn,#stage.scen .zone.av{background:rgba(0,0,0,.72)}
-.card{position:absolute;inset:-8px;border-radius:12px;background-size:100% 100%;background-position:center;background-color:transparent;cursor:pointer;transition:transform .25s,opacity .25s}
+.card{position:absolute;inset:-8px;border-radius:12px;background-size:100% 100%;background-position:center;background-color:transparent;cursor:pointer;transition:transform .25s,opacity .25s;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .card.dim{opacity:.55}
 /* brilhos: só a opacidade anima (o navegador não redesenha a tela toda) */
 .card.cand,.zone.cand{z-index:3}
@@ -499,9 +499,10 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-224512';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-231048';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
-for(const k in DEFS){ const d=DEFS[k]; d.img=vq(d.img); d.mini=d.img; preload(d.img); }
+const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
+for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
 const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
 const mini=inst=>(inst.def||inst).mini;
@@ -510,7 +511,7 @@ function setScenario(on){
   if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; return; }
   st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen');
 }
-const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(b.img)}));
+const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(miniPath(b.img))}));
 BACKS.forEach(b=>preload(b.img));
 function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return BACKS[i]?i:0; }catch(e){ return 0; } }
 function backOf(p){ return BACKS[p===0?myBack():0].img; }    // o oponente usa o verso padrão
