@@ -629,7 +629,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-021224';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-022158';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1704,6 +1704,7 @@ function peekArm(){ peekHide(); H.pt=setTimeout(()=>{ if(!H.on || H.drag || !H.i
 function inItemZone(cx,cy){ const z=document.querySelector('.itemzone'); if(!z) return false; const r=z.getBoundingClientRect(); return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom; }
 addEventListener('pointermove', e=>{
   if(!H.on || e.pointerId!==H.id) return;
+  if(H.peeked) return;                          // carta ampliada: fica na tela até tirar o dedo, mesmo arrastando
   const dx=e.clientX-H.x0, dy=e.clientY-H.y0, k=$('#stage').getBoundingClientRect().width/1080;
   if(Math.hypot(dx,dy)>10*k) H.moved=true;
   if(!H.drag){
