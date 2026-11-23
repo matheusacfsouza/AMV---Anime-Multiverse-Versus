@@ -620,7 +620,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-005832';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-011849';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1501,7 +1501,6 @@ function menuModal(){
   acts.appendChild(btn('Histórico da partida','sec',histModal));
   acts.appendChild(btn(musicOn?'Música: ligada':'Música: desligada','sec',()=>{ musicOn=CFG.music=!musicOn; saveCfg(); if(musicOn) musicStart(); else MUSIC.pause(); menuModal(); }));
   acts.appendChild(btn('Regras desta versão','sec',rulesModal));
-  if(FS_OK) acts.appendChild(btn(isFS()?'Sair da tela cheia':'Tela cheia','sec',()=>{ toggleFS(); setTimeout(menuModal,300); }));
   acts.appendChild(btn('Desistir','sec',quitToModes));
   box.appendChild(acts); showModal(box); if(G && !G.over) setPause(true);
 }
@@ -2063,7 +2062,7 @@ addEventListener('popstate', ()=>{
     if(document.querySelector('.asback')) closeSheet(); else if($('#modal').classList.contains('on')) closeModal(); else menuModal();
     return;
   }
-  const ov=document.querySelector('.sheetov,.profscr');
+  const ov=document.querySelector('.sheetov,.profscr:not(.mscr)');
   if($('#modal').classList.contains('on') || ov){   // primeiro fecha o que estiver aberto
     if($('#modal').classList.contains('on')) closeModal(); else ov.remove();
     if(onHome()) guardHome(); return;
@@ -2150,7 +2149,6 @@ function accChip(){
   home.appendChild(c);
   if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
   if(!home.querySelector('.tbn.gift')){ const b=el('button','tbn gift','🎁'); b.setAttribute('aria-label','Presentes'); b.onclick=giftsScreen; home.appendChild(b); }
-  if(FS_OK && !home.querySelector('.tbn.fs')){ const b=el('button','tbn fs',isFS()?FS_OUT:FS_IN); b.setAttribute('aria-label','Tela cheia'); b.onclick=toggleFS; home.appendChild(b); }
   if(!home.querySelector('.tbn.mail')){ const b=el('button','tbn mail','✉️'); b.setAttribute('aria-label','Notícias'); b.onclick=newsScreen; home.appendChild(b); }
   home.querySelector('.tbn.gift').classList.toggle('dot', !!ACC.user && GIFTS.some(g=>!g.claimed));
   home.querySelector('.tbn.mail').classList.toggle('dot', NEWS.length>0 && NEWS[0].id>newsSeen());
@@ -2294,17 +2292,17 @@ function resetIn(kind){                                          // tempo até r
 const MIS_TABS=[{k:'daily',n:'Diárias'},{k:'weekly',n:'Semanais'},{k:'event',n:'Tempo limitado'}];
 async function missionsScreen(tab){
   if(typeof tab!=='string') tab='daily';
-  const old=document.querySelector('.profscr'); if(old) old.remove();
-  const ov=el('div','profscr mscr'); const sc=el('div','pbody'); ov.appendChild(sc);
+  if(!history.state || history.state.s!=='mis') nav('mis');
+  CUR_TAB='mis'; DECK_LEAVE=null;
+  const ov=el('div','scr profscr mscr'); const sc=el('div','pbody'); ov.appendChild(sc);
   sc.appendChild(el('div','mtitle','Lista de Missões'));
   const tabs=el('div','mtabs'); MIS_TABS.forEach(T=>{ const b=el('div','mtab'+(T.k===tab?' on':''),T.n); b.onclick=()=>missionsScreen(T.k); tabs.appendChild(b); }); sc.appendChild(tabs);
   if(tab!=='event') sc.appendChild(el('div','mtimer',`🕒 Renova em ${resetIn(tab)}`));
-  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta e pegue os seus prêmios</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); sc.appendChild(g); }
+  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta e pegue os seus prêmios</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>authModal('signup'))); sc.appendChild(g); }
   const list=el('div','mlist'); sc.appendChild(list);
-  const x=el('button','pclose','✕'); x.onclick=()=>ov.remove(); ov.appendChild(x);
   tabBar(ov,'mis');
-  $('#stage').appendChild(ov);
-  await loadMissions();
+  setScreen(ov);
+  await loadMissions(); if(CUR_TAB!=='mis' || !ov.isConnected) return;
   const L=MIS.filter(m=>m.kind===tab);
   if(!L.length){ list.appendChild(el('div','mempty',tab==='event'?'Nenhum evento no momento. Fique de olho!':'Nenhuma missão.')); return; }
   L.forEach(m=>{
@@ -2565,24 +2563,13 @@ function tabBar(scr,on){
   b.querySelector('.t-mis').classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed));
   scr.appendChild(b);
 }
-const FS_OK=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
-const isFS=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
-const FS_IN='<svg viewBox="0 0 24 24" width="58" height="58" style="display:block" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
-const FS_OUT='<svg viewBox="0 0 24 24" width="58" height="58" style="display:block" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
-function toggleFS(){
-  try{ if(isFS()) (document.exitFullscreen||document.webkitExitFullscreen).call(document);
-       else { const d=document.documentElement; const r=(d.requestFullscreen||d.webkitRequestFullscreen).call(d,{navigationUI:'hide'}); if(r&&r.catch) r.catch(()=>toast('Não foi possível entrar em tela cheia.')); } }catch(e){ toast('Seu navegador não permite tela cheia.'); }
-}
-['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>document.querySelectorAll('.tbn.fs').forEach(b=>b.innerHTML=isFS()?FS_OUT:FS_IN)));
 function goTab(k){
-  if(k==='mis'){ if(document.querySelector('.mscr')) return; sfx('click'); missionsScreen(); return; }
-  const mo=document.querySelector('.mscr'); if(mo){ mo.remove(); sfx('click'); if(k===CUR_TAB) return; }
   if(k===CUR_TAB) return;
   if(CUR_TAB==='deck' && DECK_LEAVE && !DECK_LEAVE()) return;
   sfx('click');
   if(k==='home'){ goHome(); return; }
   if(CUR_TAB!=='home'){ try{ history.replaceState({s:k},''); }catch(e){} }
-  if(k==='deck') deckScreen(); else modesScreen();
+  if(k==='deck') deckScreen(); else if(k==='mis') missionsScreen(); else modesScreen();
 }
 function modesScreen(){
   if(!history.state || history.state.s!=='modes') nav('modes');
