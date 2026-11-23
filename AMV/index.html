@@ -499,7 +499,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-231048';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-231559';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2390,8 +2390,11 @@ titleScreen();
     try{ const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return; const j=await r.json();
       if(j && j.v && j.v!==APP_VER) show(j.v); }catch(e){}
   }
-  setTimeout(check,5000); setInterval(check,60000);
+  setTimeout(check,2500); setInterval(check,60000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
+  // iPhone/iPad: ao voltar para o Safari ou abrir pelo ícone da tela inicial, nem sempre dispara o evento acima
+  addEventListener('pageshow',()=>check()); addEventListener('focus',()=>check()); addEventListener('online',()=>check());
+  addEventListener('pointerdown',()=>{ const t=Date.now(); if(t-(window.__updLast||0)>30000){ window.__updLast=t; check(); } },{passive:true});
   window.__updCheck=check;
 })();
 window.__AMV = {get G(){return G;}, render, startTurn, A, doAttack, atkOf, actionsFor, chaosFx, afterBattle, finalPhase, goAttack, endTurnHuman, searchList, atkTargets, clashVals, endGame, levelInfo};   // útil para depurar
