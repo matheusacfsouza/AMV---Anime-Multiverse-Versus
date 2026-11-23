@@ -175,7 +175,28 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .scr.home{background:#000;padding:0}
 .scr.home .spin{position:absolute;left:-590px;top:-168px;width:2240px;height:2240px;background:url("Menus/Menu - Tela inicial - Giro.jpg") center/100% 100% no-repeat;animation:spin 60s linear infinite;will-change:transform;pointer-events:none}
 @keyframes spin{to{transform:rotate(-360deg)}}
-.scr.home .ui{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none}
+.scr.home .ui{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none;clip-path:inset(0 0 71% 0)}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:170px;z-index:8;display:flex;background:#0b0d12f2;border-top:2px solid #2a303c;box-shadow:0 -10px 30px #0009}
+.tab{flex:1;border:0;background:none;color:#8a93a3;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tab span{font-size:64px;filter:grayscale(1) brightness(.8);transition:transform .15s}
+.tab small{font-size:30px;font-weight:700}
+.tab.on{color:#7fd6f5}.tab.on span{filter:none;transform:translateY(-4px) scale(1.08)}
+.tab.on::before{content:'';position:absolute;top:0;width:120px;height:6px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,#8fe3ff,#47e68a)}
+.tab{position:relative}
+.tbn{position:absolute;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:54px;cursor:pointer;padding:0}
+.tbn.gift{right:155px}.tbn.mail{right:280px}
+.tbn.dot::after,.gear.dot::after{content:'';position:absolute;right:0;top:0;width:30px;height:30px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
+.shopc{position:absolute;left:60px;top:1180px;z-index:5;width:560px;height:300px;border-radius:40px;border:3px solid #ffffffcc;background:linear-gradient(160deg,#2a3550ee,#141823ee);color:#fff;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 14px 40px #000a}
+.shopc span{font-size:120px;line-height:1}.shopc b{font-size:52px}.shopc small{font-size:28px;color:#ffd84d}
+.shopc:active,.modec:active{transform:scale(.97)}
+.modelist{display:flex;flex-direction:column;gap:30px;width:980px}
+.modec{display:flex;align-items:center;gap:30px;padding:40px 40px;border-radius:36px;border:3px solid #3d9bd6;background:linear-gradient(120deg,#1d2a3d,#141823);color:#fff;font-family:inherit;text-align:left;cursor:pointer;box-shadow:0 10px 30px #0009}
+.modec span{font-size:100px;line-height:1}.modec div{flex:1}.modec b{display:block;font-size:48px;margin-bottom:8px}.modec small{font-size:30px;color:#aab3c2}
+.modec i{font-style:normal;font-size:80px;color:#7fd6f5}.modec em{font-style:normal;font-size:28px;color:#ffd84d;border:2px solid #ffd84d;border-radius:30px;padding:8px 20px;white-space:nowrap}
+.modec.soon{border-color:#343a46;opacity:.7}
+.news{background:#1d2129;border-radius:30px;padding:30px 36px;box-shadow:0 6px 18px #0008;border-left:8px solid #343a46}
+.news.new{border-left-color:#47e68a}.news .nd{font-size:26px;color:#9aa4b4}.news .nt{font-size:44px;font-weight:800;margin:8px 0 14px}.news .nb{font-size:34px;line-height:1.4;color:#d5dbe4}
+.gico{font-size:80px}
 .scr.home .fan{position:absolute;left:40px;top:545px;margin:0}
 .hot{position:absolute;display:block;background:transparent;border:0;border-radius:18px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}
 .hot:active{background:rgba(255,255,255,.14)}
@@ -191,7 +212,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tile .ctl .btn{width:76px;height:64px;padding:0;font-size:44px;border-radius:14px}
 
 /* modal bits */
-.acc{position:absolute;left:30px;top:30px;z-index:6;display:flex;align-items:center;gap:18px;background:#000b;border:3px solid #fff;border-radius:60px;padding:10px 34px 10px 10px;cursor:pointer;max-width:720px}
+.acc{position:absolute;left:30px;top:30px;z-index:6;display:flex;align-items:center;gap:18px;background:#000b;border:3px solid #fff;border-radius:60px;padding:10px 34px 10px 10px;cursor:pointer;max-width:600px;box-sizing:border-box}
 .acc b{font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acc small{display:block;font-size:26px;color:#ffd84d;font-weight:600}
 .av{width:86px;height:86px;border-radius:50%;border:4px solid #fff;flex:none;background:#333 center/cover}
@@ -225,12 +246,12 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rew .up{font-size:60px;font-weight:900;color:#2ee66b;animation:upPop .6s ease-out}
 .rew .note{font-size:30px;color:#ffd84d;text-align:center}
 @keyframes upPop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-.mis{position:absolute;right:40px;bottom:60px;z-index:6;width:160px;height:190px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-family:inherit}
+.mis{position:absolute;right:40px;bottom:200px;z-index:6;width:160px;height:190px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-family:inherit}
 .mis span{width:150px;height:150px;border-radius:50%;background:#000b;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:70px}
 .mis small{font-size:32px;font-weight:700;text-shadow:0 2px 6px #000}
 .mis.dot span::after{content:'';position:absolute;right:14px;top:6px;width:34px;height:34px;border-radius:50%;background:#ff4d6d;border:3px solid #fff}
 .cry{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
-.crybox{position:absolute;right:160px;top:38px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
+.crybox{position:absolute;right:30px;top:162px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
 .crybox b{font-weight:900}
 .crytot{display:flex;align-items:center;gap:10px}.crytot small{font-size:30px;color:#bbb;font-weight:600}
 .mscr .pbody{padding-top:70px}
@@ -253,7 +274,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mrow .btn{min-width:200px}
 .mempty{font-size:38px;color:#9aa4b4;text-align:center;padding:80px 0}
 .gear{position:absolute;right:30px;top:30px;z-index:6;width:110px;height:110px;border-radius:50%;border:3px solid #fff;background:#000b;font-size:56px;cursor:pointer}
-.evt{position:absolute;right:30px;top:160px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
+.evt{position:absolute;right:30px;top:262px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:780px}
 .stats div{background:#1b1f27;border-radius:24px;padding:18px;text-align:center;font-size:28px;color:#bbb}
@@ -411,10 +432,11 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   33:{id:33,name:'Shifu Ma Mei',kind:'char',atk:1700,arq:['Lutador','Mestre'],el:'agua',dsl:true,img:'Cartas/Shifu Ma Mei.jpg'},
   34:{id:34,name:'Shizu Ma Mei - Velha Guarda',kind:'char',atk:800,arq:['Elemental','Mestre'],el:'agua',dsl:true,img:'Cartas/Shizu Ma Mei - Velha Guarda.jpg'},
   35:{id:35,name:'Taishizu Ma Mei',kind:'char',atk:2000,arq:['Mestre','Lenda'],el:'agua',dsl:true,dslzg:true,img:'Cartas/Taishizu Ma Mei.jpg'},
-  36:{id:36,name:'Tee Ma Mei',kind:'char',atk:1300,arq:['Atirador'],el:'agua',img:'Cartas/Tee Ma Mei.jpg'}
+  36:{id:36,name:'Tee Ma Mei',kind:'char',atk:1300,arq:['Atirador'],el:'agua',img:'Cartas/Tee Ma Mei.jpg'},
+  37:{id:37,name:'Botão de Reset',kind:'char',atk:11000,arq:['Mestre'],el:'raio',first:true,direct:true,img:'Cartas/Botão de Reset.jpg'}
 };
 /* estrelas: 1 a 3 = até 3 cópias, 4 = 1 cópia, 5 = só 1 carta de 5 estrelas no baralho inteiro */
-const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:2,22:3,23:3,24:2,25:4,26:2,27:2,28:4,29:4,30:3,31:1,32:2,33:3,34:3,35:5,36:2};
+const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:2,22:3,23:3,24:2,25:4,26:2,27:2,28:4,29:4,30:3,37:5,31:1,32:2,33:3,34:3,35:5,36:2};
 const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?1:3; };
 const isMaMei=c=>/Ma Mei/.test(c.def.name);
 const DS={31:200,32:300,33:500,36:100};                         // Duplo Sentido (valor fixo)
@@ -499,7 +521,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261122-231559';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261122-233925';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -545,6 +567,8 @@ function atkOf(p, inst){
   return Math.max(0, a - intim);
 }
 function canAttack(p){ return !(p===G.first && P(p).turns===1); }   // quem começa não ataca no 1º turno
+const canAtk=(p,c)=>canAttack(p) || !!(c&&c.def.first);           // "pode atacar no primeiro turno"
+const canDirect=c=>!!(c&&(c.direct||c.def.direct));               // "pode atacar diretamente"
 
 function detach(pl, inst){
   let i;
@@ -1149,10 +1173,10 @@ function actionsFor(p, inst, where){
   }
   if(where==='field'){
     if(d.kind==='char'){
-      add('Atacar', !canAttack(p)?'Quem começa a partida só ataca no 2º turno.':(inst.attacked?'Já atacou neste turno.':null), async()=>{
+      add('Atacar', !canAtk(p,inst)?'Quem começa a partida só ataca no 2º turno.':(inst.attacked?'Já atacou neste turno.':null), async()=>{
         const tg=atkTargets(q);
         if(tg.length===0){ await doAttack(p,inst,null); return; }
-        const r=await pickTarget(tg,{prompt:`Escolha o alvo de ${d.name}.`, direct:inst.direct, attack:true, foe:q});
+        const r=await pickTarget(tg,{prompt:`Escolha o alvo de ${d.name}.`, direct:canDirect(inst), attack:true, foe:q});
         if(!r) return;
         await doAttack(p,inst,r.direct?null:r.target);
       });
@@ -1370,7 +1394,7 @@ function render(){
           if(G.pick && G.pick.set.has(k.uid)) ti.classList.add('cand');
           ce.appendChild(ti);                      // dentro da carta: vai junto no ataque
         });
-        if(c.direct) ce.appendChild(el('div','chip tag2','DIRETO'));
+        if(canDirect(c)) ce.appendChild(el('div','chip tag2','DIRETO'));
         if(c.attacked && p===G.turn && c.uid!==G.atkUid) ce.classList.add('dim');   // só apaga quem já atacou NESTE turno
         if(p===0 && canAct() && G.phase!=='end' && actionsFor(0,c,'field').some(a=>!a.reason)) ce.classList.add('glow');
       }
@@ -1419,7 +1443,7 @@ function render(){
   zt.textContent=G.turnNo;
   frag.appendChild(zt);
   let lab='Turno do oponente';
-  if(G.turn===0) lab=G.phase==='attack'?'Fim da batalha':((G.phase==='prep' && canAttack(0) && P(0).chars.some(Boolean))?'Ir para o ataque':'Fim do turno');
+  if(G.turn===0) lab=G.phase==='attack'?'Fim da batalha':((G.phase==='prep' && P(0).chars.some(c=>c&&canAtk(0,c)))?'Ir para o ataque':'Fim do turno');
   const eb=btn(lab,'',()=>endTurnHuman()); eb.id='endbtn'; if(!can) eb.disabled=true; if(G.turn!==0) eb.classList.add('sec'); frag.appendChild(eb);
   const mb=btn('Menu','sec',menuModal); mb.id='menubtn'; frag.appendChild(mb);
 
@@ -1589,7 +1613,7 @@ async function endTurnHuman(){            // botão da direita: preparação -> 
   if(!canAct()) return;
   closeModal();
   G.busy=true; render();
-  if(G.phase==='prep' && canAttack(0) && P(0).chars.some(Boolean)){
+  if(G.phase==='prep' && P(0).chars.some(c=>c&&canAtk(0,c))){
     await goAttack(0);
     if(G.over) return;
     G.busy=false; render();
@@ -1816,16 +1840,16 @@ async function botTurn(){
     if(pa>=ql.life || (ql.life<=pa*2 && tg.length && tg.every(t=>bDef(t)>=pa))){ await A.picc(p,picc,g2); if(!await pause(900)) return; }
   }
   // 13) Ataques
-  if(canAttack(p) && pl.chars.some(Boolean)){
+  if(pl.chars.some(c=>c&&canAtk(p,c))){
     await goAttack(p); if(G.over) return;
     const skipped=new Set();
     while(!G.over){
-      const atts=pl.chars.filter(x=>x&&!x.attacked&&!skipped.has(x.uid)).sort((a,b)=>atkOf(p,b)-atkOf(p,a));
+      const atts=pl.chars.filter(x=>x&&!x.attacked&&!skipped.has(x.uid)&&canAtk(p,x)).sort((a,b)=>atkOf(p,b)-atkOf(p,a));
       if(!atts.length) break;
       const a=atts[0], tg=atkTargets(q);
       let choice=null;
       if(!tg.length) choice={direct:true};
-      else if(a.direct && (atkOf(p,a)>=ql.life || !tg.some(t=>wins(a,t)))) choice={direct:true};
+      else if(canDirect(a) && (atkOf(p,a)>=ql.life || !tg.some(t=>wins(a,t)))) choice={direct:true};
       else {
         const w=tg.filter(t=>wins(a,t)||(ties(a,t)&&a.doom)).sort((x,y)=>bDef(y)-bDef(x));
         if(w.length) choice={target:w[0]};
@@ -1957,6 +1981,10 @@ function accChip(){
   home.appendChild(c);
   if(!home.querySelector('.mis')){ const mb=el('button','mis','<span>📋</span><small>Missões</small>'); mb.setAttribute('aria-label','Missões'); mb.onclick=()=>missionsScreen(); home.appendChild(mb); }
   if(!home.querySelector('.gear')){ const gb=el('button','gear','⚙️'); gb.setAttribute('aria-label','Configurações'); gb.onclick=settingsModal; home.appendChild(gb); }
+  if(!home.querySelector('.tbn.gift')){ const b=el('button','tbn gift','🎁'); b.setAttribute('aria-label','Presentes'); b.onclick=giftsScreen; home.appendChild(b); }
+  if(!home.querySelector('.tbn.mail')){ const b=el('button','tbn mail','✉️'); b.setAttribute('aria-label','Notícias'); b.onclick=newsScreen; home.appendChild(b); }
+  home.querySelector('.tbn.gift').classList.toggle('dot', !!ACC.user && GIFTS.some(g=>!g.claimed));
+  home.querySelector('.tbn.mail').classList.toggle('dot', NEWS.length>0 && NEWS[0].id>newsSeen());
   let cc=home.querySelector('.crybox'); if(cc) cc.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ cc=el('div','crybox',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; home.appendChild(cc); }
   const mb=home.querySelector('.mis'); if(mb) mb.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed));
@@ -2217,21 +2245,18 @@ function titleScreen(){
   const fan=el('div','fan');
   [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
   s.appendChild(fan);
-  const hot=(cls,x,y,w,h,fn)=>{ const b=el('button','hot '+cls); b.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`; b.onclick=fn; s.appendChild(b); return b; };
-  hot('h-play',216,1053,648,102,startFlow).setAttribute('aria-label','Jogar contra a máquina');
-  hot('h-deck',216,1197,648,103,deckScreen).setAttribute('aria-label','Montar baralho');
-  hot('h-rules',216,1341,648,106,()=>{ nav('rules'); rulesModal(); }).setAttribute('aria-label','Regras');
-  const link=(x,url,lab)=>{ const a=el('a','hot'); a.href=url; a.target='_blank'; a.rel='noopener'; a.setAttribute('aria-label',lab); a.style.cssText=`left:${x}px;top:1655px;width:100px;height:104px`; s.appendChild(a); };
-  link(432,'https://www.instagram.com/cofesoapp','Instagram');
-  link(558,'https://www.tiktok.com/@cofesoapp','TikTok');
-  setScreen(s); accChip(); guardHome();
+  const shop=el('button','shopc','<span>🛍️</span><b>Loja</b><small>Em breve</small>'); shop.setAttribute('aria-label','Loja');
+  shop.onclick=()=>{ sfx('click'); toast('A Loja chega em breve!'); }; s.appendChild(shop);
+  CUR_TAB='home'; DECK_LEAVE=null; tabBar(s,'home');
+  setScreen(s); accChip(); guardHome(); loadNews(); loadGifts();
 }
 
 function deckScreen(){
   if(!history.state || history.state.s!=='deck') nav('deck');
+  CUR_TAB='deck';
   const counts=loadDeck(); for(const id in DEFS) counts[id]=counts[id]|0;
-  const s=el('div','scr'); s.style.padding='30px 30px';
-  s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">MONTAR BARALHO</div>`));
+  const s=el('div','scr'); s.style.padding='30px 30px 200px';
+  s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">BARALHOS</div>`));
   const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; s.appendChild(info);
   const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView));
   tools.appendChild(fb); tools.appendChild(ob); s.appendChild(tools);
@@ -2270,6 +2295,8 @@ function deckScreen(){
     info.innerHTML=`${t} / ${DECK_MAX} cartas (mín. ${DECK_MIN})` + (v?`<br><span style="color:#ffb347;font-size:34px">${v}</span>`:'<br><span style="color:#2ee66b;font-size:34px">Baralho válido</span>');
     save.disabled=!!v;
   }
+  DECK_LEAVE=()=>{ if(validDeck(counts)){ toast('Baralho inválido: ajuste antes de sair.'); return false; } saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} return true; };
+  tabBar(s,'deck');
   upd(); setScreen(s);
 }
 function cardModalView(d, onChange){
@@ -2348,6 +2375,84 @@ function sortSheet(v, done){
   const foot=el('div','foot'); const x=el('div','x','✕'); x.onclick=()=>ov.remove(); foot.appendChild(x); sh.appendChild(foot);
 }
 
+// ===== Barra inferior: Início · Baralhos · Modos de batalha =====
+let CUR_TAB='home', DECK_LEAVE=null;
+const TABS=[['home','🏠','Início'],['deck','🃏','Baralhos'],['modes','⚔️','Modos de batalha']];
+function tabBar(scr,on){
+  const b=el('nav','tabbar');
+  TABS.forEach(([k,ic,n])=>{ const t=el('button','tab'+(k===on?' on':''),`<span>${ic}</span><small>${n}</small>`); t.onclick=()=>goTab(k); b.appendChild(t); });
+  scr.appendChild(b);
+}
+function goTab(k){
+  if(k===CUR_TAB) return;
+  if(CUR_TAB==='deck' && DECK_LEAVE && !DECK_LEAVE()) return;
+  sfx('click');
+  if(k==='home'){ goHome(); return; }
+  if(CUR_TAB!=='home'){ try{ history.replaceState({s:k},''); }catch(e){} }
+  if(k==='deck') deckScreen(); else modesScreen();
+}
+function modesScreen(){
+  if(!history.state || history.state.s!=='modes') nav('modes');
+  CUR_TAB='modes'; DECK_LEAVE=null;
+  const s=el('div','scr modes'); s.style.padding='60px 40px 200px';
+  s.appendChild(el('div','mtitle','Modos de batalha'));
+  const L=el('div','modelist'); s.appendChild(L);
+  [['🤖','Contra a máquina','Batalhe contra o bot e ganhe XP e Cristais AMV.',startFlow],
+   ['🆚','Jogador contra jogador','Desafie outros jogadores online.',null],
+   ['🗺️','Campanha','Siga a história do multiverso.',null]].forEach(([ic,n,d,fn])=>{
+    const c=el('button','modec'+(fn?'':' soon'),`<span>${ic}</span><div><b>${n}</b><small>${d}</small></div>${fn?'<i>›</i>':'<em>Em breve</em>'}`);
+    c.onclick=()=>{ if(fn) fn(); else toast(`${n}: em breve!`); }; L.appendChild(c); });
+  tabBar(s,'modes'); setScreen(s);
+}
+// ===== Notícias =====
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let NEWS=[];
+const newsSeen=()=>{ try{ return +localStorage.getItem('amv_news_seen')||0; }catch(e){ return 0; } };
+async function loadNews(){ if(!SB) return; try{ const {data}=await SB.from('news').select('id,title,body,created_at').order('id',{ascending:false}).limit(30); if(Array.isArray(data)) NEWS=data; }catch(e){} accChip(); }
+async function newsScreen(){
+  const old=document.querySelector('.profscr'); if(old) old.remove();
+  const ov=el('div','profscr'); const sc=el('div','pbody'); ov.appendChild(sc);
+  sc.appendChild(el('div','mtitle','Notícias'));
+  const list=el('div','mlist'); sc.appendChild(list);
+  const x=el('button','pclose','✕'); x.onclick=()=>ov.remove(); ov.appendChild(x);
+  $('#stage').appendChild(ov);
+  await loadNews();
+  if(!NEWS.length){ list.appendChild(el('div','mempty','Nenhuma notícia por enquanto.')); return; }
+  const seen=newsSeen();
+  NEWS.forEach(n=>{ const c=el('div','news'+(n.id>seen?' new':'')); c.appendChild(el('div','nd',new Date(n.created_at).toLocaleDateString('pt-BR')));
+    c.appendChild(el('div','nt',esc(n.title))); c.appendChild(el('div','nb',esc(n.body).replace(/\n/g,'<br>'))); list.appendChild(c); });
+  try{ localStorage.setItem('amv_news_seen',String(NEWS[0].id)); }catch(e){} accChip();
+}
+// ===== Presentes =====
+let GIFTS=[];
+async function loadGifts(){ if(!SB) return; try{ const {data}=await SB.rpc('get_gifts'); GIFTS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
+async function giftsScreen(){
+  const old=document.querySelector('.profscr'); if(old) old.remove();
+  const ov=el('div','profscr'); const sc=el('div','pbody'); ov.appendChild(sc);
+  sc.appendChild(el('div','mtitle','Presentes'));
+  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta e pegue os seus presentes</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); sc.appendChild(g); }
+  const list=el('div','mlist'); sc.appendChild(list);
+  const x=el('button','pclose','✕'); x.onclick=()=>ov.remove(); ov.appendChild(x);
+  $('#stage').appendChild(ov);
+  await loadGifts();
+  if(!GIFTS.length){ list.appendChild(el('div','mempty','Nenhum presente no momento. Volte mais tarde!')); return; }
+  GIFTS.forEach(g=>{
+    const row=el('div','mrow'+(g.claimed?' claimed':'')); row.appendChild(el('div','gico','🎁'));
+    const info=el('div','minfo'); info.appendChild(el('div','mname',esc(g.title)));
+    if(g.ends_at) info.appendChild(el('div','mend',`Disponível até ${new Date(g.ends_at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}`));
+    row.appendChild(info);
+    const rw=el('div','mrew'); rw.innerHTML=(g.crystals?crys(g.crystals):'')+(g.xp?`<small>+${g.xp} XP</small>`:''); row.appendChild(rw);
+    let act;
+    if(g.claimed) act=el('div','mstat','✓ Resgatado');
+    else if(ACC.user){ act=btn('Resgatar','',async()=>{ act.disabled=true;
+        const {data,error}=await SB.rpc('claim_gift',{p_id:g.id});
+        if(error||!data||!data.ok){ toast(data&&data.reason==='resgatado'?'Você já resgatou este presente.':'Não foi possível resgatar agora.'); act.disabled=false; return; }
+        if(ACC.profile){ ACC.profile.crystals=data.total_crystals; ACC.profile.xp=(ACC.profile.xp|0)+(data.xp|0); }
+        sfx('heal'); toast(`+${data.crystals} Cristais AMV!`); giftsScreen(); }); }
+    else act=el('div','mstat','Entre para resgatar');
+    row.appendChild(act); list.appendChild(row);
+  });
+}
 function startFlow(){
   const err=validDeck(loadDeck());
   if(err){ toast('Baralho inválido: '+err); deckScreen(); return; }
