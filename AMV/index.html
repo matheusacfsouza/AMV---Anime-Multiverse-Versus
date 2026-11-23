@@ -38,7 +38,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .zone{position:absolute;border:8px solid #fff;background:#000;color:var(--red);font-weight:800;text-align:center;
   display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1.05;padding:4px}
 .zone.small{font-size:26px}
-#stage.scen{background-size:cover;background-position:center}
+#stage.scen{background-size:100% 100%;background-position:center}
 #stage.scen .zone.slot{background:transparent;border-color:transparent}
 #stage.scen .zone.slot>.lbl{opacity:0}
 #stage.scen .zone.life,#stage.scen .zone.turn,#stage.scen .zone.av{background:rgba(0,0,0,.72)}
@@ -268,6 +268,12 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .acc>div:not(.av){min-width:0}.acc b{min-width:0}
 .avw{position:relative;flex:none}.avw .lvl{position:absolute;right:-8px;bottom:-6px;min-width:44px;height:44px;padding:0 6px;box-sizing:border-box;border-radius:22px;background:#ffd84d;color:#000;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #000}
 .acc .nk{min-width:0;display:flex;flex-direction:column}.acc .nk b{font-size:34px}.acc .nk small{color:#9fdcff}
+.streak{position:absolute;left:330px;top:18px;z-index:7;display:flex;align-items:center;gap:2px;padding:4px 14px 4px 8px;border-radius:30px;background:linear-gradient(180deg,#ffb020,#ff5a00);border:3px solid #fff;box-shadow:0 5px 0 #8a2a00,0 8px 16px #000a;cursor:pointer;animation:breathe 2s ease-in-out infinite}
+.streak span{font-size:40px;line-height:1;animation:flick .9s ease-in-out infinite alternate;display:inline-block;transform-origin:50% 90%}
+.streak b{font-size:36px;font-weight:900;text-shadow:0 2px 0 #0008}
+@keyframes flick{from{transform:rotate(-6deg) scale(1)}to{transform:rotate(6deg) scale(1.12)}}
+.streakln span{display:flex;align-items:center;gap:10px;color:#ffb347}
+.fire{position:relative;font-style:normal;font-size:44px}.fire em{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);font-style:normal;font-size:20px;font-weight:900;color:#fff;text-shadow:0 0 4px #000,0 0 2px #000}
 .hfav{position:absolute;left:30px;top:156px;z-index:6;display:grid;grid-template-columns:repeat(3,100px);gap:15px}
 .hf{width:100px;height:100px;border-radius:18px;border:3px solid #fff;background:#000a center/cover;box-shadow:0 6px 16px #000a;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff8}
 .hf.empty{border-style:dashed;border-color:#fff8}
@@ -606,8 +612,9 @@ document.addEventListener('visibilitychange',()=>{               // pausa a mús
   else if(G && !G.over && musicOn) musicStart();
 });
 function fitStage(){                              // a largura manda; em telas mais altas o palco cresce para baixo e para cima
+  const st0=$('#stage'), battle=st0.classList.contains('scen');
   let s=innerWidth/1080, H=innerHeight/s;
-  if(H<1920){ s=innerHeight/1920; H=1920; }
+  if(H<1920 || battle){ s=Math.min(innerWidth/1080, innerHeight/1920); H=1920; }   // batalha: proporção fixa do cenário (1080x1920)
   const st=$('#stage'); st.style.height=H+'px'; st.style.setProperty('--oy',((H-1920)/2)+'px');
   st.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
@@ -620,7 +627,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-011849';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-014210';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -629,8 +636,8 @@ const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
 const mini=inst=>(inst.def||inst).mini;
 function setScenario(on){
   const st=$('#stage');
-  if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; return; }
-  st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen');
+  if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; fitStage(); return; }
+  st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen'); fitStage();
 }
 const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(miniPath(b.img))}));
 BACKS.forEach(b=>preload(b.img));
@@ -1786,20 +1793,27 @@ function endGame(winner){
   },900);
 }
 
+/* ---- vitórias em sequência: a partir de 2, +5% por vitória; na 5ª pula para 25%; teto de 50% na 10ª ---- */
+const streakPct=n=>n<2?0:n>=10?50:5*(n-1)+(n>=5?5:0);
+const myStreak=()=>{ if(ACC.user&&ACC.profile) return ACC.profile.win_streak|0; try{ return +localStorage.getItem('amv_streak')||0; }catch(e){ return 0; } };
 /* ---- XP no fim da partida ---- */
 async function matchReward(won, life){
+  const prevStreak=myStreak();
   if(SB && ACC.user){
     try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve'}); if(error) throw error;
-      if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; if(data.crystals_after!=null) ACC.profile.crystals=data.crystals_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true}; }
+      if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.win_streak=data.streak|0; if(data.crystals_after!=null) ACC.profile.crystals=data.crystals_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true, prevStreak}; }
       return {ok:false, reason:data&&data.reason};
     }catch(e){ return {ok:false, reason:'erro'}; }
   }
   // convidado: mostra quanto ganharia (não salva)
+  let gs=0; try{ gs=+localStorage.getItem('amv_streak')||0; }catch(e){}
+  gs=won?gs+1:0; try{ localStorage.setItem('amv_streak',String(gs)); }catch(e){}
   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'America/Sao_Paulo'}); let last=null; try{ last=localStorage.getItem('amv_gw'); }catch(e){}
   const base=won?100:25, tags=[]; let bonus=0;
   if(won){ if(last!==today){ bonus+=100; tags.push('Primeira vitória do dia +100'); try{ localStorage.setItem('amv_gw',today); }catch(e){} }
     if(life>=10000){ bonus+=100; tags.push('Perfect +100'); } else if(life<=100){ bonus+=500; tags.push('Imortal +500'); } else if(life<=1000){ bonus+=50; tags.push('Foi por pouco +50'); } }
-  return {ok:true, guest:true, base, bonus, tags, mult:MULT, total:(base+bonus)*MULT, crystals:won?100:0};
+  const pct=streakPct(gs), t0=(base+bonus)*MULT, c0=won?100:0, sxp=Math.round(t0*pct/100), scr=Math.round(c0*pct/100);
+  return {ok:true, guest:true, base, bonus, tags, mult:MULT, total:t0+sxp, crystals:c0+scr, streak:gs, streak_pct:pct, streak_xp:sxp, streak_cr:scr, prevStreak};
 }
 function showReward(rw, r){
   rw.replaceChildren();
@@ -1807,6 +1821,8 @@ function showReward(rw, r){
   rw.appendChild(el('div','ln',`<span>${r.base===100?'Vitória':'Derrota'}</span><b>+${r.base} XP</b>`));
   (r.tags||[]).forEach(t=>{ const m=t.match(/^(.*) \+(\d+)$/); rw.appendChild(el('div','ln',`<span>${m?m[1]:t}</span><b>+${m?m[2]:''} XP</b>`)); });
   if(r.mult>1) rw.appendChild(el('div','ln',`<span>Multiplicador</span><b>×${r.mult}</b>`));
+  if(r.streak_pct>0) rw.appendChild(el('div','ln streakln',`<span><i class="fire">🔥<em>${r.streak}</em></i> Vitórias seguidas +${r.streak_pct}%</span><b>+${r.streak_xp} XP${r.streak_cr?` · +${r.streak_cr} ${CRYSTAL_SVG}`:''}</b>`));
+  else if(r.base===25 && r.streak===0 && r.prevStreak>=2) rw.appendChild(el('div','note','Sua sequência de vitórias acabou.'));
   rw.appendChild(el('div','tot',`+${r.total.toLocaleString('pt-BR')} XP`));
   if(r.crystals){ const ct=el('div','tot crytot',`+${CRYSTAL_SVG}<b>${r.crystals}</b> <small>Cristais AMV</small>`); rw.appendChild(ct); setTimeout(()=>{ if(!ct.isConnected) return; const q=stageRectS(ct); flyCrystals({x:q.x+q.w/2,y:q.y+q.h/2},r.crystals); },700); }
   if(!r.guest) setTimeout(loadMissions,300);
@@ -2120,7 +2136,7 @@ const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Ema
   [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
   [/rate limit|too many/i,'Muitas tentativas. Espere um pouco e tente de novo.'],[/Failed to fetch|NetworkError/i,'Sem conexão com o servidor. Verifique sua internet.']];
 const errPt=e=>{ const m=(e&&(e.message||e.error_description))||String(e); const f=ERR_PT.find(([r])=>r.test(m)); return f?f[1]:'Algo deu errado: '+m; };
-const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar,xp,games,wins,losses,status,favs,crystals').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
+const fetchProfile=async()=>{ const {data,error}=await SB.from('profiles').select('nickname,avatar,xp,games,wins,losses,status,favs,crystals,win_streak').eq('id',ACC.user.id).maybeSingle(); if(error) throw error; return data; };
 async function loadProfile(){
   ACC.profile=null; if(!SB||!ACC.user) return;
   try{
@@ -2155,6 +2171,8 @@ function accChip(){
   let cc=home.querySelector('.crybox'); if(cc) cc.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ cc=el('div','crybox',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; home.appendChild(cc); }
   document.querySelectorAll('.tab.t-mis').forEach(t=>t.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed)));
+  let fs=home.querySelector('.streak'); if(fs) fs.remove();
+  const sk=myStreak(); if(sk>=2){ fs=el('div','streak',`<span>🔥</span><b>${sk}</b>`); fs.title=`${sk} vitórias seguidas: +${streakPct(sk)}% de XP e cristais`; fs.onclick=()=>toast(`🔥 ${sk} vitórias seguidas: +${streakPct(sk)}% de XP e Cristais`); home.appendChild(fs); }
   let fv=home.querySelector('.hfav'); if(fv) fv.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ fv=el('div','hfav'); const F=favs();
     for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d) c.style.backgroundImage=`url("${d.art}")`;
