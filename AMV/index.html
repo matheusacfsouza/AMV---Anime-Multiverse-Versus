@@ -478,7 +478,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 @keyframes tutIn{from{transform:scale(.7);opacity:0}}
 .tutring{position:absolute;z-index:43;border:6px solid var(--gold);border-radius:18px;pointer-events:none;animation:ring 1s ease-in-out infinite}
 @keyframes ring{50%{box-shadow:0 0 0 14px #ffd84d55}}
-.peek{position:absolute;left:195px;top:470px;width:690px;height:966px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
+.peek{position:absolute;left:126px;top:290px;width:828px;height:1159px;z-index:35;border-radius:18px;background-size:100% 100%;pointer-events:none;
   box-shadow:0 30px 70px rgba(0,0,0,.75);animation:peekIn .18s ease-out}
 @keyframes peekIn{from{transform:scale(.85);opacity:0}}
 .lifefx{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:150px;font-weight:900;line-height:1;white-space:nowrap;pointer-events:none;
@@ -629,7 +629,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261123-020239';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261123-021224';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1538,7 +1538,7 @@ function menuModal(){
   acts.appendChild(btn('Histórico da partida','sec',histModal));
   acts.appendChild(btn(musicOn?'Música: ligada':'Música: desligada','sec',()=>{ musicOn=CFG.music=!musicOn; saveCfg(); if(musicOn) musicStart(); else MUSIC.pause(); menuModal(); }));
   acts.appendChild(btn('Regras desta versão','sec',rulesModal));
-  acts.appendChild(btn('Desistir','sec',quitToModes));
+  acts.appendChild(btn('Desistir','sec',forfeit));
   box.appendChild(acts); showModal(box); if(G && !G.over) setPause(true);
 }
 
@@ -1809,28 +1809,30 @@ async function endTurnHuman(){            // botão da direita: preparação -> 
     await finalPhase(0);
   }
 }
-function endGame(winner){
+function forfeit(){ if(!G || G.over){ quitToModes(); return; } closeModal(); endGame(1, true); }
+function endGame(winner, gaveUp){
   if(G.over) return; if(G.tut) tutDone(); G.over=true; G.busy=true; musicStop(); render();
   const won=winner===0, life=Math.max(0,P(0).life);
-  const reward=matchReward(won, life);
+  const reward=matchReward(won, life, !!gaveUp);
   setTimeout(async()=>{
     const box=el('div','mbox');
     box.appendChild(el('div','big',`<span style="font-size:130px;font-weight:900;color:${won?'#2ee66b':'#e60012'}">${won?'VITÓRIA!':'DERROTA'}</span>`));
+    if(gaveUp) box.appendChild(el('div','',`<span style="font-size:40px;color:#bbb">Você desistiu da partida.</span>`));
     const rw=el('div','rew'); rw.appendChild(el('div','note','Calculando XP...')); box.appendChild(rw);
     const row=el('div','row'); const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); startFlow(); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
     showModal(box);
     showReward(rw, await reward);
-  },900);
+  },gaveUp?150:900);
 }
 
 /* ---- vitórias em sequência: a partir de 2, +5% por vitória; na 5ª pula para 25%; teto de 50% na 10ª ---- */
 const streakPct=n=>n<2?0:n>=10?50:5*(n-1)+(n>=5?5:0);
 const myStreak=()=>{ if(ACC.user&&ACC.profile) return ACC.profile.win_streak|0; try{ return +localStorage.getItem('amv_streak')||0; }catch(e){ return 0; } };
 /* ---- XP no fim da partida ---- */
-async function matchReward(won, life){
+async function matchReward(won, life, gaveUp){
   const prevStreak=myStreak();
   if(SB && ACC.user){
-    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve'}); if(error) throw error;
+    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve', p_forfeit:!!gaveUp}); if(error) throw error;
       if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.win_streak=data.streak|0; if(data.crystals_after!=null) ACC.profile.crystals=data.crystals_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true, prevStreak}; }
       return {ok:false, reason:data&&data.reason};
     }catch(e){ return {ok:false, reason:'erro'}; }
@@ -1838,6 +1840,7 @@ async function matchReward(won, life){
   // convidado: mostra quanto ganharia (não salva)
   let gs=0; try{ gs=+localStorage.getItem('amv_streak')||0; }catch(e){}
   gs=won?gs+1:0; try{ localStorage.setItem('amv_streak',String(gs)); }catch(e){}
+  if(gaveUp) return {ok:true, guest:true, forfeit:true, base:0, bonus:0, tags:[], mult:1, total:0, crystals:0, streak:0, streak_pct:0, prevStreak};
   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'America/Sao_Paulo'}); let last=null; try{ last=localStorage.getItem('amv_gw'); }catch(e){}
   const base=won?100:25, tags=[]; let bonus=0;
   if(won){ if(last!==today){ bonus+=100; tags.push('Primeira vitória do dia +100'); try{ localStorage.setItem('amv_gw',today); }catch(e){} }
@@ -1848,6 +1851,8 @@ async function matchReward(won, life){
 function showReward(rw, r){
   rw.replaceChildren();
   if(!r.ok){ rw.appendChild(el('div','note', r.reason==='rapida_demais'?'Partida muito curta: o XP não foi contado.':r.reason==='sem_partida'?'Não foi possível registrar esta partida.':'Sem conexão: o XP desta partida não foi salvo.')); return; }
+  if(r.forfeit){ rw.appendChild(el('div','ln',`<span>Desistência</span><b>+0 XP</b>`)); rw.appendChild(el('div','note','Quem desiste não ganha XP nem Cristais AMV.'));
+    if(r.prevStreak>=2) rw.appendChild(el('div','note','Sua sequência de vitórias acabou.')); if(!r.guest) setTimeout(loadMissions,300); return; }
   rw.appendChild(el('div','ln',`<span>${r.base===100?'Vitória':'Derrota'}</span><b>+${r.base} XP</b>`));
   (r.tags||[]).forEach(t=>{ const m=t.match(/^(.*) \+(\d+)$/); rw.appendChild(el('div','ln',`<span>${m?m[1]:t}</span><b>+${m?m[2]:''} XP</b>`)); });
   if(r.mult>1) rw.appendChild(el('div','ln',`<span>Multiplicador</span><b>×${r.mult}</b>`));
