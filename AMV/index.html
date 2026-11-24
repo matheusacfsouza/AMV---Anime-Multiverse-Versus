@@ -318,6 +318,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .fire{position:relative;font-style:normal;font-size:44px}.fire em{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);font-style:normal;font-size:20px;font-weight:900;color:#fff;text-shadow:0 0 4px #000,0 0 2px #000}
 .hfav{position:absolute;left:30px;top:156px;z-index:6;display:grid;grid-template-columns:repeat(3,100px);gap:15px}
 .hf{width:100px;height:100px;border-radius:18px;border:3px solid #fff;background:#000a center/cover;box-shadow:0 6px 16px #000a;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff8}
+.hf.artcrop{background-size:130.6% auto;background-position:50% 28.9%}
 .hf.empty{border-style:dashed;border-color:#fff8}
 .acc b{font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acc small{display:block;font-size:26px;color:#ffd84d;font-weight:600}
@@ -556,13 +557,13 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
    CONFIGURAÇÃO (fácil de mexer quando suas regras chegarem)
    ============================================================ */
 const MAX_LIFE = 4000;     // vida inicial e máxima
-const DECK_MIN = 20, DECK_MAX = 30, COPY_MAX = 3;
+const DECK_MIN = 15, DECK_MAX = 20, COPY_MAX = 3;
 const HAND_START = 5;      // cartas iniciais
-const DEFAULT_DECK = {31:3,32:3,33:2,34:2,35:1,36:3,21:2,23:1,22:2,24:1,25:1,26:2,27:2,28:1,29:1,30:3};  // 30 cartas
+const DEFAULT_DECK = {31:3,32:3,36:3,33:1,34:1,35:1,26:2,27:2,30:2,29:1,28:1};  // 20 cartas
 const BOT_DECK = DEFAULT_DECK;   // baralho do bot
 
 const DEFS = {   // arquivos com nome, pasta Cartas
-  21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1400,arq:['Elemental','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
+  21:{id:21,name:'Zé do Trovão - Velha Guarda',kind:'char',atk:1500,arq:['Elemental','Mestre'],el:'raio',img:'Cartas/Zé do Trovão - Velha Guarda.jpg'},
   22:{id:22,name:'Cajado do Zé',kind:'tool',img:'Cartas/Ferramenta - Cajado do Zé.jpg'},
   23:{id:23,name:'Sabrina',kind:'char',atk:1300,arq:['Controlador','Máquina'],el:'escuridao',fios:true,troca:true,img:'Cartas/Sabrina.jpg'},
   24:{id:24,name:'Fios invisíveis',kind:'item',img:'Cartas/Item - Fios invisíveis.jpg'},
@@ -574,22 +575,28 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   30:{id:30,name:'Irmãos Ma Mei',kind:'item',img:'Cartas/Item - Irmãos Ma Mei.jpg'},
   31:{id:31,name:'Lee Ma Mei',kind:'char',atk:1400,arq:['Lutador'],el:'agua',img:'Cartas/Lee Ma Mei.jpg'},
   32:{id:32,name:'Mee Ma Mei',kind:'char',atk:1600,arq:['Elemental','Lutador'],el:'agua',img:'Cartas/Mee Ma Mei.jpg'},
-  33:{id:33,name:'Shifu Ma Mei',kind:'char',atk:1700,arq:['Lutador','Mestre'],el:'agua',dsl:true,img:'Cartas/Shifu Ma Mei.jpg'},
+  33:{id:33,name:'Shifu Ma Mei',kind:'char',atk:1800,arq:['Lutador','Mestre'],el:'agua',dsl:true,img:'Cartas/Shifu Ma Mei.jpg'},
   34:{id:34,name:'Shizu Ma Mei - Velha Guarda',kind:'char',atk:800,arq:['Elemental','Mestre'],el:'agua',dsl:true,img:'Cartas/Shizu Ma Mei - Velha Guarda.jpg'},
-  35:{id:35,name:'Taishizu Ma Mei',kind:'char',atk:2000,arq:['Mestre','Lenda'],el:'agua',dsl:true,dslzg:true,img:'Cartas/Taishizu Ma Mei.jpg'},
+  35:{id:35,name:'Taishizu Ma Mei',kind:'char',atk:2200,arq:['Mestre','Lenda'],el:'agua',dsl:true,dslzg:true,img:'Cartas/Taishizu Ma Mei.jpg'},
   36:{id:36,name:'Tee Ma Mei',kind:'char',atk:1300,arq:['Atirador'],el:'agua',img:'Cartas/Tee Ma Mei.jpg'},
-  37:{id:37,name:'Botão de Reset',kind:'char',atk:11000,arq:['Mestre'],el:'raio',first:true,direct:true,img:'Cartas/Botão de Reset.jpg'}
+  37:{id:37,name:'Botão de Reset',kind:'char',atk:11000,arq:['Mestre'],el:'raio',first:true,direct:true,img:'Cartas/Botão de Reset.jpg'},
+  38:{id:38,name:'Antares',kind:'char',atk:3000,arq:['Dragão','Lenda'],el:'fogo',img:'Cartas/Antares.jpg'},
+  39:{id:39,name:'Blaze Baller',kind:'char',atk:1400,arq:['Atirador'],el:'fogo',img:'Cartas/Blaze Baller.jpg'},
+  40:{id:40,name:'Muhriqa - Velha Guarda',kind:'char',atk:1500,arq:['Elemental','Mestre'],el:'fogo',img:'Cartas/Muhriqa - Velha Guarda.jpg'},
+  41:{id:41,name:'Napoleão',kind:'char',atk:1300,arq:['Besta','Líder'],el:'fogo',img:'Cartas/Napoleão.jpg'},
+  42:{id:42,name:'Tronco Queimado',kind:'char',atk:1800,arq:['Planta'],el:'fogo',img:'Cartas/Tronco Queimado.jpg'}
 };
 /* estrelas: 1 a 3 = até 3 cópias, 4 = 1 cópia, 5 = só 1 carta de 5 estrelas no baralho inteiro */
-const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:2,22:3,23:3,24:2,25:4,26:2,27:2,28:4,29:4,30:3,37:5,31:1,32:2,33:3,34:3,35:5,36:2};
+const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,37:5,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1};   // estrelas = as da carta (não dependem do número de habilidades)
 const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?1:3; };
 const isMaMei=c=>/Ma Mei/.test(c.def.name);
-const DS={31:200,32:300,33:500,36:100};                         // Duplo Sentido (valor fixo)
+const DS={31:100,32:200,33:300,36:100};                         // Duplo Sentido (valor fixo)
 const DS_MASTER=new Set([34,35]);                               // Mestre do Duplo Sentido (metade do ATQ do alvo)
 function clashVals(p, att, q, tgt){                              // ATQ de batalha [atacante, defensor]
   let a=atkOf(p,att), d=atkOf(q,tgt);
   if(att.id===5) a+=300;                                        // Tenshinhan - Kikoho
   if(tgt.id===7) d=Math.max(0,d-300);                           // Yamcha - Autodestruição
+  if(tgt.id===38) a=Math.max(0,a-500);                          // Antares - Magma vivo: quem ataca perde 500 na fase de dano
   const ds = DS_MASTER.has(att.id) ? Math.floor(d/2) : (DS[att.id]||0);
   return [a+ds, Math.max(0,d-ds)];
 }
@@ -722,10 +729,10 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-022705';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-160059';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
-for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
+for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
 SCENARIOS.forEach((f,i)=>{ SCENARIOS[i]=vq(f); });
 const SCEN_IMG={}; SCENARIOS.forEach(f=>{ SCEN_IMG[f]=preload(f); });
 const mini=inst=>(inst.def||inst).mini;
@@ -753,7 +760,7 @@ function newPlayer(counts){
   return {life:MAX_LIFE, deck:shuffle(ids.map(mk)), hand:[], chars:[null,null,null], powers:[null,null,null], field:null, void:[], turns:0, esf:false};
 }
 function atkOf(p, inst){
-  const intim = 200 * P(1-p).chars.filter(c=>c&&c.id===21).length;               // Zé do Trovão (Intimidador): -200 nos Personagens do oponente
+  const intim = 300 * P(1-p).chars.filter(c=>c&&c.id===21).length;               // Zé do Trovão (Intimidador): -300 nos Personagens do oponente
   if(inst.tmp!=null) return Math.max(0, inst.tmp - intim);                       // Autoescola: ATQ final até o fim do turno
   let a;
   {
@@ -761,6 +768,7 @@ function atkOf(p, inst){
     const v = P(p).void;
     if(inst.id===1) a += 100 * v.filter(c=>c.def.kind==='char'&&isGZ(c)).length; // Goku: +100 por Guerreiro Z no vazio
     if(inst.id===2) a += 600 * v.filter(c=>c.id===3).length;                     // Gohan: +600 por Piccolo no vazio
+    if(inst.id===42) a += 100 * ownPl(inst,P(p)).void.filter(c=>/Tronco/.test(c.def.name)).length;   // Tronco Queimado: +100 por "Tronco" no vazio do dono
   }
   a += 400 * inst.equips.length;                                                 // Kaioken: +400 cada (pode ter vários)
   a += inst.boost||0;                                                            // Kaioken aumentado 4x: +1000 até o fim do turno
@@ -832,6 +840,34 @@ const A = {
         if(ok){ render(); await activateFx(p,c,true); await deckToField(p,lee,freeIdx(pl.chars)); shuffle(pl.deck); log(`Gêmeos Ma Mei! ${p?'Oponente invoca':'Você invoca'} Lee Ma Mei do baralho.`); render(); }
       }
     }
+    if(c.id===38){  // Antares - Virem Cinzas: destrói o Personagem da coluna da frente e depois os seus outros Personagens
+      const i=pl.chars.indexOf(c), t=P(1-p).chars[i];
+      if(t){
+        let ok;
+        if(p===0||NET){ render(); const r=await pickTarget([t],{prompt:`Virem Cinzas: tocar em ${t.def.name.split(' - ')[0]} para destruir (seus outros Personagens também serão destruídos). Toque fora para recusar.`}); ok=!!r; }
+        else { const mine=chars(p).filter(x=>x!==c); ok = atkOf(1-p,t) >= mine.reduce((s,x)=>s+atkOf(p,x),0); }
+        if(ok){ render(); await activateFx(p,c,true); log(`Virem Cinzas! ${t.def.name} é destruído.`); await sendVoid(1-p,t);
+          for(const m of chars(p).filter(x=>x!==c)){ await sendVoid(p,m); } log(`Antares destrói ${p?'os outros Personagens do oponente':'os seus outros Personagens'}.`); render(); }
+      }
+    }
+    if(c.id===40){  // Muhriqa - Venham, seus velhos: pode invocar 1 "Velha Guarda" da mão
+      const vg=pl.hand.filter(x=>x.def.kind==='char' && /Velha Guarda/.test(x.def.name));
+      if(vg.length && freeIdx(pl.chars)>=0){
+        let pick=null;
+        if(p===0||NET){ render(); pick=await chooseFromList('Venham, seus velhos: invocar 1 "Velha Guarda" da mão? (feche para recusar)',vg); }
+        else pick=vg.sort((a,b)=>b.def.atk-a.def.atk)[0];
+        if(pick){ render(); await activateFx(p,c,true); log('Venham, seus velhos!'); await A.summon(p,pick); render(); }
+      }
+    }
+    if(c.id===41){  // Napoleão - Façam o que eu mando!: pode buscar 1 carta "Napoleão" do baralho
+      const ns=pl.deck.filter(x=>/Napoleão/.test(x.def.name));
+      if(ns.length){
+        let pick=null;
+        if(p===0||NET){ render(); pick=await chooseFromList('Façam o que eu mando!: adicionar uma carta "Napoleão" do baralho à mão? (feche para recusar)',ns); }
+        else pick=ns[0];
+        if(pick){ render(); await activateFx(p,c,true); await toHand(p,pick); shuffle(pl.deck); log(`Façam o que eu mando! ${p?'Oponente busca':'Você busca'} ${pick.def.name}.`); render(); }
+      }
+    }
     if(c.id===23){  // Sabrina - Marionete Humana: pode tomar o controle do personagem da coluna da frente
       const i=pl.chars.indexOf(c), t=P(1-p).chars[i], fi=freeIdx(pl.chars);
       if(t && fi>=0){
@@ -859,6 +895,9 @@ const A = {
   support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
   tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
+  async dmgFx(p, c, n, name){ c.used=true; await activateFx(p,c,true); log(`${name} ${p?'Você recebe':'O oponente recebe'} ${n} de dano.`); await damage(1-p, n); },
+  async muhriqa(p, c){ const q=1-p, h=P(q).hand; c.used=true; if(!h.length) return; await activateFx(p,c,true);
+    const t=h[Math.floor(RNGF()*h.length)]; toVoid(P(q),t); render(); log(`Maldição da chama! ${p?'Uma carta da sua mão':'Uma carta da mão do oponente'} (${t.def.name}) vai para o vazio.`); },
   async ze(p, ze, cj){ const pl=P(p); ze.used=true; await activateFx(p,ze,true); await toHand(p,cj); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} "Me dá meu cajado" e busca o Cajado do Zé.`); },
   async semente(p, c){ const pl=P(p); const v=500*chars(p).filter(isGZ).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
   async disparo(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Disparo de Ki destrói ${t.def.name}!`); },
@@ -1398,6 +1437,9 @@ function actionsFor(p, inst, where){
           });
       }
     }
+    if(inst.id===39) add('Efeito: Segura aí!', inst.used?'Já usado neste turno.':null, async()=>await A.dmgFx(p,inst,400,'Segura aí!'));
+    if(inst.id===41){ const n=chars(1-p).length; add('Efeito: Super Esferas Flamejantes', inst.used?'Já usado neste turno.':(n?null:'O oponente não tem Personagens em campo.'), async()=>await A.dmgFx(p,inst,300*chars(1-p).length,'Super Esferas Flamejantes do Todo Poderoso Napoleão!')); }
+    if(inst.id===40) add('Efeito: Maldição da chama', inst.used?'Já usado neste turno.':(P(1-p).hand.length?null:'O oponente não tem cartas na mão.'), async()=>await A.muhriqa(p,inst));
     if(inst.id===21) add('Efeito: Me dá meu cajado', inst.used?'Já usado neste turno.':(pl.deck.some(x=>x.id===22)?null:'Não há "Cajado do Zé" no baralho.'), async()=>await A.ze(p,inst,pl.deck.find(x=>x.id===22)));
     if(inst.id===35) add('Efeito: Venha! Da Shui Long', inst.used?'Já usado neste turno.':(pl.deck.some(isDSL)?null:'Não há cartas "Da Shui Long" no baralho.'), async()=>{
       const r=await chooseFromList('Escolha uma carta "Da Shui Long" do baralho',pl.deck.filter(isDSL)); if(!r) return;
@@ -2216,6 +2258,11 @@ async function botTurn(){
   // 7) Disparo de Ki
   c=hand(12);
   if(c && chars(p).length && supports(q).length){ await A.disparo(p,c,supports(q)[0]); if(!await pause(900)) return; }
+  // 7b) efeitos de fogo: Blaze Baller, Napoleão, Muhriqa
+  for(const x of chars(p)){ if(G.over) return;
+    if(x.id===39 && !x.used){ await A.dmgFx(p,x,400,'Segura aí!'); if(G.over||!await pause(800)) return; }
+    if(x.id===41 && !x.used && chars(q).length){ await A.dmgFx(p,x,300*chars(q).length,'Super Esferas Flamejantes do Todo Poderoso Napoleão!'); if(G.over||!await pause(800)) return; }
+    if(x.id===40 && !x.used && P(q).hand.length){ await A.muhriqa(p,x); if(!await pause(800)) return; } }
   // 8) Zé do Trovão: busca e equipa o Cajado
   const zz=chars(p).find(x=>x.id===21&&!x.used);
   if(zz && !hand(22) && pl.deck.some(x=>x.id===22)){ await A.ze(p,zz,pl.deck.find(x=>x.id===22)); if(!await pause(800)) return; }
@@ -2454,7 +2501,7 @@ function accChip(){
   const sk=myStreak(); if(sk>=2){ fs=el('div','streak',`<span>🔥</span><b>${sk}</b>`); fs.title=`${sk} vitórias seguidas: +${streakPct(sk)}% de XP e ouro`; fs.onclick=()=>toast(`🔥 ${sk} vitórias seguidas: +${streakPct(sk)}% de XP e Ouro`); home.appendChild(fs); }
   let fv=home.querySelector('.hfav'); if(fv) fv.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ fv=el('div','hfav'); const F=favs();
-    for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d) c.style.backgroundImage=`url("${d.art}")`;
+    for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d){ c.style.backgroundImage=`url("${d.mini}")`; c.classList.add('artcrop'); }
       c.onclick=()=>d?cardModalView(d,()=>accChip()):profileModal(); fv.appendChild(c); }
     home.appendChild(fv); }
   let e=home.querySelector('.evt'); if(e) e.remove();
