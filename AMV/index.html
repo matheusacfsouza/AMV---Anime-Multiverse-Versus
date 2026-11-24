@@ -260,6 +260,11 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .sbanner .bstars img:nth-child(2){animation-delay:.15s}.sbanner .bstars img:nth-child(3){animation-delay:.3s}.sbanner .bstars img:nth-child(4){animation-delay:.45s}.sbanner .bstars img:nth-child(5){animation-delay:.6s}
 @keyframes bsPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 2px 4px #000) drop-shadow(0 0 4px #ffd84d88) brightness(1)}50%{transform:scale(1.14);filter:drop-shadow(0 2px 4px #000) drop-shadow(0 0 14px #ffe98a) brightness(1.35)}}
 .stile .sq.pop{animation:sqPop .45s cubic-bezier(.3,1.8,.5,1)}@keyframes sqPop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.sbanner .bava{position:absolute;aspect-ratio:1;z-index:3;cursor:pointer;animation:bcFloat 3.6s ease-in-out infinite reverse}
+.sbanner .bava .av{width:100%;height:100%;border-radius:50%;border:4px solid #ffd84d;box-shadow:0 0 22px #ffd84d99,0 8px 18px #000c;box-sizing:border-box}
+.sbanner .bavt{position:absolute;left:50%;bottom:-8%;transform:translateX(-50%);white-space:nowrap;background:#e8112d;color:#fff;font-weight:900;font-size:22px;padding:2px 12px;border-radius:14px;border:3px solid #fff}
+.sbund{display:flex;align-items:center;gap:20px;margin:6px auto 0;background:#ffffff14;border:3px solid #ffd84d;border-radius:24px;padding:14px 24px;max-width:900px}
+.sbund .av{width:110px;height:110px;flex:none;border-radius:50%;border:4px solid #ffd84d}.sbund b{display:block;font-size:36px}.sbund small{font-size:26px;color:#cfd6e0}
 .sbanner .bcard{position:absolute;width:auto;aspect-ratio:5/7;z-index:2;animation:bcFloat 3.2s ease-in-out infinite;transform-origin:50% 60%}
 .sbanner .bcard .im{width:100%;height:100%;position:relative;overflow:hidden;box-shadow:0 0 30px #ffd84d88,0 10px 26px #000c}
 .sbanner .bcard .im::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite}
@@ -358,7 +363,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .scr.home .fan{position:absolute;left:40px;top:545px;margin:0}
 .hot{position:absolute;display:block;background:transparent;border:0;border-radius:18px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}
 .hot:active{background:rgba(255,255,255,.14)}
-.fan div{position:absolute;width:300px;height:420px;border-radius:14px;background-size:100% 100%;box-shadow:0 20px 40px #000}
+.fan div{cursor:pointer;position:absolute;width:300px;height:420px;border-radius:14px;background-size:100% 100%;box-shadow:0 20px 40px #000}
 .rpsb{font-size:130px;width:300px;height:300px;padding:0}
 .big{font-size:60px;font-weight:800;text-align:center;margin:30px}
 .grid{display:grid;grid-template-columns:repeat(4,236px);gap:10px 22px;padding:6px 4px}
@@ -813,7 +818,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-202122';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-204316';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2566,7 +2571,6 @@ const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(
 const AV_DEF={size:160,x:50,y:30};                 // padrão: rosto mais ou menos no terço de cima
 let AVC={};
 const avOn=id=>!(AVC[id]&&AVC[id].off);              // "Não disponível" na ferramenta do criador                                          // enquadramento dos avatares (arquivo avatares.json, feito pelo criador)
-fetch(vq('avatares.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ AVC=j||{}; try{ accChip(); }catch(e){} }).catch(()=>{});
 function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ const c=AVC[id]||AV_DEF; a.style.backgroundImage=`url("${vq('Avatares/'+id+'.jpg')}")`; a.style.backgroundSize=c.size+'%'; a.style.backgroundPosition=`${c.x}% ${c.y}%`; } return a; }
 const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
   [/already registered|already been registered/i,'Já existe uma conta com esse e-mail.'],[/Password should be at least/i,'A senha precisa ter pelo menos 6 caracteres.'],
@@ -2614,7 +2618,7 @@ function accChip(){
   let fv=home.querySelector('.hfav'); if(fv) fv.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ fv=el('div','hfav'); const F=favs();
     for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d){ c.style.backgroundImage=`url("${d.mini}")`; c.classList.add('artcrop'); }
-      c.onclick=()=>d?bigCardView(d):profileModal(); fv.appendChild(c); }
+      c.onclick=()=>d?cardModalView(d,()=>accChip()):profileModal(); fv.appendChild(c); }
     home.appendChild(fv); }
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
@@ -2890,7 +2894,7 @@ function titleScreen(){
   s.appendChild(el('div','spin')); const ui=el('img','ui'); ui.src=vq('Menus/Menu - Tela inicial - Interface.png'); ui.alt=''; s.appendChild(ui);
   const ids=shuffle(Object.keys(DEFS).map(Number)).slice(0,3);         // três cartas aleatórias, mesmas posições
   const fan=el('div','fan');
-  [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
+  [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; d.onclick=()=>{ sfx('click'); bigCardView(DEFS[ids[k]]); }; fan.appendChild(d); });
   s.appendChild(fan);
   const shop=el('button','shopc breathe','<span>🛍️</span><b>Loja</b><small>Cartas com desconto</small>'); shop.setAttribute('aria-label','Loja');
   shop.onclick=()=>{ sfx('click'); shopScreen(); }; s.appendChild(shop);
@@ -3044,15 +3048,20 @@ async function shopDaily(mn, ov){
   SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false))));
 }
 let BNC={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
-fetch(vq('banners.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ BNC=j||{}; }).catch(()=>{});
-const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:94,y:62,s:11},stars:{x:94,y:80,s:9},fade:55};
+// Arsenal Visual (arsenal.json, feito pelo criador): avatares + banners num arquivo só; os arquivos antigos ficam de reserva
+const getJ=f=>fetch(vq(f),{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
+getJ('arsenal.json').then(async j=>{ if(!j){ j={avatares:await getJ('avatares.json'), banners:await getJ('banners.json')}; }
+  AVC=j.avatares||{}; BNC=j.banners||{}; try{ accChip(); }catch(e){} });
+const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:94,y:62,s:11},stars:{x:94,y:80,s:9},avatar:{x:40,y:10,s:30},fade:55};
 function bannerView(ban, d, c){
-  const cf={...(BNC.__default||{}), ...(BNC[d.id]||{})}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
+  const cf={...(BNC.__default||{}), ...(BNC[d.id]||{})}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, av={...BN_DEF.avatar,...cf.avatar}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq('Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;
-  const t=shopTile(d, golds(c.gold)+crys(c.cry), ()=>buyCard(d,c,false)); t.classList.add('bcard');
+  const buy=()=>buyCard(d,c,false,true);
+  const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; a.onclick=buy; ban.appendChild(a);
+  const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard');
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
 const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'rar_d'};
@@ -3117,18 +3126,19 @@ function buyCos(kind, item, name, preview, price, after){
   row.appendChild(btn(golds(price.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy',go('cry')));
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
-function buyCard(d, c, full){
+function buyCard(d, c, full, bundle){
   if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
   const st=STARS[d.id]||1;
   const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); big.onclick=()=>{ $('#modal').onclick=null; closeModal(); }; box.appendChild(big);
   box.appendChild(el('div','sbq',`Você tem ${owned(d.id)}`));
+  if(bundle){ const b=el('div','sbund'); b.appendChild(avatarEl(d.id)); b.appendChild(el('div','',ownAvatar(d.id)?`<b>Carta + Avatar</b><small>Você já tem este avatar: leva só a carta.</small>`:`<b>Carta + Avatar</b><small>O avatar de ${esc(d.name.split(' - ')[0])} vem junto, pelo mesmo preço.</small>`)); box.appendChild(b); }
   const row=el('div','row sbrow');
   const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):(full?PRICE.crynormal[st]:c.cry), bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
     if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
     const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur,p_full:!!full});
     if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na vitrine.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
-    if(!COLL) COLL={}; COLL[d.id]=data.qty; ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
-    closeModal(); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopOwned(d.id); spendFx(cur, price, ()=>sfx('heal')); };
+    if(!COLL) COLL={}; COLL[d.id]=data.qty; if(data.avatar && COS && !COS.avatars.includes(d.id)) COS.avatars.push(d.id); ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
+    closeModal(); vib([30,40,60]); toast(data.avatar?`${d.name} e o avatar são seus!`:`${d.name} foi para a sua coleção!`); accChip(); shopOwned(d.id); spendFx(cur, price, ()=>sfx('heal')); };
   if(full){ row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold'))); row.appendChild(btn(crys(PRICE.crynormal[st]),'sbuy',go('cry'))); }
   else { row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy',go('cry'))); }
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
