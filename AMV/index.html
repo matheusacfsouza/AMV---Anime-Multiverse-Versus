@@ -774,7 +774,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-171147';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-172250';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2503,7 +2503,8 @@ const rewHtml=o=>(o.reward_gold||o.gold?golds(o.reward_gold||o.gold):'')+(o.rewa
 const crys=n=>`${CRYSTAL_SVG}<b>${(n|0).toLocaleString('pt-BR')}</b>`;                                                      // multiplicador ativo (evento, passe ou propaganda)
 const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
 const AV_DEF={size:160,x:50,y:30};                 // padrão: rosto mais ou menos no terço de cima
-let AVC={};                                          // enquadramento dos avatares (arquivo avatares.json, feito pelo criador)
+let AVC={};
+const avOn=id=>!(AVC[id]&&AVC[id].off);              // "Não disponível" na ferramenta do criador                                          // enquadramento dos avatares (arquivo avatares.json, feito pelo criador)
 fetch(vq('avatares.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ AVC=j||{}; try{ accChip(); }catch(e){} }).catch(()=>{});
 function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ const c=AVC[id]||AV_DEF; a.style.backgroundImage=`url("${vq('Avatares/'+id+'.jpg')}")`; a.style.backgroundSize=c.size+'%'; a.style.backgroundPosition=`${c.x}% ${c.y}%`; } return a; }
 const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
@@ -2577,7 +2578,7 @@ function authModal(mode){
   let nick=null, av=AVATARS[0];
   if(mode==='signup'){
     f.appendChild(el('div','lbl','Escolha seu avatar'));
-    const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
+    const g=el('div','avgrid'); AVATARS.filter(avOn).forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
     nick=inp('Apelido (3 a 16 letras ou números)');
   }
   const em=mode==='login'?inp('E-mail ou nome de usuário'):inp('E-mail','email'), pw=inp('Senha (mínimo 6 caracteres)','password');
@@ -2739,7 +2740,7 @@ function settingsModal(){
 }
 function avatarPick(){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Escolha seu avatar'));
-  const list=[...AVATARS, ...Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && !AVATARS.includes(id) && ownAvatar(id))];
+  const list=[...AVATARS, ...Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && !AVATARS.includes(id) && ownAvatar(id))].filter(id=>avOn(id)||id===ACC.profile.avatar);
   const g=el('div','avgrid'); list.forEach(id=>{ const a=avatarEl(id,id===ACC.profile.avatar?'sel':''); a.onclick=async()=>{ closeModal(); await saveProfile({avatar:id}); }; g.appendChild(a); }); f.appendChild(g);
   f.appendChild(el('div','note','Mais avatares na Loja → Cosméticos.'));
   f.appendChild(btn('Cancelar','sec',closeModal)); showModal(box);
@@ -2778,7 +2779,7 @@ function profileEdit(first){
   const md=(ACC.user&&ACC.user.user_metadata)||{};                   // o que foi escolhido no cadastro
   let av=(ACC.profile&&ACC.profile.avatar)||(+md.avatar||0)||AVATARS[0]; if(!AVATARS.includes(av)) av=AVATARS[0];
   f.appendChild(el('div','lbl','Escolha seu avatar'));
-  const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
+  const g=el('div','avgrid'); AVATARS.filter(avOn).forEach(id=>{ const a=avatarEl(id,id===av?'sel':''); a.onclick=()=>{ av=id; g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel')); a.classList.add('sel'); }; g.appendChild(a); }); f.appendChild(g);
   const nk=document.createElement('input'); nk.placeholder='Apelido (3 a 16 letras ou números)'; nk.value=(ACC.profile&&ACC.profile.nickname)||md.nickname||''; f.appendChild(nk);
   if(first) fetchProfile().then(pf=>{ if(!pf) return;                    // confere de novo no servidor: se o perfil já estiver completo, fecha
     if(pf.nickname){ ACC.profile=pf; if(box.isConnected){ closeModal(); accChip(); } return; }
@@ -2980,7 +2981,7 @@ function shopAll(mn){
 function shopAvatars(mn){
   mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>${AV_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${AV_PRICE.cry} Cristais AMV cada.</small>`));
   const g=el('div','sgav'); mn.appendChild(g);
-  const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char').sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
+  const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && (avOn(id)||(ACC.profile&&ACC.profile.avatar===id))).sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
   ids.forEach(id=>{ const own=ownAvatar(id), using=ACC.profile&&ACC.profile.avatar===id;
     const t=el('div','savt'+(own?' own':'')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
     t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(AV_PRICE.gold))));
