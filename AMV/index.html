@@ -774,7 +774,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-165433';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-170446';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2502,7 +2502,9 @@ function gotReward(data, fromEl, after){
 const rewHtml=o=>(o.reward_gold||o.gold?golds(o.reward_gold||o.gold):'')+(o.reward_crystals||o.crystals?crys(o.reward_crystals||o.crystals):'')+((o.reward_xp||o.xp)?`<small>+${o.reward_xp||o.xp} XP</small>`:'');
 const crys=n=>`${CRYSTAL_SVG}<b>${(n|0).toLocaleString('pt-BR')}</b>`;                                                      // multiplicador ativo (evento, passe ou propaganda)
 const isGuest=()=>{ try{ return localStorage.getItem('amv_guest')==='1'; }catch(e){ return false; } };
-function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize='230%'; a.style.backgroundPosition='50% 22%'; } return a; }
+let AVC={};                                          // enquadramento dos avatares (arquivo avatares.json, feito pelo criador)
+fetch(vq('avatares.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ AVC=j||{}; try{ accChip(); }catch(e){} }).catch(()=>{});
+function avatarEl(id, cls){ const a=el('div','av'+(cls?' '+cls:'')); const d=DEFS[id]; if(d){ const c=AVC[id]||{size:230,x:50,y:22}; a.style.backgroundImage=`url("${d.mini}")`; a.style.backgroundSize=c.size+'%'; a.style.backgroundPosition=`${c.x}% ${c.y}%`; } return a; }
 const ERR_PT=[[/Invalid login credentials/i,'E-mail ou senha incorretos.'],[/Email not confirmed/i,'Confirme seu e-mail antes de entrar (veja sua caixa de entrada e o spam).'],
   [/already registered|already been registered/i,'Já existe uma conta com esse e-mail.'],[/Password should be at least/i,'A senha precisa ter pelo menos 6 caracteres.'],
   [/valid email|invalid format|Unable to validate email/i,'Digite um e-mail válido.'],[/provider is not enabled|Unsupported provider/i,'O login com Google ainda não foi ativado.'],
