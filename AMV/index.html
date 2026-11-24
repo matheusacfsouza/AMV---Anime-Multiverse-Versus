@@ -248,6 +248,25 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .news{background:#1d2129;border-radius:30px;padding:30px 36px;box-shadow:0 6px 18px #0008;border-left:8px solid #343a46}
 .news.new{border-left-color:#47e68a}.news .nd{font-size:26px;color:#9aa4b4}.news .nt{font-size:44px;font-weight:800;margin:8px 0 14px}.news .nb{font-size:34px;line-height:1.4;color:#d5dbe4}
 .gico{font-size:80px}
+.dmode{display:flex;gap:0;background:#1d2129;border-radius:40px;padding:6px;margin:10px 0 6px}
+.dm{padding:16px 44px;border-radius:34px;font-size:34px;font-weight:800;color:#aab3c2;cursor:pointer}.dm.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
+.dbuild,.dalbum{display:flex;flex-direction:column;align-items:center;flex:1;min-height:0;width:100%}
+.tile .own{position:absolute;left:8px;top:48px;background:#000c;border-radius:20px;padding:4px 12px;font-size:24px;font-weight:700}
+.ahead{font-size:40px;margin:10px 0 14px}.ahead b{color:#47e68a}
+.atile .aqty{font-size:34px;font-weight:900;margin:6px 0 10px}.atile.miss .aqty{color:#777;font-weight:700;font-size:28px}
+.atile.miss .im{filter:brightness(0) opacity(.45);position:relative}
+.atile .im{position:relative}.atile .q{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;font-weight:900;color:#fff}
+.atile.miss .q{filter:brightness(0) invert(1)}
+.aqbig{font-size:38px;margin:10px 0}
+.shoptm{font-size:34px;color:#cfd6e0;margin:-10px 0 20px}.shoptm b{color:#ffd84d}
+.shoplist{width:100%}
+.shead{font-size:38px;font-weight:900;display:flex;align-items:center;gap:6px;margin:22px 0 12px}.shead img{width:46px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.scard{background:#1d2129;border-radius:26px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scard .im{width:240px;height:336px;border-radius:12px;background-size:100% 100%;cursor:pointer}
+.sown{font-size:26px;color:#aab3c2;min-height:32px}.sown b{color:#fff}
+.sold{font-size:24px;color:#ff8b8b}.sold s{color:#888;margin-right:6px}
+.btn.sbuy{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:32px;padding:10px 8px}.btn.sbuy .cry{width:40px;height:40px}
 .gcard{width:100%;box-sizing:border-box;background:#1d2129;border:3px solid #ffd84d88;border-radius:30px;padding:28px 32px;margin-bottom:30px}
 .gct{font-size:44px;font-weight:900}.gcs{font-size:28px;color:#aab3c2;margin:8px 0 18px}
 .gcr{display:flex;gap:16px;align-items:center}.gcr input{flex:1;min-width:0;font:inherit;font-size:40px;font-weight:800;letter-spacing:4px;text-align:center;padding:18px;border-radius:20px;border:3px solid #3d4452;background:#0d0f14;color:#fff}
@@ -644,7 +663,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-011021';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-013011';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.art=vq('Artes/Mini/'+d.img.split('/').pop()); d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2124,7 +2143,7 @@ function saveDeck(c){ try{localStorage.setItem('amv_deck2',JSON.stringify(c));}c
 function validDeck(c){
   let t=0, ch=0;
   let five=0;
-  for(const id in c){ const n=c[id]|0; if(n>0&&!DEFS[id]) return 'Carta inexistente no baralho.'; if((STARS[id]||0)>=5) five+=n; if(n<0||n>maxCopies(id)) return `Máximo de ${maxCopies(id)} cópia(s) de "${DEFS[id]?DEFS[id].name:id}".`; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
+  for(const id in c){ const n=c[id]|0; if(n>0&&!DEFS[id]) return 'Carta inexistente no baralho.'; if(n>owned(id)) return `Você tem só ${owned(id)} cópia(s) de "${DEFS[id].name}".`; if((STARS[id]||0)>=5) five+=n; if(n<0||n>maxCopies(id)) return `Máximo de ${maxCopies(id)} cópia(s) de "${DEFS[id]?DEFS[id].name:id}".`; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
   if(five>1) return 'Só pode ter 1 carta de 5 estrelas no baralho.';
   if(t<DECK_MIN) return `Faltam ${DECK_MIN-t} cartas (mínimo ${DECK_MIN}).`;
   if(t>DECK_MAX) return `Sobram ${t-DECK_MAX} cartas (máximo ${DECK_MAX}).`;
@@ -2234,7 +2253,7 @@ let accBusy=null;
 function accRefresh(){
   if(accBusy) return accBusy;
   accBusy=(async()=>{ try{
-    await loadProfile(); accChip(); loadMult(); if(ACC.user) touchLogin(); else loadMissions();
+    await loadProfile(); accChip(); loadMult(); loadCollection(); if(ACC.user) touchLogin(); else loadMissions();
     if(ACC.user && ACC.profile && !ACC.profile.nickname && !G && !$('#modal').classList.contains('on')) profileEdit(true);   // conta nova (ex.: Google) sem apelido
   } finally { accBusy=null; } })();
   return accBusy;
@@ -2383,6 +2402,11 @@ function nameEdit(){
 /* ---- missões (estrutura; o conteúdo será definido) ---- */
 let MIS=[];                                                     // missões com o progresso do jogador
 const missionsPending=()=>!!(ACC.user && MIS.some(m=>m.kind==='daily' && !m.claimed));
+/* ---- Coleção: cartas que o jogador possui (convidado = baralho padrão) ---- */
+let COLL=null;
+const owned=id=> (ACC.user && COLL) ? (COLL[id]|0) : (DEFAULT_DECK[id]|0);
+async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){} }
+const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,15,110,120,150], dust:[0,10,50,100,200,500]};
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
 async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
@@ -2521,8 +2545,8 @@ function titleScreen(){
   const fan=el('div','fan');
   [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; fan.appendChild(d); });
   s.appendChild(fan);
-  const shop=el('button','shopc breathe','<span>🛍️</span><b>Loja</b><small>Em breve</small>'); shop.setAttribute('aria-label','Loja');
-  shop.onclick=()=>{ sfx('click'); toast('A Loja chega em breve!'); }; s.appendChild(shop);
+  const shop=el('button','shopc breathe','<span>🛍️</span><b>Loja</b><small>Cartas com desconto</small>'); shop.setAttribute('aria-label','Loja');
+  shop.onclick=()=>{ sfx('click'); shopScreen(); }; s.appendChild(shop);
   CUR_TAB='home'; DECK_LEAVE=null; tabBar(s,'home');
   s.classList.add('enter'); setTimeout(()=>s.classList.remove('enter'),1100);
   setScreen(s); accChip(); guardHome(); loadNews(); loadGifts();
@@ -2534,14 +2558,19 @@ function deckScreen(){
   const counts=loadDeck(); for(const id in DEFS) counts[id]=counts[id]|0;
   const s=el('div','scr'); s.style.padding='30px 30px 200px';
   s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">BARALHOS</div>`));
-  const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; s.appendChild(info);
+  const mt=el('div','dmode'); const mb1=el('div','dm on','Montar baralho'), mb2=el('div','dm','Álbum'); mt.appendChild(mb1); mt.appendChild(mb2); s.appendChild(mt);
+  const build=el('div','dbuild'), alb=el('div','dalbum'); alb.style.display='none';
+  mb1.onclick=()=>{ mb1.classList.add('on'); mb2.classList.remove('on'); build.style.display=''; alb.style.display='none'; sfx('click'); };
+  mb2.onclick=()=>{ mb2.classList.add('on'); mb1.classList.remove('on'); build.style.display='none'; alb.style.display=''; sfx('click'); albumView(alb,()=>{ applyView(); upd(); }); };
+  s.appendChild(build); s.appendChild(alb);
+  const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; build.appendChild(info);
   const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView));
   tools.appendChild(fb); tools.appendChild(ob);
   const dtabs=el('div','dtabs'); const TT=[['','Todos'],['char','Personagens'],['item','Itens'],['tool','Ferramentas'],['support','Apoiadores'],['field','Campos']];
   const tabOn=()=>{ const one=DV.cat.size===1?[...DV.cat][0]:(DV.cat.size?null:''); dtabs.querySelectorAll('.dtab').forEach(t=>t.classList.toggle('on',t.dataset.k===one)); };
   TT.forEach(([k,n])=>{ const t=el('div','dtab',n); t.dataset.k=k; t.onclick=()=>{ DV.cat=new Set(k?[k]:[]); sfx('click'); applyView(); }; dtabs.appendChild(t); });
-  s.appendChild(dtabs); s.appendChild(tools);
-  const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
+  build.appendChild(dtabs); build.appendChild(tools);
+  const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); build.appendChild(gw);
   const nums={}, tiles={};
   Object.values(DEFS).forEach(d=>{
     const t=el('div','tile'); tiles[d.id]=t; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d,applyView);
@@ -2551,11 +2580,13 @@ function deckScreen(){
     ctl.appendChild(nb);
     ctl.appendChild(btn('+','',()=>{ const five=Object.keys(counts).reduce((t,k)=>t+((STARS[k]||0)>=5?counts[k]:0),0);
       if((STARS[d.id]||0)>=5 && five>=1) toast('Só pode ter 1 carta de 5 estrelas no baralho.');
+      else if(counts[d.id]>=owned(d.id)) toast(`Você tem só ${owned(d.id)} cópia(s) desta carta. Compre mais na Loja.`);
       else if(counts[d.id]<maxCopies(d.id)){counts[d.id]++;upd();} else toast(`Máximo de ${maxCopies(d.id)} cópia(s) desta carta.`); }));
+    t.appendChild(el('div','own',`Possui ${owned(d.id)}`));
     t.appendChild(im); t.appendChild(ctl);
   });
   function applyView(){
-    const list=deckView(DV); grid.replaceChildren(...list.map(d=>{ const t=tiles[d.id]; const f=t.querySelector('.fav'); if(f) f.remove(); if(favs().includes(d.id)) t.appendChild(el('div','fav','❤️')); return t; }));
+    const list=deckView(DV).filter(d=>owned(d.id)>0||counts[d.id]>0); grid.replaceChildren(...list.map(d=>{ const t=tiles[d.id]; const f=t.querySelector('.fav'); if(f) f.remove(); if(favs().includes(d.id)) t.appendChild(el('div','fav','❤️')); return t; }));
     if(!list.length) grid.appendChild(el('div','',`<span style="font-size:36px;color:#aaa">Nenhuma carta com esses filtros.</span>`));
     tabOn(); const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`;
   }
@@ -2565,11 +2596,11 @@ function deckScreen(){
   const bw=el('div','backs'); bw.appendChild(el('span','',`Verso do baralho:`));
   BACKS.forEach((b,i)=>{ const t=el('div','bk'+(i===back?' sel':'')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
     t.onclick=()=>{ back=i; bw.querySelectorAll('.bk').forEach((x,k)=>x.classList.toggle('sel',k===i)); }; bw.appendChild(t); });
-  s.appendChild(bw);
+  build.appendChild(bw);
   const foot=el('div','row'); foot.style.marginTop='18px';
   const save=btn('Salvar e voltar','',()=>{ saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} goHome(); });
-  foot.appendChild(btn('Baralho padrão','sec',()=>{ for(const id in DEFS) counts[id]=DEFAULT_DECK[id]|0; upd(); }));
-  foot.appendChild(save); s.appendChild(foot);
+  foot.appendChild(btn('Baralho padrão','sec',()=>{ for(const id in DEFS) counts[id]=Math.min(DEFAULT_DECK[id]|0, owned(id)); upd(); }));
+  foot.appendChild(save); build.appendChild(foot);
   function upd(){
     let t=0; for(const id in DEFS){ nums[id].textContent=counts[id]; t+=counts[id]; }
     const v=validDeck(counts);
@@ -2579,6 +2610,79 @@ function deckScreen(){
   DECK_LEAVE=()=>{ if(validDeck(counts)){ toast('Baralho inválido: ajuste antes de sair.'); return false; } saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} return true; };
   tabBar(s,'deck');
   upd(); setScreen(s);
+}
+function albumView(box, onChange){                  // Álbum: todas as cartas; as que faltam aparecem como silhueta
+  const all=Object.values(DEFS).sort((a,b)=>(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));
+  const have=all.filter(d=>owned(d.id)>0).length;
+  box.replaceChildren();
+  box.appendChild(el('div','ahead',`Coleção: <b>${have}</b> / ${all.length} cartas`));
+  if(!ACC.user) box.appendChild(el('div','note','Crie uma conta para guardar a sua coleção.'));
+  const g=el('div','grid agrid'), gw=el('div','gridwrap'); gw.appendChild(g); box.appendChild(gw);
+  all.forEach(d=>{ const n=owned(d.id), t=el('div','tile atile'+(n?'':' miss'));
+    t.appendChild(el('div','stars',`<img src="Icones/16.png" alt="">×${STARS[d.id]||1}`));
+    const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; if(!n) im.appendChild(el('span','q','?')); t.appendChild(im);
+    t.appendChild(el('div','aqty', n?`x${n}`:'Não possui'));
+    if(n) im.onclick=()=>albumCard(d, ()=>{ albumView(box,onChange); if(onChange) onChange(); });
+    g.appendChild(t); });
+}
+function albumCard(d, onChange){                    // carta do álbum: ver e transformar repetidas em ouro
+  const n=owned(d.id), st=STARS[d.id]||1, per=PRICE.dust[st];
+  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  box.appendChild(el('div','aqbig',`Você tem <b>${n}</b> cópia(s)`));
+  if(ACC.user && n>1){
+    let k=n-1; const row=el('div','xch'), v=el('b','',String(k)), res=el('div','xres');
+    const updK=()=>{ v.textContent=k; res.innerHTML=`${k} repetida(s) → ${golds(k*per)}`; };
+    row.appendChild(btn('−','sec',()=>{ k=Math.max(1,k-1); updK(); })); row.appendChild(v); row.appendChild(btn('+','sec',()=>{ k=Math.min(n-1,k+1); updK(); }));
+    box.appendChild(el('div','note',`Cada repetida vale ${per} de Ouro. Fica sempre pelo menos 1 cópia.`)); box.appendChild(row); box.appendChild(res);
+    const go=btn('Transformar em ouro','',async()=>{ go.disabled=true; const {data,error}=await SB.rpc('dust_card',{p_card:d.id,p_n:k});
+      if(error||!data||!data.ok){ toast('Não foi possível transformar agora.'); go.disabled=false; return; }
+      COLL[d.id]=data.qty; closeModal(); gotReward({gold:data.gold,total_gold:data.total_gold}, go.isConnected?go:document.body); if(onChange) onChange(); });
+    const r2=el('div','row'); r2.appendChild(btn('Fechar','sec',closeModal)); r2.appendChild(go); box.appendChild(r2);
+  } else { if(!ACC.user) box.appendChild(el('div','note','Entre na sua conta para transformar cartas repetidas em ouro.')); else box.appendChild(el('div','note','Só cartas repetidas podem virar ouro.')); box.appendChild(btn('Fechar','sec',closeModal)); }
+  showModal(box);
+}
+/* ===== Loja: 18 cartas com desconto, trocam às 10h e às 22h ===== */
+let SHOP=null;
+async function shopScreen(){
+  const old=document.querySelector('.profscr'); if(old) old.remove();
+  const ov=el('div','profscr shopscr'); const sc=el('div','pbody'); ov.appendChild(sc);
+  sc.appendChild(el('div','mtitle','Loja'));
+  const tm=el('div','shoptm','Carregando...'); sc.appendChild(tm);
+  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta para comprar cartas</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); sc.appendChild(g); }
+  const list=el('div','shoplist'); sc.appendChild(list);
+  const x=el('button','pclose','✕'); x.onclick=()=>{ clearInterval(ov._t); ov.remove(); }; ov.appendChild(x);
+  $('#stage').appendChild(ov);
+  if(!SB){ tm.textContent='Loja indisponível sem conexão.'; return; }
+  try{ const {data}=await SB.rpc('get_shop'); SHOP=data; }catch(e){}
+  if(!SHOP||!SHOP.cards){ tm.textContent='Não foi possível abrir a loja agora.'; return; }
+  const end=new Date(SHOP.ends_at).getTime();
+  const tick=()=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4);
+    tm.innerHTML=`🕒 Novas cartas em <b>${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m</b>`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
+  tick(); ov._t=setInterval(tick,30000);
+  for(let st=5; st>=1; st--){
+    const cs=SHOP.cards.filter(c=>c.stars===st && DEFS[c.id]); if(!cs.length) continue;
+    list.appendChild(el('div','shead',`<img src="Icones/16.png" alt="">×${st}`));
+    const g=el('div','sgrid'); list.appendChild(g);
+    cs.forEach(c=>{ const d=DEFS[c.id], t=el('div','scard');
+      const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d); t.appendChild(im);
+      t.appendChild(el('div','sown', ACC.user?`Você tem: <b>${owned(c.id)}</b>`:''));
+      t.appendChild(el('div','sold',`<s>${c.normal.toLocaleString('pt-BR')}</s> -${Math.round(100-100*c.gold/c.normal)}%`));
+      const bg=btn(golds(c.gold),'sbuy',()=>buyCard(d,c,'gold')), bc=btn(crys(c.cry),'sbuy sec',()=>buyCard(d,c,'cry'));
+      t.appendChild(bg); t.appendChild(bc); g.appendChild(t); });
+  }
+}
+function buyCard(d, c, cur){
+  if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
+  const price=cur==='gold'?c.gold:c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
+  if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
+  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  box.appendChild(el('div','xres',`Comprar <b>${d.name}</b> por ${cur==='gold'?golds(price):crys(price)}?`));
+  const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
+  const ok=btn('Comprar','',async()=>{ ok.disabled=true; const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur});
+    if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na loja.'}[data&&data.reason]||'Não foi possível comprar agora.'); ok.disabled=false; return; }
+    if(!COLL) COLL={}; COLL[d.id]=data.qty; ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
+    closeModal(); sfx('heal'); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopScreen(); });
+  row.appendChild(ok); box.appendChild(row); showModal(box);
 }
 function cardModalView(d, onChange){
   const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
