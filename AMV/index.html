@@ -198,7 +198,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tab.on::before{content:'';position:absolute;top:0;width:120px;height:6px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,#8fe3ff,#47e68a)}
 .tab{position:relative}
 .tbn{position:absolute;top:30px;z-index:6;display:flex;align-items:center;justify-content:center;line-height:1;width:110px;height:110px;border-radius:50%;border:4px solid #ffffffd9;background:radial-gradient(circle at 50% 30%,#4a5468,#1c2130 70%);font-size:54px;cursor:pointer;padding:0;box-shadow:0 7px 0 #0a0c12,0 10px 18px #000a,inset 0 3px 0 #ffffff40}
-.tbn.mail{right:30px;top:160px}.tbn.gift{right:30px;top:290px}.tbn.fs{right:30px;top:420px}
+.tbn.mail{right:30px;top:30px}.tbn.gift{right:30px;top:160px}.tbn.fs{right:30px;top:420px}
 .breathe{animation:breathe 2.6s ease-in-out infinite}
 @keyframes breathe{0%,100%{scale:1}50%{scale:1.035}}
 .btn.breathe,.modec.breathe,.shopc.breathe{background-image:linear-gradient(105deg,transparent 40%,#ffffff66 50%,transparent 60%),var(--bgi);background-size:260% 100%,auto;background-repeat:no-repeat,repeat;animation:breathe 2.6s ease-in-out infinite,sheen 4.6s ease-in-out infinite}
@@ -230,7 +230,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mrow:nth-child(2){animation-delay:.06s}.mrow:nth-child(3){animation-delay:.12s}.mrow:nth-child(4){animation-delay:.18s}.mrow:nth-child(5){animation-delay:.24s}
 .mrow.done .btn{animation:breathe 1.6s ease-in-out infinite}
 .scr.home.enter .acc,.scr.home.enter .hfav,.scr.home.enter .crybox,.scr.home.enter .tbn,.scr.home.enter .gear,.scr.home.enter .shopc,.scr.home.enter .fan div{animation:popIn .55s cubic-bezier(.2,1.5,.4,1) backwards}
-.scr.home.enter .crybox{animation-name:popInC}.scr.home.enter .crybox.cry2{animation-delay:.08s}
+.scr.home.enter .coins .crybox{animation-name:popIn}.scr.home.enter .crybox.cry2{animation-delay:.08s}
 @keyframes popInC{0%{opacity:0;transform:translateX(-50%) scale(.6)}}
 .scr.home.enter .gear{animation-delay:.05s}.scr.home.enter .tbn.mail{animation-delay:.1s}.scr.home.enter .tbn.gift{animation-delay:.15s}.scr.home.enter .tbn.fs{animation-delay:.2s}
 .scr.home.enter .hfav{animation-delay:.12s}.scr.home.enter .fan div{animation-delay:.18s}.scr.home.enter .fan div:nth-child(2){animation-delay:.26s}.scr.home.enter .fan div:nth-child(3){animation-delay:.34s}.scr.home.enter .shopc{animation-delay:.4s}
@@ -249,7 +249,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .news.new{border-left-color:#47e68a}.news .nd{font-size:26px;color:#9aa4b4}.news .nt{font-size:44px;font-weight:800;margin:8px 0 14px}.news .nb{font-size:34px;line-height:1.4;color:#d5dbe4}
 .gico{font-size:80px}
 .shopscr{position:absolute;inset:0;z-index:30;background:linear-gradient(180deg,#141a33,#0b0d18);display:flex;flex-direction:column}
-.shd{display:flex;align-items:center;gap:16px;padding:30px 24px 14px}
+.shd{display:flex;align-items:center;gap:14px;padding:30px 24px 14px}
 .sback{position:absolute;right:24px;bottom:40px;z-index:5;padding:22px 40px;border-radius:50px;border:4px solid #ffffffd9;background:linear-gradient(180deg,#465063,#2c3342 55%,#1f2430);color:#fff;font:inherit;font-size:36px;font-weight:900;cursor:pointer;box-shadow:0 9px 0 #0b0d12,0 14px 22px #000a,inset 0 4px 0 #ffffff30}
 .sback:active{transform:translateY(7px);box-shadow:0 2px 0 #0b0d12}
 .spanel{position:relative;background:#1b2240;border:3px solid #2f3a66;border-radius:40px;padding:90px 20px 30px;margin-top:30px}
@@ -265,16 +265,23 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mbox.shopbuy .bigcard{width:950px;height:1330px}
 .sbq{font-size:34px;color:#cfd6e0}
 .sbrow{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:center;gap:24px}.sbrow .btn.sbuy{width:auto;min-width:300px;font-size:48px;padding:20px 30px}.sbrow .btn.sbuy .cry{width:60px;height:60px}
-.sht{flex:1;text-align:center;font-size:64px;font-weight:900;font-style:italic}
+.sht{flex:1;text-align:right;padding-right:10px;font-size:64px;font-weight:900;font-style:italic}
 .shg,.shc{display:flex;align-items:center;gap:8px;font-size:34px;font-weight:900;padding:8px 18px;border-radius:30px;background:#000a;border:3px solid #fff}.shg .cry,.shc .cry{width:44px;height:44px}
 .stabs{display:flex;border-bottom:3px solid #2a3150}
 .stab{flex:1;text-align:center;font-size:42px;font-weight:900;font-style:italic;padding:18px 0;color:#7f8fc4;cursor:pointer}.stab.on{color:#fff;box-shadow:inset 0 -8px 0 #7fd6f5}
 .sbody{flex:1;display:flex;min-height:0}
+.sdock{flex:none;background:#06070d;border-top:3px solid #2a3150;box-shadow:0 -10px 30px #0009}
+.ssub{display:flex;gap:14px;padding:16px 20px 6px;justify-content:center}
+.ssub .ssb{flex:1;flex-direction:row;justify-content:center;gap:10px;padding:16px 10px;border-radius:40px;background:#1b2240;border:0;font-size:30px;font-weight:800}
+.ssub .ssb span{font-size:40px}.ssub .ssb.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
+.sdock .stabs{border:0;padding:4px 0 10px}
+.sdock .stab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:28px;font-style:normal;padding:10px 0}.sdock .stab span{font-size:52px;line-height:1}
+.sdock .stab.on{box-shadow:none;color:#7fd6f5}.sdock .stab.sexit{color:#cfd6e0}.sdock .stab.sexit span{font-weight:900}
 .sside{width:150px;flex:none;background:#06070d;padding-bottom:200px!important;display:flex;flex-direction:column;gap:10px;padding:20px 0}
 .ssb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;color:#7f8fc4;cursor:pointer;border-right:6px solid transparent}
 .ssb span{font-size:56px;filter:grayscale(1) brightness(.8)}.ssb small{font-size:24px;font-weight:700}
 .ssb.on{color:#fff;border-right-color:#7fd6f5;background:#ffffff0d}.ssb.on span{filter:none}
-.smain{flex:1;overflow-y:auto;padding:20px 20px 220px;-webkit-overflow-scrolling:touch}
+.smain{flex:1;overflow-y:auto;padding:20px 20px 40px;-webkit-overflow-scrolling:touch}
 .smain .shoptm{font-size:38px;margin:0 0 10px}.smain .shoptm small{font-size:26px;color:#9aa4c4}
 .tmb{display:inline-block;background:#b3122a;border-radius:12px;padding:4px 14px;font-size:30px;margin-right:6px}
 .prow{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
@@ -404,7 +411,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .cry{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
 .crybox{position:absolute;left:50%;transform:translateX(-50%);top:44px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
 .crybox b{font-weight:900}
-.crybox.cry2{top:136px}
+.coins{position:absolute;left:380px;top:40px;z-index:6;display:flex;gap:14px}.coins .crybox{position:static;transform:none}
+.scr.home .gear{right:auto;left:380px;top:142px;width:96px;height:96px;font-size:48px}
 .crybox .cry.gold{filter:drop-shadow(0 0 6px #ffcf3a99)}
 .mrew .cry{width:44px;height:44px;vertical-align:middle}
 .crytot{display:flex;align-items:center;gap:10px}.crytot small{font-size:30px;color:#bbb;font-weight:600}
@@ -428,7 +436,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mrow .btn{min-width:200px}
 .mempty{font-size:38px;color:#9aa4b4;text-align:center;padding:80px 0}
 .gear{position:absolute;right:30px;top:30px;z-index:6;display:flex;align-items:center;justify-content:center;line-height:1;width:110px;height:110px;border-radius:50%;border:4px solid #ffffffd9;background:radial-gradient(circle at 50% 30%,#4a5468,#1c2130 70%);font-size:56px;cursor:pointer;padding:0;box-shadow:0 7px 0 #0a0c12,0 10px 18px #000a,inset 0 3px 0 #ffffff40}
-.evt{position:absolute;left:50%;margin-left:-130px;top:230px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
+.evt{position:absolute;left:50%;margin-left:-130px;top:250px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffa31a);color:#fff;font-weight:900;font-size:32px;border-radius:40px;padding:12px 26px;box-shadow:0 6px 20px #0008;animation:evtPulse 1.6s ease-in-out infinite}
 @keyframes evtPulse{50%{transform:scale(1.06)}}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:780px}
 .stats div{background:#1b1f27;border-radius:24px;padding:18px;text-align:center;font-size:28px;color:#bbb}
@@ -554,7 +562,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .flycry{position:absolute;z-index:140;width:64px;height:64px;transform:translate(-50%,-50%);transition:left .8s cubic-bezier(.5,-0.3,.7,1),top .8s cubic-bezier(.2,0,.4,1),transform .8s;pointer-events:none;filter:drop-shadow(0 0 10px #7df)}
 .flycry svg{width:100%;height:100%}
 .crybox.bump{animation:bump .35s cubic-bezier(.34,1.9,.5,1)}
-.cryhud{z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 0 30px #5fd4ff88}.cryhud.on{opacity:1}
+.cryhud,.coinhud{z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 0 30px #5fd4ff88}.cryhud.on,.coinhud.on{opacity:1}
+.coinhud.k-gold{left:50%!important;top:44px!important}.coinhud.k-cry{left:50%!important;top:136px!important}
 @keyframes bump{50%{transform:translateX(-50%) scale(1.25)}}
 .dtabs{display:flex;gap:12px;overflow-x:auto;width:100%;padding:4px 4px 14px;box-sizing:border-box;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .dtabs::-webkit-scrollbar{display:none}
@@ -725,7 +734,7 @@ async function remoteTurn(){                         // turno do oponente: repro
       if(m.t==='act'){ const r=findInst(m.uid); const a=r && actionsFor(1,r.inst,m.where).find(x=>x.label===m.label);
         if(a){ REPLAY=(m.ch||[]).slice(); REPLAYING=true; try{ await a.run(); } finally{ REPLAYING=false; REPLAY=null; } } }
       else if(m.t==='drop'){ const r=findInst(m.uid); if(r){ const inst=r.inst, pl=P(1); REPLAY=(m.ch||[]).slice(); REPLAYING=true;
-        try{ if(m.k==='char'){ pl.summoned=true; await A.summon(1,inst,m.slot); } else if(m.k==='support') A.support(1,inst,m.slot); else if(m.k==='field') await A.field(1,inst);
+        try{ if(m.k==='char'){ pl.summoned=true; await A.summon(1,inst,m.slot); } else if(m.k==='support') await A.support(1,inst,m.slot); else if(m.k==='field') await A.field(1,inst);
              else if(m.k==='tool'){ const g=pl.chars[m.slot]; if(g) await A.tool(1,inst,g); } } finally{ REPLAYING=false; REPLAY=null; } } }
       else if(m.t==='atk'){ await goAttack(1); }
       else if(m.t==='end'){ render(); checkWin(); if(G && !G.over) await finalPhase(1); return; }
@@ -774,7 +783,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-172250';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-181011';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -870,7 +879,10 @@ function log(m){ G.log.push(m); if(G.log.length>300) G.log.shift(); }
    ============================================================ */
 const A = {
   async summon(p, c, slot){
-    const pl=P(p); detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
+    const pl=P(p);
+    if(slot==null||pl.chars[slot]) slot=freeIdx(pl.chars);
+    if(G.settle!==c.uid && pl.hand.includes(c)) await playFromHand(p,c,slotRect(p,slot));   // oponente / efeito: a carta voa até o campo
+    detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
     if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
       const tools=chars(1-p).flatMap(x=>x.equips);
       if(tools.length){
@@ -884,7 +896,7 @@ const A = {
       const lee=pl.deck.find(x=>x.id===31);
       if(lee && freeIdx(pl.chars)>=0){
         let ok=true; if(p===0||NET){ render(); ok=!!(await chooseFromList('Gêmeos Ma Mei: invocar "Lee Ma Mei" do baralho? (feche para recusar)',[lee])); }
-        if(ok){ render(); await activateFx(p,c,true); await deckToField(p,lee,freeIdx(pl.chars)); shuffle(pl.deck); log(`Gêmeos Ma Mei! ${p?'Oponente invoca':'Você invoca'} Lee Ma Mei do baralho.`); render(); }
+        if(ok){ render(); await activateFx(p,c,true); await deckToField(p,lee,await chooseSlot(p,'Gêmeos Ma Mei: escolha onde o Lee Ma Mei vai entrar.')); shuffle(pl.deck); log(`Gêmeos Ma Mei! ${p?'Oponente invoca':'Você invoca'} Lee Ma Mei do baralho.`); render(); }
       }
     }
     if(c.id===38){  // Antares - Virem Cinzas: destrói o Personagem da coluna da frente e depois os seus outros Personagens
@@ -903,7 +915,7 @@ const A = {
         let pick=null;
         if(p===0||NET){ render(); pick=await chooseFromList('Venham, seus velhos: invocar 1 "Velha Guarda" da mão? (feche para recusar)',vg); }
         else pick=vg.sort((a,b)=>b.def.atk-a.def.atk)[0];
-        if(pick){ render(); await activateFx(p,c,true); log('Venham, seus velhos!'); await A.summon(p,pick); render(); }
+        if(pick){ render(); await activateFx(p,c,true); log('Venham, seus velhos!'); await A.summon(p,pick,await chooseSlot(p,`Venham, seus velhos: escolha onde ${pick.def.name.split(' - ')[0]} vai entrar.`)); render(); }
       }
     }
     if(c.id===41){  // Napoleão - Façam o que eu mando!: pode buscar 1 carta "Napoleão" do baralho
@@ -938,13 +950,13 @@ const A = {
     theirs.attacked=false; theirs.direct=false; mine.attacked=false; mine.direct=false;   // quem muda de lado pode atacar (exceto no turno 1)
     log(`Troca de Marionetes: ${mine.def.name} e ${theirs.def.name} trocam de controle.`); render();
   },
-  async field(p, c){ const pl=P(p); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
-  support(p, c, slot){ const pl=P(p); detach(pl,c); pl.powers[(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers)]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
+  async field(p, c){ const pl=P(p); if(G.settle!==c.uid) await playFromHand(p,c,{x:FIELD[0],y:FIELD[1],w:FIELD_W,h:FIELD_H}); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
+  async support(p, c, slot){ const pl=P(p); const si=(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers); if(G.settle!==c.uid) await playFromHand(p,c,{x:POS[p].powers[si][0],y:POS[p].powers[si][1],w:PW,h:PH}); detach(pl,c); pl.powers[si]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
-  tool(p, c, goku){ const pl=P(p); detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
+  async tool(p, c, goku){ const pl=P(p); if(pl.hand.includes(c)){ const gi=pl.chars.indexOf(goku); if(gi>=0) await playFromHand(p,c,slotRect(p,gi)); } detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
   async dmgFx(p, c, n, name){ c.used=true; await activateFx(p,c,true); log(`${name} ${p?'Você recebe':'O oponente recebe'} ${n} de dano.`); await damage(1-p, n); },
   async muhriqa(p, c){ const q=1-p, h=P(q).hand; c.used=true; if(!h.length) return; await activateFx(p,c,true);
-    const t=h[Math.floor(RNGF()*h.length)]; toVoid(P(q),t); render(); log(`Maldição da chama! ${p?'Uma carta da sua mão':'Uma carta da mão do oponente'} (${t.def.name}) vai para o vazio.`); },
+    const t=h[Math.floor(RNGF()*h.length)]; await handToPile(q,t,'void'); log(`Maldição da chama! ${p?'Uma carta da sua mão':'Uma carta da mão do oponente'} (${t.def.name}) vai para o vazio.`); },
   async ze(p, ze, cj){ const pl=P(p); ze.used=true; await activateFx(p,ze,true); await toHand(p,cj); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} "Me dá meu cajado" e busca o Cajado do Zé.`); },
   async semente(p, c){ const pl=P(p); const v=500*chars(p).filter(isGZ).length; toVoid(pl,c); render(); log(`${p?'Oponente cura':'Você cura'} ${v} de vida.`); await lifeFx(p, v, ()=>{ pl.life+=v; }); },
   async disparo(p, c, t){ toVoid(P(p),c); render(); await sendVoid(1-p,t); log(`Disparo de Ki destrói ${t.def.name}!`); },
@@ -1122,6 +1134,23 @@ async function deckToField(p, inst, i){          // sai do baralho do dono (vira
   detach(pl,inst); render();
   if(!window.__NOFX) await slideCard(pileRect(p,'deck'), slotRect(p,i), mini(inst), 600, 0, backOf(p));
   pl.chars[i]=inst; G.settle=inst.uid; render();
+}
+function handRectOf(p, inst){ const h=P(p).hand, i=Math.max(0,h.indexOf(inst)); return handSlot(p, i+1); }
+async function handToPile(p, inst, where){        // carta sai da mão (de quem for) e vai para o vazio ou para o baralho
+  const pl=P(p), from=handRectOf(p,inst); detach(pl,inst); render();
+  if(!window.__NOFX) await slideCard(from, pileRect(p,where), mini(inst), 620, 0, backOf(p), where==='void');
+  if(where==='void') ownPl(inst,pl).void.push(inst); else { pl.deck.push(inst); shuffle(pl.deck); } render();
+}
+async function playFromHand(p, inst, to){         // a carta voa da mão até o lugar onde vai ser jogada (oponente / efeitos)
+  if(window.__NOFX || !P(p).hand.includes(inst)) return;
+  const from=handRectOf(p,inst); detach(P(p),inst); render();
+  await slideCard(from, to, mini(inst), 560, 0, backOf(p), p===0);
+}
+async function chooseSlot(p, prompt){             // invocação por efeito: escolher em qual espaço vai
+  const pl=P(p), free=pl.chars.map((c,i)=>c?null:i).filter(i=>i!=null);
+  if(free.length<=1) return free[0];
+  if(p===0||NET){ render(); const r=await pickSlot(prompt||'Escolha o espaço onde o Personagem vai entrar.'); if(r&&r.slot!=null&&!pl.chars[r.slot]) return r.slot; }
+  return free[0];
 }
 async function voidToDeck(p, inst){              // (para efeitos futuros) sai do vazio e volta ao baralho
   const pl=P(p); detach(pl,inst); render();
@@ -1361,7 +1390,7 @@ function actionsFor(p, inst, where){
   if(where==='hand'){
     if(d.kind==='char') add('Invocar', freeIdx(pl.chars)<0?'Os 3 slots de Personagem estão ocupados.':(pl.summoned?'Só dá para invocar 1 Personagem por turno.':null), async()=>{ pl.summoned=true; await A.summon(p,inst); });
     if(d.kind==='field'){ const cur=P(0).field||P(1).field; add('Ativar no campo', (cur&&cur.id===inst.id)?'Essa carta de Campo já está em jogo.':null, async()=>await A.field(p,inst)); }
-    if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>A.support(p,inst));
+    if(d.kind==='support') add('Colocar em campo', slotsP?null:'Os 3 slots de Poder estão ocupados.', async()=>await A.support(p,inst));
     if(d.kind==='tool'){
       const who=DEFS[TOOL_FOR[inst.id]], gs=chars(p).filter(c=>c.id===who.id);
       const gf=gs.filter(g=>canEquip(inst,g));       // no máximo 2 Ferramentas por Personagem
@@ -1949,7 +1978,7 @@ async function dropPlay(inst, slot, y, okItem){
   const i=+slot.slice(1);
   const net={t:'drop',k,uid:inst.uid,slot:i};
   if(k==='char')    { G.settle=inst.uid; P(0).summoned=true; await runAction({net,run:()=>A.summon(0,inst,i)}); }
-  if(k==='support') { G.settle=inst.uid; await runAction({net,run:async()=>A.support(0,inst,i)}); }
+  if(k==='support') { G.settle=inst.uid; await runAction({net,run:async()=>await A.support(0,inst,i)}); }
   if(k==='field')   { G.settle=inst.uid; await runAction({net,run:async()=>await A.field(0,inst)}); }
   if(k==='tool')    { const g=P(0).chars[i]; if(!canEquip(inst,g)){ toast('Cada Personagem pode ter no máximo 2 Ferramentas.'); return; } await runAction({net,run:async()=>await A.tool(0,inst,g)}); }
 }
@@ -2259,14 +2288,14 @@ async function botTurn(){
   if(ts){ const r=pl.deck.find(x=>x.id===29)||pl.deck.find(isDSL); if(r){ await A.taishizu(p,ts,r); if(!await pause(800)) return; } }
   // 2) Bulma -> Radar -> Esferas
   c=hand(10);
-  if(c && freeP() && pl.deck.some(x=>x.id===13)){ A.support(p,c); if(!await pause(800)) return; }
+  if(c && freeP() && pl.deck.some(x=>x.id===13)){ await A.support(p,c); if(!await pause(800)) return; }
   const bu=pl.powers.find(x=>x&&x.id===10&&!x.used);
   if(bu && pl.deck.some(x=>x.id===13)){ await A.bulma(p,bu); if(!await pause(800)) return; }
   c=hand(13);
   if(c && supports(p).some(x=>x.id===10)){ const e=pl.deck.find(x=>x.id===14)||pl.void.find(x=>x.id===14); if(e){ await A.radar(p,c,e); if(!await pause(800)) return; } }
   // 2b) Senhor Kaioh
   c=hand(18);
-  if(c && freeP() && chars(p).some(x=>x.id===1)){ A.support(p,c); if(!await pause(700)) return; }
+  if(c && freeP() && chars(p).some(x=>x.id===1)){ await A.support(p,c); if(!await pause(700)) return; }
   const ka=pl.powers.find(x=>x&&x.id===18&&!x.used);
   if(ka && chars(p).some(x=>x.id===1)){
     const want = (!hand(17) && chars(p).some(x=>x.id===1&&!x.equips.length)) ? 17 : (!hand(19) && (hand(17)||chars(p).some(x=>x.equips.length))) ? 19 : 15;
@@ -2288,7 +2317,7 @@ async function botTurn(){
   if(c && pl.void.some(x=>x.id===1) && freeC()){ await A.caminho(p,c); if(!await pause(900)) return; }
   // 5b) Nainai Ma Mei
   c=hand(26);
-  if(c && freeP() && chars(p).some(isMaMei)){ A.support(p,c); if(!await pause(700)) return; }
+  if(c && freeP() && chars(p).some(isMaMei)){ await A.support(p,c); if(!await pause(700)) return; }
   const nn=pl.powers.find(x=>x&&x.id===26&&!x.used);
   if(nn && chars(p).some(isMaMei)){ await A.nainai(p,nn); if(!await pause(800)) return; }
   // 5c) Da Shui Long / Zhi Gui
@@ -2544,9 +2573,9 @@ function accChip(){
   if(!home.querySelector('.tbn.mail')){ const b=el('button','tbn mail','✉️'); b.setAttribute('aria-label','Notícias'); b.onclick=newsScreen; home.appendChild(b); }
   home.querySelector('.tbn.gift').classList.toggle('dot', !!ACC.user && GIFTS.some(g=>!g.claimed));
   home.querySelector('.tbn.mail').classList.toggle('dot', NEWS.length>0 && NEWS[0].id>newsSeen());
-  home.querySelectorAll('.crybox').forEach(x=>x.remove());
-  if(ACC.user && ACC.profile && ACC.profile.nickname){ const gb=el('div','crybox goldbox',golds(ACC.profile.gold)); gb.title='Ouro'; gb.onclick=exchangeModal; home.appendChild(gb);
-    const cc=el('div','crybox cry2',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; cc.onclick=exchangeModal; home.appendChild(cc); }
+  home.querySelectorAll('.crybox,.coins').forEach(x=>x.remove());
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ const row=el('div','coins'); const gb=el('div','crybox goldbox',golds(ACC.profile.gold)); gb.title='Ouro'; gb.onclick=exchangeModal; row.appendChild(gb); home.appendChild(row);
+    const cc=el('div','crybox cry2',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; cc.onclick=exchangeModal; row.appendChild(cc); }
   document.querySelectorAll('.tab.t-mis').forEach(t=>t.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed)));
   let fs=home.querySelector('.streak'); if(fs) fs.remove();
   const sk=myStreak(); if(sk>=2){ fs=el('div','streak',`<span>🔥</span><b>${sk}</b>`); fs.title=`${sk} vitórias seguidas: +${streakPct(sk)}% de XP e ouro`; fs.onclick=()=>toast(`🔥 ${sk} vitórias seguidas: +${streakPct(sk)}% de XP e Ouro`); home.appendChild(fs); }
@@ -2930,18 +2959,18 @@ async function shopScreen(tab, side){
   const ov=el('div','shopscr');
   const hd=el('div','shd');
   hd.appendChild(el('div','shg',golds(ACC.profile?ACC.profile.gold:0)));
-  hd.appendChild(el('div','sht','Loja'));
   hd.appendChild(el('div','shc',crys(ACC.profile?ACC.profile.crystals:0)));
+  hd.appendChild(el('div','sht','Loja'));
   ov.appendChild(hd);
-  const tabs=el('div','stabs');
-  [['cards','Cartas'],['cos','Cosméticos']].forEach(([k,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),n); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
-  ov.appendChild(tabs);
   const body=el('div','sbody'); ov.appendChild(body);
-  const sb=el('div','sside');
-  const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Do dia'],['all','🃏','Todas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
-  SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span><small>${n}</small>`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
-  const mn=el('div','smain'); body.appendChild(mn); body.appendChild(sb);
-  const bk=el('button','sback','‹ Voltar ao Início'); bk.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; ov.appendChild(bk);
+  const dock=el('div','sdock'); const sb=el('div','ssub'); dock.appendChild(sb);
+  const tabs=el('div','stabs');
+  const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
+  [['cards','🃏','Cartas'],['cos','✨','Cosméticos']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
+  dock.appendChild(tabs); ov.appendChild(dock);
+  const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Cartas do dia'],['all','📚','Todas as cartas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
+  SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
+  const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
   if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta para comprar na Loja</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); mn.appendChild(g); }
   if(SHOPV.side==='daily') await shopDaily(mn, ov);
@@ -3003,7 +3032,7 @@ function shopBacks(mn){
     g.appendChild(t); });
 }
 function buyCos(kind, item, name, preview, price, after){
-  const box=el('div','mbox shopbuy'); box.appendChild(preview());
+  const box=el('div','mbox shopbuy'); const pv=preview(); pv.onclick=()=>{ $('#modal').onclick=null; closeModal(); }; box.appendChild(pv);
   box.appendChild(el('div','xres',`<b>${esc(name)}</b>`));
   const row=el('div','row sbrow');
   const go=cur=>async()=>{ const bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
@@ -3019,7 +3048,7 @@ function buyCos(kind, item, name, preview, price, after){
 function buyCard(d, c, full){
   if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
   const st=STARS[d.id]||1;
-  const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); big.onclick=()=>{ $('#modal').onclick=null; closeModal(); }; box.appendChild(big);
   box.appendChild(el('div','sbq',`Você tem ${owned(d.id)}`));
   const row=el('div','row sbrow');
   const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
