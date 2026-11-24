@@ -255,8 +255,11 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .sbanner{position:relative;width:100%;aspect-ratio:2/1;border-radius:36px;overflow:hidden;border:4px solid #ffd84d;background:#000 no-repeat;box-shadow:0 12px 30px #000a;margin-top:6px}
 .sbanner{container-type:size}
 .sbanner .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
-.sbanner .bname{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-shadow:0 3px 8px #000;line-height:1.05;pointer-events:none}
-.sbanner .bstars{position:absolute;display:flex;gap:.6cqh;pointer-events:none}.sbanner .bstars img{height:100%;filter:drop-shadow(0 2px 4px #000)}
+.sbanner .bname{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;pointer-events:none}
+.sbanner .bstars{position:absolute;display:flex;gap:.6cqh;pointer-events:none}.sbanner .bstars img{height:100%;filter:drop-shadow(0 2px 4px #000) drop-shadow(0 0 6px #ffd84d);animation:bsPulse 1.8s ease-in-out infinite}
+.sbanner .bstars img:nth-child(2){animation-delay:.15s}.sbanner .bstars img:nth-child(3){animation-delay:.3s}.sbanner .bstars img:nth-child(4){animation-delay:.45s}.sbanner .bstars img:nth-child(5){animation-delay:.6s}
+@keyframes bsPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 2px 4px #000) drop-shadow(0 0 4px #ffd84d88) brightness(1)}50%{transform:scale(1.14);filter:drop-shadow(0 2px 4px #000) drop-shadow(0 0 14px #ffe98a) brightness(1.35)}}
+.stile .sq.pop{animation:sqPop .45s cubic-bezier(.3,1.8,.5,1)}@keyframes sqPop{0%{transform:scale(.4)}100%{transform:scale(1)}}
 .sbanner .bcard{position:absolute;width:auto;aspect-ratio:5/7;z-index:2;animation:bcFloat 3.2s ease-in-out infinite;transform-origin:50% 60%}
 .sbanner .bcard .im{width:100%;height:100%;position:relative;overflow:hidden;box-shadow:0 0 30px #ffd84d88,0 10px 26px #000c}
 .sbanner .bcard .im::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite}
@@ -810,7 +813,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-194426';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-202122';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -864,7 +867,7 @@ const canDirect=c=>!!(c&&(c.direct||c.def.direct));               // "pode ataca
 
 function detach(pl, inst){
   let i;
-  if((i=pl.hand.indexOf(inst))>=0) pl.hand.splice(i,1);
+  if((i=pl.hand.indexOf(inst))>=0){ pl.hand.splice(i,1); if(G && !G.noCount) G.played=(G.played|0)+1; }   // conta cartas jogadas da mão (partida válida)
   else if((i=pl.deck.indexOf(inst))>=0) pl.deck.splice(i,1);
   else if((i=pl.void.indexOf(inst))>=0) pl.void.splice(i,1);
   else if((i=pl.chars.indexOf(inst))>=0) pl.chars[i]=null;
@@ -1164,7 +1167,7 @@ async function deckToField(p, inst, i){          // sai do baralho do dono (vira
 }
 function handRectOf(p, inst){ const h=P(p).hand, i=Math.max(0,h.indexOf(inst)); return handSlot(p, i+1); }
 async function handToPile(p, inst, where){        // carta sai da mão (de quem for) e vai para o vazio ou para o baralho
-  const pl=P(p), from=handRectOf(p,inst); detach(pl,inst); render();
+  const pl=P(p), from=handRectOf(p,inst); G.noCount=true; detach(pl,inst); G.noCount=false; render();
   if(!window.__NOFX) await slideCard(from, pileRect(p,where), mini(inst), 620, 0, backOf(p), where==='void');
   if(where==='void') ownPl(inst,pl).void.push(inst); else { pl.deck.push(inst); shuffle(pl.deck); } render();
 }
@@ -2103,7 +2106,7 @@ const myStreak=()=>{ if(ACC.user&&ACC.profile) return ACC.profile.win_streak|0; 
 async function matchReward(won, life, gaveUp){
   const prevStreak=myStreak();
   if(SB && ACC.user){
-    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve', p_forfeit:!!gaveUp}); if(error) throw error;
+    try{ const {data,error}=await SB.rpc('finish_match',{p_won:won, p_life:life, p_mode:'pve', p_forfeit:!!gaveUp, p_turns:G?G.turnNo|0:0, p_played:G?G.played|0:0}); if(error) throw error;
       if(data && data.ok){ if(ACC.profile){ ACC.profile.xp=data.xp_after; ACC.profile.win_streak=data.streak|0; if(data.gold_after!=null) ACC.profile.gold=data.gold_after; if(data.crystals_after!=null) ACC.profile.crystals=data.crystals_after; ACC.profile.games=(ACC.profile.games|0)+1; ACC.profile[won?'wins':'losses']=(ACC.profile[won?'wins':'losses']|0)+1; } return {...data, saved:true, prevStreak}; }
       return {ok:false, reason:data&&data.reason};
     }catch(e){ return {ok:false, reason:'erro'}; }
@@ -2121,7 +2124,7 @@ async function matchReward(won, life, gaveUp){
 }
 function showReward(rw, r){
   rw.replaceChildren();
-  if(!r.ok){ rw.appendChild(el('div','note', r.reason==='rapida_demais'?'Partida muito curta: o XP não foi contado.':r.reason==='sem_partida'?'Não foi possível registrar esta partida.':'Sem conexão: o XP desta partida não foi salvo.')); return; }
+  if(!r.ok){ rw.appendChild(el('div','note', r.reason==='rapida_demais'?'Partida muito curta: para valer, ela precisa chegar ao 3º turno com pelo menos 5 cartas jogadas.':r.reason==='sem_partida'?'Não foi possível registrar esta partida.':'Sem conexão: o XP desta partida não foi salvo.')); return; }
   if(r.forfeit){ rw.appendChild(el('div','ln',`<span>Desistência</span><b>+0 XP</b>`)); rw.appendChild(el('div','note','Quem desiste não ganha XP nem Ouro.'));
     if(r.lost_streak>=2) saveStreakBox(rw,r); else if(r.prevStreak>=2) rw.appendChild(el('div','note','Sua sequência de vitórias acabou.')); if(!r.guest) setTimeout(loadMissions,300); return; }
   rw.appendChild(el('div','ln',`<span>${r.base===100?'Vitória':'Derrota'}</span><b>+${r.base} XP</b>`));
@@ -2611,7 +2614,7 @@ function accChip(){
   let fv=home.querySelector('.hfav'); if(fv) fv.remove();
   if(ACC.user && ACC.profile && ACC.profile.nickname){ fv=el('div','hfav'); const F=favs();
     for(let i=0;i<3;i++){ const d=DEFS[F[i]]; const c=el('div','hf'+(d?'':' empty'), d?'':'+'); if(d){ c.style.backgroundImage=`url("${d.mini}")`; c.classList.add('artcrop'); }
-      c.onclick=()=>d?cardModalView(d,()=>accChip()):profileModal(); fv.appendChild(c); }
+      c.onclick=()=>d?bigCardView(d):profileModal(); fv.appendChild(c); }
     home.appendChild(fv); }
   let e=home.querySelector('.evt'); if(e) e.remove();
   if(MULT>1){ e=el('div','evt',`XP ×${MULT} ativo!`); home.appendChild(e); }
@@ -2743,7 +2746,7 @@ async function loadCosmetics(){ COS={avatars:[],backs:[]}; if(!SB||!ACC.user) re
 const ownAvatar=id=> AVATARS.includes(id) || COS.avatars.includes(id) || (ACC.profile&&ACC.profile.avatar===id);
 const AV_PRICE={gold:1000,cry:10}, BK_PRICE={gold:2000,cry:20};
 async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){} }
-const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], dust:[0,10,50,100,200,500]};
+const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], crynormal:[0,2,8,15,30,75], dust:[0,10,50,100,200,500]};
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
 async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
@@ -3017,7 +3020,7 @@ async function shopScreen(tab, side){
 }
 const starRow=n=>`<img src="Icones/16.png" alt="">×${n}`;
 function shopTile(d, line, onClick){
-  const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);
+  const t=el('div','stile'); t.dataset.cid=d.id; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);
   if(ACC.user && owned(d.id)>0) t.appendChild(el('div','sq',String(owned(d.id))));
   t.appendChild(el('div','spb',line)); t.onclick=onClick; return t;
 }
@@ -3042,12 +3045,12 @@ async function shopDaily(mn, ov){
 }
 let BNC={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
 fetch(vq('banners.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ BNC=j||{}; }).catch(()=>{});
-const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:40,y:62,s:11},stars:{x:40,y:80,s:9},fade:55};
+const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:94,y:62,s:11},stars:{x:94,y:80,s:9},fade:55};
 function bannerView(ban, d, c){
   const cf={...(BNC.__default||{}), ...(BNC[d.id]||{})}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
-  const n=el('div','bname',esc(d.name)); n.style.cssText=`left:${nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
-  const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`left:${sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
+  const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
+  const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq('Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;
   const t=shopTile(d, golds(c.gold)+crys(c.cry), ()=>buyCard(d,c,false)); t.classList.add('bcard');
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
@@ -3058,7 +3061,7 @@ function shopAll(mn){
   const n=filterCount(SV); const fb=btn(`🔍 Filtro${n?` <b>(${n})</b>`:''}`,'sec sfil',()=>filterSheet(SV,()=>shopScreen())); hd.appendChild(fb); mn.appendChild(hd);
   const list=deckView(SV); const g=el('div','sgrid5'); mn.appendChild(g);
   if(!list.length) mn.appendChild(el('div','note','Nenhuma carta com esses filtros.'));
-  list.forEach(d=>{ const st=STARS[d.id]||1; g.appendChild(shopTile(d, golds(PRICE.normal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))); });
+  list.forEach(d=>{ const st=STARS[d.id]||1; g.appendChild(shopTile(d, golds(PRICE.normal[st])+crys(PRICE.crynormal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))); });
 }
 function shopAvatars(mn){
   mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>${AV_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${AV_PRICE.cry} Cristais AMV cada.</small>`));
@@ -3069,7 +3072,7 @@ function shopAvatars(mn){
     t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(AV_PRICE.gold))));
     t.onclick=async()=>{ if(!ACC.user){ toast('Entre na sua conta.'); return; }
       if(using) return;
-      if(own){ await saveProfile({avatar:id}); accChip(); shopScreen(); return; }
+      if(own){ await saveProfile({avatar:id}); accChip(); shopRedraw(); return; }
       buyCos('avatar', String(id), DEFS[id].name.split(' - ')[0], ()=>{ const b=el('div','bigav'); b.appendChild(avatarEl(id)); return b; }, AV_PRICE); };
     g.appendChild(t); });
 }
@@ -3079,10 +3082,18 @@ function shopBacks(mn){
   BACKS.forEach((b,i)=>{ const own=ownBack(i), using=cur===i;
     const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${b.img}")`; t.appendChild(im);
     t.appendChild(el('div','sn',b.n)); t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(BK_PRICE.gold))));
-    t.onclick=()=>{ if(using) return; if(own){ try{ localStorage.setItem('amv_back',i); }catch(e){} toast(`Verso ${b.n} selecionado.`); shopScreen(); return; }
+    t.onclick=()=>{ if(using) return; if(own){ try{ localStorage.setItem('amv_back',i); }catch(e){} toast(`Verso ${b.n} selecionado.`); shopRedraw(); return; }
       if(!ACC.user){ toast('Entre na sua conta.'); return; }
       buyCos('back', b.k, 'Verso '+b.n, ()=>{ const x=el('div','bigbk'); x.style.backgroundImage=`url("${b.img}")`; return x; }, BK_PRICE, ()=>{ try{ localStorage.setItem('amv_back',i); }catch(e){} }); };
     g.appendChild(t); });
+}
+function shopOwned(id){                             // atualiza só o balãozinho das cópias, sem recarregar a Loja
+  document.querySelectorAll(`.shopscr .stile[data-cid="${id}"]`).forEach(t=>{ let q=t.querySelector('.sq'); const n=owned(id);
+    if(n>0){ if(!q){ q=el('div','sq'); t.insertBefore(q,t.querySelector('.spb')); } q.textContent=String(n); q.classList.remove('pop'); void q.offsetWidth; q.classList.add('pop'); } });
+}
+function shopRedraw(){                               // redesenha só a lista de cosméticos, mantendo a rolagem
+  const mn=document.querySelector('.shopscr .smain'); if(!mn){ shopScreen(); return; } const y=mn.scrollTop;
+  mn.replaceChildren(); if(SHOPV.side==='av') shopAvatars(mn); else shopBacks(mn); mn.scrollTop=y;
 }
 function spendFx(cur, amount, after){              // a moeda usada diminui no topo da Loja
   const box=document.querySelector(cur==='gold'?'.shopscr .shg':'.shopscr .shc'); if(!box){ if(after) after(); return; }
@@ -3102,7 +3113,7 @@ function buyCos(kind, item, name, preview, price, after){
     if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',possui:'Você já tem esse item.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
     ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     if(kind==='avatar') COS.avatars.push(+item); else COS.backs.push(item);
-    if(after) after(); closeModal(); vib([30,40,60]); toast(`${name} é seu!`); accChip(); spendFx(cur, price[cur], ()=>{ sfx('heal'); shopScreen(); }); };
+    if(after) after(); closeModal(); vib([30,40,60]); toast(`${name} é seu!`); accChip(); shopRedraw(); spendFx(cur, price[cur], ()=>sfx('heal')); };
   row.appendChild(btn(golds(price.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy',go('cry')));
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
@@ -3112,15 +3123,20 @@ function buyCard(d, c, full){
   const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); big.onclick=()=>{ $('#modal').onclick=null; closeModal(); }; box.appendChild(big);
   box.appendChild(el('div','sbq',`Você tem ${owned(d.id)}`));
   const row=el('div','row sbrow');
-  const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
+  const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):(full?PRICE.crynormal[st]:c.cry), bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
     if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
     const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur,p_full:!!full});
     if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na vitrine.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
     if(!COLL) COLL={}; COLL[d.id]=data.qty; ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
-    closeModal(); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); spendFx(cur, price, ()=>{ sfx('heal'); shopScreen(); }); };
-  if(full) row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold')));
+    closeModal(); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopOwned(d.id); spendFx(cur, price, ()=>sfx('heal')); };
+  if(full){ row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold'))); row.appendChild(btn(crys(PRICE.crynormal[st]),'sbuy',go('cry'))); }
   else { row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy',go('cry'))); }
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
+}
+function bigCardView(d){                           // carta grande do tamanho da Loja; tocar de novo fecha
+  const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  const shut=()=>{ $('#modal').onclick=null; closeModal(); };
+  big.onclick=shut; showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'||e.target===box) shut(); };
 }
 function cardModalView(d, onChange){
   const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
