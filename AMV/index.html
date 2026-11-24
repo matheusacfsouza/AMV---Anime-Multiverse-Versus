@@ -248,6 +248,36 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .news{background:#1d2129;border-radius:30px;padding:30px 36px;box-shadow:0 6px 18px #0008;border-left:8px solid #343a46}
 .news.new{border-left-color:#47e68a}.news .nd{font-size:26px;color:#9aa4b4}.news .nt{font-size:44px;font-weight:800;margin:8px 0 14px}.news .nb{font-size:34px;line-height:1.4;color:#d5dbe4}
 .gico{font-size:80px}
+.shopscr{position:absolute;inset:0;z-index:30;background:linear-gradient(180deg,#141a33,#0b0d18);display:flex;flex-direction:column}
+.shd{display:flex;align-items:center;gap:16px;padding:30px 24px 14px}
+.sback{width:90px;height:90px;border-radius:50%;border:4px solid #ffffffd9;background:#1c2130;color:#fff;font-size:64px;line-height:1;cursor:pointer;flex:none}
+.sht{flex:1;text-align:center;font-size:64px;font-weight:900;font-style:italic}
+.shg,.shc{display:flex;align-items:center;gap:8px;font-size:34px;font-weight:900;padding:8px 18px;border-radius:30px;background:#000a;border:3px solid #fff}.shg .cry,.shc .cry{width:44px;height:44px}
+.stabs{display:flex;border-bottom:3px solid #2a3150}
+.stab{flex:1;text-align:center;font-size:42px;font-weight:900;font-style:italic;padding:18px 0;color:#7f8fc4;cursor:pointer}.stab.on{color:#fff;box-shadow:inset 0 -8px 0 #7fd6f5}
+.sbody{flex:1;display:flex;min-height:0}
+.sside{width:150px;flex:none;background:#06070d;display:flex;flex-direction:column;gap:10px;padding:20px 0}
+.ssb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;color:#7f8fc4;cursor:pointer;border-left:6px solid transparent}
+.ssb span{font-size:56px;filter:grayscale(1) brightness(.8)}.ssb small{font-size:24px;font-weight:700}
+.ssb.on{color:#fff;border-left-color:#7fd6f5;background:#ffffff0d}.ssb.on span{filter:none}
+.smain{flex:1;overflow-y:auto;padding:20px 24px 60px;-webkit-overflow-scrolling:touch}
+.smain .shoptm{font-size:38px;margin:0 0 10px}.smain .shoptm small{font-size:26px;color:#9aa4c4}
+.tmb{display:inline-block;background:#b3122a;border-radius:12px;padding:4px 14px;font-size:30px;margin-right:6px}
+.prow{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.sgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.stile{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;position:relative}
+.prow .stile{width:166px}.prow .stile .im{width:166px;height:232px}
+.stile .im{width:250px;height:350px;border-radius:12px;background:#000 center/100% 100%;box-shadow:0 8px 20px #000a}
+.sgrid3 .stile .im{width:100%;height:auto;aspect-ratio:5/7}
+.stile .sq{position:absolute;top:8px;right:8px;background:#000c;border-radius:16px;padding:2px 12px;font-size:26px;font-weight:900}
+.sprice{font-size:26px;font-weight:800;display:flex;align-items:center;gap:6px;color:#ffd84d;flex-wrap:wrap;justify-content:center}.sprice s{color:#8890a8;font-weight:400}.sprice .cry{width:32px;height:32px}
+.sn{font-size:26px;text-align:center}
+.sgav{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.savt{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}.savt .av{width:170px;height:170px;border-radius:50%;border:5px solid #556}
+.savt.own .av{border-color:#47e68a}
+.bigav{display:flex;justify-content:center;margin:10px}.bigav .av{width:300px;height:300px;border-radius:50%;border:6px solid #fff}
+.bigbk{width:300px;height:420px;margin:10px auto;border-radius:16px;background:center/100% 100%}
+.backs .bk.lock{filter:grayscale(1) brightness(.4);position:relative}.backs .bk.lock::after{content:'🔒';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px}
 .scr.mm{justify-content:center;gap:24px}.mmt{font-size:90px;font-weight:900}.mmr{font-size:38px;color:#ffd84d}
 .mmspin{width:180px;height:180px;border-radius:50%;border:14px solid #ffffff22;border-top-color:#ffd84d;animation:spin 1s linear infinite;margin:30px}
 .mmspin.ok{border-color:#47e68a;animation:none}.mms{font-size:44px}.mmtm{font-size:36px;color:#aab3c2;margin-bottom:30px}
@@ -729,7 +759,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-160059';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-163207';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -741,9 +771,11 @@ function setScenario(on){
   if(!on){ st.classList.remove('scen'); st.style.backgroundImage=''; fitStage(); return; }
   st.style.backgroundImage=`url("${G&&G.scen||SCENARIOS[0]}")`; st.classList.add('scen'); fitStage();
 }
-const BACKS=[{n:'Padrão',img:'Cartas/Verso da carta padrão.jpg'},{n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(miniPath(b.img))}));
+const BACKS=[{k:'padrao',n:'Escuro',img:'Cartas/Verso da carta padrão.jpg'},{k:'azul',n:'Azul',img:'Cartas/Verso da carta Azul.jpg'},{k:'verde',n:'Verde',img:'Cartas/Verso da carta Verde.jpg'},{k:'vermelho',n:'Vermelho',img:'Cartas/Verso da carta Vermelho.jpg'}].map(b=>({...b,img:vq(miniPath(b.img))}));
 BACKS.forEach(b=>preload(b.img));
-function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return BACKS[i]?i:0; }catch(e){ return 0; } }
+let COS={avatars:[],backs:[]};                                   // cosméticos comprados
+const ownBack=i=> i===0 || COS.backs.includes(BACKS[i].k);
+function myBack(){ try{ const i=+localStorage.getItem('amv_back'); return (BACKS[i]&&ownBack(i))?i:0; }catch(e){ return 0; } }
 function backOf(p){ return BACKS[p===0?myBack():0].img; }    // o oponente usa o verso padrão
 
 /* ============================================================
@@ -2388,7 +2420,7 @@ addEventListener('popstate', ()=>{
     if(document.querySelector('.asback')) closeSheet(); else if($('#modal').classList.contains('on')) closeModal(); else menuModal();
     return;
   }
-  const ov=document.querySelector('.sheetov,.profscr:not(.mscr)');
+  const ov=document.querySelector('.sheetov,.profscr:not(.mscr),.shopscr');
   if($('#modal').classList.contains('on') || ov){   // primeiro fecha o que estiver aberto
     if($('#modal').classList.contains('on')) closeModal(); else ov.remove();
     if(onHome()) guardHome(); return;
@@ -2475,7 +2507,7 @@ let accBusy=null;
 function accRefresh(){
   if(accBusy) return accBusy;
   accBusy=(async()=>{ try{
-    await loadProfile(); accChip(); loadMult(); loadCollection(); if(ACC.user) touchLogin(); else loadMissions();
+    await loadProfile(); accChip(); loadMult(); loadCollection(); loadCosmetics(); if(ACC.user) touchLogin(); else loadMissions();
     if(ACC.user && ACC.profile && !ACC.profile.nickname && !G && !$('#modal').classList.contains('on')) profileEdit(true);   // conta nova (ex.: Google) sem apelido
   } finally { accBusy=null; } })();
   return accBusy;
@@ -2627,8 +2659,11 @@ const missionsPending=()=>!!(ACC.user && MIS.some(m=>m.kind==='daily' && !m.clai
 /* ---- Coleção: cartas que o jogador possui (convidado = baralho padrão) ---- */
 let COLL=null;
 const owned=id=> (ACC.user && COLL) ? (COLL[id]|0) : (DEFAULT_DECK[id]|0);
+async function loadCosmetics(){ COS={avatars:[],backs:[]}; if(!SB||!ACC.user) return; try{ const {data}=await SB.rpc('my_cosmetics'); if(data) COS={avatars:(data.avatars||[]).map(Number),backs:data.backs||[]}; }catch(e){} }
+const ownAvatar=id=> AVATARS.includes(id) || COS.avatars.includes(id) || (ACC.profile&&ACC.profile.avatar===id);
+const AV_PRICE={gold:1000,cry:10}, BK_PRICE={gold:2000,cry:20};
 async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){} }
-const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,15,110,120,150], dust:[0,10,50,100,200,500]};
+const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], dust:[0,10,50,100,200,500]};
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
 async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
@@ -2686,7 +2721,9 @@ function settingsModal(){
 }
 function avatarPick(){
   const box=el('div','mbox'); const f=el('div','form'); box.appendChild(f); f.appendChild(el('h2','','Escolha seu avatar'));
-  const g=el('div','avgrid'); AVATARS.forEach(id=>{ const a=avatarEl(id,id===ACC.profile.avatar?'sel':''); a.onclick=async()=>{ closeModal(); await saveProfile({avatar:id}); }; g.appendChild(a); }); f.appendChild(g);
+  const list=[...AVATARS, ...Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && !AVATARS.includes(id) && ownAvatar(id))];
+  const g=el('div','avgrid'); list.forEach(id=>{ const a=avatarEl(id,id===ACC.profile.avatar?'sel':''); a.onclick=async()=>{ closeModal(); await saveProfile({avatar:id}); }; g.appendChild(a); }); f.appendChild(g);
+  f.appendChild(el('div','note','Mais avatares na Loja → Cosméticos.'));
   f.appendChild(btn('Cancelar','sec',closeModal)); showModal(box);
 }
 function statusPick(){
@@ -2816,8 +2853,8 @@ function deckScreen(){
   // verso do baralho
   let back=myBack();
   const bw=el('div','backs'); bw.appendChild(el('span','',`Verso do baralho:`));
-  BACKS.forEach((b,i)=>{ const t=el('div','bk'+(i===back?' sel':'')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
-    t.onclick=()=>{ back=i; bw.querySelectorAll('.bk').forEach((x,k)=>x.classList.toggle('sel',k===i)); }; bw.appendChild(t); });
+  BACKS.forEach((b,i)=>{ const t=el('div','bk'+(i===back?' sel':'')+(ownBack(i)?'':' lock')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
+    t.onclick=()=>{ if(!ownBack(i)){ toast(`Verso ${b.n}: compre na Loja → Cosméticos.`); return; } back=i; bw.querySelectorAll('.bk').forEach((x,k)=>x.classList.toggle('sel',k===i)); }; bw.appendChild(t); });
   build.appendChild(bw);
   const foot=el('div','row'); foot.style.marginTop='18px';
   const save=btn('Salvar e voltar','',()=>{ saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} goHome(); });
@@ -2865,46 +2902,119 @@ function albumCard(d, onChange){                    // carta do álbum: ver e tr
 }
 /* ===== Loja: 18 cartas com desconto, trocam às 10h e às 22h ===== */
 let SHOP=null;
-async function shopScreen(){
-  const old=document.querySelector('.profscr'); if(old) old.remove();
-  const ov=el('div','profscr shopscr'); const sc=el('div','pbody'); ov.appendChild(sc);
-  sc.appendChild(el('div','mtitle','Loja'));
-  const tm=el('div','shoptm','Carregando...'); sc.appendChild(tm);
-  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta para comprar cartas</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); sc.appendChild(g); }
-  const list=el('div','shoplist'); sc.appendChild(list);
-  const x=el('button','pclose','✕'); x.onclick=()=>{ clearInterval(ov._t); ov.remove(); }; ov.appendChild(x);
+let SHOPV={tab:'cards',side:'daily'};
+async function shopScreen(tab, side){
+  if(tab) SHOPV.tab=tab; if(side) SHOPV.side=side;
+  if(SHOPV.tab==='cards' && !['daily','all'].includes(SHOPV.side)) SHOPV.side='daily';
+  if(SHOPV.tab==='cos' && !['av','bk'].includes(SHOPV.side)) SHOPV.side='av';
+  const old=document.querySelector('.shopscr'); if(old){ clearInterval(old._t); old.remove(); }
+  const ov=el('div','shopscr');
+  const hd=el('div','shd');
+  const bk=el('button','sback','‹'); bk.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; hd.appendChild(bk);
+  hd.appendChild(el('div','shg',golds(ACC.profile?ACC.profile.gold:0)));
+  hd.appendChild(el('div','sht','Loja'));
+  hd.appendChild(el('div','shc',crys(ACC.profile?ACC.profile.crystals:0)));
+  ov.appendChild(hd);
+  const tabs=el('div','stabs');
+  [['cards','Cartas'],['cos','Cosméticos']].forEach(([k,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),n); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
+  ov.appendChild(tabs);
+  const body=el('div','sbody'); ov.appendChild(body);
+  const sb=el('div','sside'); body.appendChild(sb);
+  const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Do dia'],['all','🃏','Todas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
+  SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span><small>${n}</small>`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
+  const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
+  if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta para comprar na Loja</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); mn.appendChild(g); }
+  if(SHOPV.side==='daily') await shopDaily(mn, ov);
+  else if(SHOPV.side==='all') shopAll(mn);
+  else if(SHOPV.side==='av') shopAvatars(mn);
+  else shopBacks(mn);
+}
+const starRow=n=>`<img src="Icones/16.png" alt="">×${n}`;
+function shopTile(d, line, onClick){
+  const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);
+  if(ACC.user) t.appendChild(el('div','sq',`x${owned(d.id)}`));
+  t.appendChild(el('div','sprice',line)); t.onclick=onClick; return t;
+}
+async function shopDaily(mn, ov){
+  const tm=el('div','shoptm','Carregando...'); mn.appendChild(tm);
   if(!SB){ tm.textContent='Loja indisponível sem conexão.'; return; }
   try{ const {data}=await SB.rpc('get_shop'); SHOP=data; }catch(e){}
   if(!SHOP||!SHOP.cards){ tm.textContent='Não foi possível abrir a loja agora.'; return; }
   const end=new Date(SHOP.ends_at).getTime();
   const tick=()=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4);
-    tm.innerHTML=`🕒 Novas cartas em <b>${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m</b>`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
+    tm.innerHTML=`<span class="tmb">⏱ ${h}h ${String(m).padStart(2,'0')}m</span> <b>Cartas do dia</b><br><small>Preços promocionais. Novas cartas às 10h e às 22h.</small>`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
   tick(); ov._t=setInterval(tick,30000);
   for(let st=5; st>=1; st--){
     const cs=SHOP.cards.filter(c=>c.stars===st && DEFS[c.id]); if(!cs.length) continue;
-    list.appendChild(el('div','shead',`<img src="Icones/16.png" alt="">×${st}`));
-    const g=el('div','sgrid'); list.appendChild(g);
-    cs.forEach(c=>{ const d=DEFS[c.id], t=el('div','scard');
-      const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d); t.appendChild(im);
-      t.appendChild(el('div','sown', ACC.user?`Você tem: <b>${owned(c.id)}</b>`:''));
-      t.appendChild(el('div','sold',`<s>${c.normal.toLocaleString('pt-BR')}</s> -${Math.round(100-100*c.gold/c.normal)}%`));
-      const bg=btn(golds(c.gold),'sbuy',()=>buyCard(d,c,'gold')), bc=btn(crys(c.cry),'sbuy sec',()=>buyCard(d,c,'cry'));
-      t.appendChild(bg); t.appendChild(bc); g.appendChild(t); });
+    mn.appendChild(el('div','shead',starRow(st)));
+    const row=el('div','prow'); mn.appendChild(row);
+    cs.forEach(c=>row.appendChild(shopTile(DEFS[c.id], `<s>${c.normal.toLocaleString('pt-BR')}</s> ${golds(c.gold)}`, ()=>buyCard(DEFS[c.id],c,false))));
   }
 }
-function buyCard(d, c, cur){
-  if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
-  const price=cur==='gold'?c.gold:c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
-  if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
-  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
-  box.appendChild(el('div','xres',`Comprar <b>${d.name}</b> por ${cur==='gold'?golds(price):crys(price)}?`));
+function shopAll(mn){
+  mn.appendChild(el('div','shoptm','<b>Todas as cartas</b><br><small>Qualquer carta do jogo, a preço cheio.</small>'));
+  const all=Object.values(DEFS).sort((a,b)=>(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));
+  for(let st=5; st>=1; st--){
+    const cs=all.filter(d=>(STARS[d.id]||1)===st); if(!cs.length) continue;
+    mn.appendChild(el('div','shead',starRow(st)));
+    const g=el('div','sgrid3'); mn.appendChild(g);
+    cs.forEach(d=>g.appendChild(shopTile(d, golds(PRICE.normal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))));
+  }
+}
+function shopAvatars(mn){
+  mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>${AV_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${AV_PRICE.cry} Cristais AMV cada.</small>`));
+  const g=el('div','sgav'); mn.appendChild(g);
+  const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char').sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
+  ids.forEach(id=>{ const own=ownAvatar(id), using=ACC.profile&&ACC.profile.avatar===id;
+    const t=el('div','savt'+(own?' own':'')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
+    t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(AV_PRICE.gold))));
+    t.onclick=async()=>{ if(!ACC.user){ toast('Entre na sua conta.'); return; }
+      if(using) return;
+      if(own){ await saveProfile({avatar:id}); accChip(); shopScreen(); return; }
+      buyCos('avatar', String(id), DEFS[id].name.split(' - ')[0], ()=>{ const b=el('div','bigav'); b.appendChild(avatarEl(id)); return b; }, AV_PRICE); };
+    g.appendChild(t); });
+}
+function shopBacks(mn){
+  mn.appendChild(el('div','shoptm',`<b>Versos de carta</b><br><small>${BK_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${BK_PRICE.cry} Cristais AMV cada.</small>`));
+  const g=el('div','sgrid3'); mn.appendChild(g); const cur=myBack();
+  BACKS.forEach((b,i)=>{ const own=ownBack(i), using=cur===i;
+    const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${b.img}")`; t.appendChild(im);
+    t.appendChild(el('div','sn',b.n)); t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(BK_PRICE.gold))));
+    t.onclick=()=>{ if(using) return; if(own){ try{ localStorage.setItem('amv_back',i); }catch(e){} toast(`Verso ${b.n} selecionado.`); shopScreen(); return; }
+      if(!ACC.user){ toast('Entre na sua conta.'); return; }
+      buyCos('back', b.k, 'Verso '+b.n, ()=>{ const x=el('div','bigbk'); x.style.backgroundImage=`url("${b.img}")`; return x; }, BK_PRICE, ()=>{ try{ localStorage.setItem('amv_back',i); }catch(e){} }); };
+    g.appendChild(t); });
+}
+function buyCos(kind, item, name, preview, price, after){
+  const box=el('div','mbox'); box.appendChild(preview());
+  box.appendChild(el('div','xres',`Comprar <b>${esc(name)}</b>?`));
   const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
-  const ok=btn('Comprar','',async()=>{ ok.disabled=true; const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur});
-    if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na loja.'}[data&&data.reason]||'Não foi possível comprar agora.'); ok.disabled=false; return; }
+  const go=cur=>async()=>{ const bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
+    if(bal<price[cur]){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
+    const {data,error}=await SB.rpc('buy_cosmetic',{p_kind:kind,p_item:item,p_cur:cur});
+    if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',possui:'Você já tem esse item.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
+    ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
+    if(kind==='avatar') COS.avatars.push(+item); else COS.backs.push(item);
+    if(after) after(); closeModal(); sfx('heal'); vib([30,40,60]); toast(`${name} é seu!`); accChip(); shopScreen(); };
+  row.appendChild(btn(golds(price.gold),'sbuy',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy sec',go('cry')));
+  box.appendChild(row); showModal(box);
+}
+function buyCard(d, c, full){
+  if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
+  const st=STARS[d.id]||1;
+  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  box.appendChild(el('div','xres',`Comprar <b>${esc(d.name)}</b>? ${ACC.user?`(você tem ${owned(d.id)})`:''}`));
+  const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
+  const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
+    if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
+    const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur,p_full:!!full});
+    if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na vitrine.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
     if(!COLL) COLL={}; COLL[d.id]=data.qty; ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
-    closeModal(); sfx('heal'); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopScreen(); });
-  row.appendChild(ok); box.appendChild(row); showModal(box);
+    closeModal(); sfx('heal'); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopScreen(); };
+  if(full) row.appendChild(btn(golds(PRICE.normal[st]),'sbuy',go('gold')));
+  else { row.appendChild(btn(golds(c.gold),'sbuy',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy sec',go('cry'))); }
+  box.appendChild(row); showModal(box);
 }
 function cardModalView(d, onChange){
   const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
