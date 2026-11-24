@@ -198,7 +198,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .tab.on::before{content:'';position:absolute;top:0;width:120px;height:6px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,#8fe3ff,#47e68a)}
 .tab{position:relative}
 .tbn{position:absolute;top:30px;z-index:6;display:flex;align-items:center;justify-content:center;line-height:1;width:110px;height:110px;border-radius:50%;border:4px solid #ffffffd9;background:radial-gradient(circle at 50% 30%,#4a5468,#1c2130 70%);font-size:54px;cursor:pointer;padding:0;box-shadow:0 7px 0 #0a0c12,0 10px 18px #000a,inset 0 3px 0 #ffffff40}
-.tbn.mail{right:30px;top:30px}.tbn.gift{right:30px;top:160px}.tbn.fs{right:30px;top:420px}
+.tbn.mail{right:30px;top:280px}.tbn.gift{right:30px;top:410px}.tbn.fs{right:30px;top:420px}
 .breathe{animation:breathe 2.6s ease-in-out infinite}
 @keyframes breathe{0%,100%{scale:1}50%{scale:1.035}}
 .btn.breathe,.modec.breathe,.shopc.breathe{background-image:linear-gradient(105deg,transparent 40%,#ffffff66 50%,transparent 60%),var(--bgi);background-size:260% 100%,auto;background-repeat:no-repeat,repeat;animation:breathe 2.6s ease-in-out infinite,sheen 4.6s ease-in-out infinite}
@@ -252,6 +252,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .shd{display:flex;align-items:center;gap:14px;padding:30px 24px 14px}
 .sback{position:absolute;right:24px;bottom:40px;z-index:5;padding:22px 40px;border-radius:50px;border:4px solid #ffffffd9;background:linear-gradient(180deg,#465063,#2c3342 55%,#1f2430);color:#fff;font:inherit;font-size:36px;font-weight:900;cursor:pointer;box-shadow:0 9px 0 #0b0d12,0 14px 22px #000a,inset 0 4px 0 #ffffff30}
 .sback:active{transform:translateY(7px);box-shadow:0 2px 0 #0b0d12}
+.sbanner{position:relative;width:100%;aspect-ratio:2/1;border-radius:36px;overflow:hidden;border:4px solid #ffd84d;background:#000 no-repeat;box-shadow:0 12px 30px #000a;margin-top:6px}
+.sbanner .bcard{position:absolute;width:auto;aspect-ratio:5/7}.sbanner .bcard .im{width:100%;height:100%}
 .spanel{position:relative;background:#1b2240;border:3px solid #2f3a66;border-radius:40px;padding:90px 20px 30px;margin-top:30px}
 .stm{position:absolute;left:20px;top:-26px;background:#3d4a7a;border-radius:30px;padding:8px 22px;font-size:30px;font-weight:700}
 .sptitle{position:absolute;left:30px;top:30px;font-size:40px;font-weight:900}.sptitle small{font-size:24px;color:#9aa4c4;font-weight:400}
@@ -265,7 +267,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .mbox.shopbuy .bigcard{width:950px;height:1330px}
 .sbq{font-size:34px;color:#cfd6e0}
 .sbrow{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:center;gap:24px}.sbrow .btn.sbuy{width:auto;min-width:300px;font-size:48px;padding:20px 30px}.sbrow .btn.sbuy .cry{width:60px;height:60px}
-.sht{flex:1;text-align:right;padding-right:10px;font-size:64px;font-weight:900;font-style:italic}
+.sht{flex:1;text-align:left;padding-left:6px;font-size:64px;font-weight:900;font-style:italic}
 .shg,.shc{display:flex;align-items:center;gap:8px;font-size:34px;font-weight:900;padding:8px 18px;border-radius:30px;background:#000a;border:3px solid #fff}.shg .cry,.shc .cry{width:44px;height:44px}
 .stabs{display:flex;border-bottom:3px solid #2a3150}
 .stab{flex:1;text-align:center;font-size:42px;font-weight:900;font-style:italic;padding:18px 0;color:#7f8fc4;cursor:pointer}.stab.on{color:#fff;box-shadow:inset 0 -8px 0 #7fd6f5}
@@ -411,8 +413,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .cry{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
 .crybox{position:absolute;left:50%;transform:translateX(-50%);top:44px;z-index:6;display:flex;align-items:center;gap:12px;background:#000b;border:3px solid #fff;border-radius:50px;padding:12px 28px;font-size:40px}
 .crybox b{font-weight:900}
-.coins{position:absolute;left:380px;top:40px;z-index:6;display:flex;gap:14px}.coins .crybox{position:static;transform:none}
-.scr.home .gear{right:auto;left:380px;top:142px;width:96px;height:96px;font-size:48px}
+.coins{position:absolute;right:30px;top:40px;z-index:6;display:flex;flex-direction:row-reverse;gap:14px}.coins .crybox{position:static;transform:none}
+.scr.home .gear{right:30px;top:150px}
 .crybox .cry.gold{filter:drop-shadow(0 0 6px #ffcf3a99)}
 .mrew .cry{width:44px;height:44px;vertical-align:middle}
 .crytot{display:flex;align-items:center;gap:10px}.crytot small{font-size:30px;color:#bbb;font-weight:600}
@@ -783,7 +785,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-181011';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-183238';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -881,7 +883,7 @@ const A = {
   async summon(p, c, slot){
     const pl=P(p);
     if(slot==null||pl.chars[slot]) slot=freeIdx(pl.chars);
-    if(G.settle!==c.uid && pl.hand.includes(c)) await playFromHand(p,c,slotRect(p,slot));   // oponente / efeito: a carta voa até o campo
+    if(G.drop!==c.uid && pl.hand.includes(c)) await playFromHand(p,c,slotRect(p,slot));   // oponente / efeito: a carta voa até o campo
     detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
     if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
       const tools=chars(1-p).flatMap(x=>x.equips);
@@ -950,10 +952,10 @@ const A = {
     theirs.attacked=false; theirs.direct=false; mine.attacked=false; mine.direct=false;   // quem muda de lado pode atacar (exceto no turno 1)
     log(`Troca de Marionetes: ${mine.def.name} e ${theirs.def.name} trocam de controle.`); render();
   },
-  async field(p, c){ const pl=P(p); if(G.settle!==c.uid) await playFromHand(p,c,{x:FIELD[0],y:FIELD[1],w:FIELD_W,h:FIELD_H}); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
-  async support(p, c, slot){ const pl=P(p); const si=(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers); if(G.settle!==c.uid) await playFromHand(p,c,{x:POS[p].powers[si][0],y:POS[p].powers[si][1],w:PW,h:PH}); detach(pl,c); pl.powers[si]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
+  async field(p, c){ const pl=P(p); if(G.drop!==c.uid) await playFromHand(p,c,{x:FIELD[0],y:FIELD[1],w:FIELD_W,h:FIELD_H}); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
+  async support(p, c, slot){ const pl=P(p); const si=(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers); if(G.drop!==c.uid) await playFromHand(p,c,{x:POS[p].powers[si][0],y:POS[p].powers[si][1],w:PW,h:PH}); detach(pl,c); pl.powers[si]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
-  async tool(p, c, goku){ const pl=P(p); if(pl.hand.includes(c)){ const gi=pl.chars.indexOf(goku); if(gi>=0) await playFromHand(p,c,slotRect(p,gi)); } detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
+  async tool(p, c, goku){ const pl=P(p); if(pl.hand.includes(c) && G.drop!==c.uid){ const gi=pl.chars.indexOf(goku); if(gi>=0) await playFromHand(p,c,slotRect(p,gi)); } detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
   async dmgFx(p, c, n, name){ c.used=true; await activateFx(p,c,true); log(`${name} ${p?'Você recebe':'O oponente recebe'} ${n} de dano.`); await damage(1-p, n); },
   async muhriqa(p, c){ const q=1-p, h=P(q).hand; c.used=true; if(!h.length) return; await activateFx(p,c,true);
     const t=h[Math.floor(RNGF()*h.length)]; await handToPile(q,t,'void'); log(`Maldição da chama! ${p?'Uma carta da sua mão':'Uma carta da mão do oponente'} (${t.def.name}) vai para o vazio.`); },
@@ -1145,6 +1147,7 @@ async function playFromHand(p, inst, to){         // a carta voa da mão até o 
   if(window.__NOFX || !P(p).hand.includes(inst)) return;
   const from=handRectOf(p,inst); detach(P(p),inst); render();
   await slideCard(from, to, mini(inst), 560, 0, backOf(p), p===0);
+  G.settle=inst.uid;                                // cai no lugar sem a animação de "aparecer"
 }
 async function chooseSlot(p, prompt){             // invocação por efeito: escolher em qual espaço vai
   const pl=P(p), free=pl.chars.map((c,i)=>c?null:i).filter(i=>i!=null);
@@ -1976,7 +1979,7 @@ async function dropPlay(inst, slot, y, okItem){
   if(k==='item'){ if(okItem) await runAction(a); else G.fxFrom=null; return; }   // item: solta dentro da área amarela
   if(!slot) return;                                                       // fora de um slot válido: volta para a mão
   const i=+slot.slice(1);
-  const net={t:'drop',k,uid:inst.uid,slot:i};
+  const net={t:'drop',k,uid:inst.uid,slot:i}; G.drop=inst.uid;   // jogada arrastada: sem voo extra
   if(k==='char')    { G.settle=inst.uid; P(0).summoned=true; await runAction({net,run:()=>A.summon(0,inst,i)}); }
   if(k==='support') { G.settle=inst.uid; await runAction({net,run:async()=>await A.support(0,inst,i)}); }
   if(k==='field')   { G.settle=inst.uid; await runAction({net,run:async()=>await A.field(0,inst)}); }
@@ -2958,15 +2961,15 @@ async function shopScreen(tab, side){
   const old=document.querySelector('.shopscr'); if(old){ clearInterval(old._t); old.remove(); }
   const ov=el('div','shopscr');
   const hd=el('div','shd');
-  hd.appendChild(el('div','shg',golds(ACC.profile?ACC.profile.gold:0)));
-  hd.appendChild(el('div','shc',crys(ACC.profile?ACC.profile.crystals:0)));
   hd.appendChild(el('div','sht','Loja'));
+  hd.appendChild(el('div','shc',crys(ACC.profile?ACC.profile.crystals:0)));
+  hd.appendChild(el('div','shg',golds(ACC.profile?ACC.profile.gold:0)));
   ov.appendChild(hd);
   const body=el('div','sbody'); ov.appendChild(body);
   const dock=el('div','sdock'); const sb=el('div','ssub'); dock.appendChild(sb);
   const tabs=el('div','stabs');
   const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
-  [['cards','🃏','Cartas'],['cos','✨','Cosméticos']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
+  [['cos','✨','Cosméticos'],['cards','🃏','Cartas']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   dock.appendChild(tabs); ov.appendChild(dock);
   const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Cartas do dia'],['all','📚','Todas as cartas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
@@ -2985,9 +2988,9 @@ function shopTile(d, line, onClick){
   t.appendChild(el('div','spb',line)); t.onclick=onClick; return t;
 }
 async function shopDaily(mn, ov){
+  const ban=el('div','sbanner'); mn.appendChild(ban);
   const panel=el('div','spanel'); mn.appendChild(panel);
   const tm=el('div','stm','Carregando...'); panel.appendChild(tm);
-  panel.appendChild(el('div','sptitle','Cartas do dia<br><small>Preços promocionais</small>'));
   if(!SB){ tm.textContent='Sem conexão'; return; }
   try{ const {data}=await SB.rpc('get_shop'); SHOP=data; }catch(e){}
   if(!SHOP||!SHOP.cards){ tm.textContent='Indisponível'; return; }
@@ -2997,7 +3000,18 @@ async function shopDaily(mn, ov){
   tick(); ov._t=setInterval(tick,1000);
   const g=el('div','sdaily'); panel.appendChild(g);
   const cs=SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars);
-  cs.forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false))));
+  const top=cs.find(c=>c.stars===5);
+  if(top) bannerView(ban, DEFS[top.id], top); else ban.remove();
+  cs.filter(c=>c!==top).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false))));
+}
+let BNC={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
+fetch(vq('banners.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ BNC=j||{}; }).catch(()=>{});
+const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84}};
+function bannerView(ban, d, c){
+  const cf=BNC[d.id]||BN_DEF, bg=cf.bg||BN_DEF.bg, cd=cf.card||BN_DEF.card;
+  ban.style.backgroundImage=`url("${vq('Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;
+  const t=shopTile(d, golds(c.gold), ()=>buyCard(d,c,false)); t.classList.add('bcard');
+  t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
 const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'rar_d'};
 function shopAll(mn){
