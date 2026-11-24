@@ -250,17 +250,31 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .gico{font-size:80px}
 .shopscr{position:absolute;inset:0;z-index:30;background:linear-gradient(180deg,#141a33,#0b0d18);display:flex;flex-direction:column}
 .shd{display:flex;align-items:center;gap:16px;padding:30px 24px 14px}
-.sback{width:90px;height:90px;border-radius:50%;border:4px solid #ffffffd9;background:#1c2130;color:#fff;font-size:64px;line-height:1;cursor:pointer;flex:none}
+.sback{position:absolute;right:24px;bottom:40px;z-index:5;padding:22px 40px;border-radius:50px;border:4px solid #ffffffd9;background:linear-gradient(180deg,#465063,#2c3342 55%,#1f2430);color:#fff;font:inherit;font-size:36px;font-weight:900;cursor:pointer;box-shadow:0 9px 0 #0b0d12,0 14px 22px #000a,inset 0 4px 0 #ffffff30}
+.sback:active{transform:translateY(7px);box-shadow:0 2px 0 #0b0d12}
+.spanel{position:relative;background:#1b2240;border:3px solid #2f3a66;border-radius:40px;padding:90px 20px 30px;margin-top:30px}
+.stm{position:absolute;left:20px;top:-26px;background:#3d4a7a;border-radius:30px;padding:8px 22px;font-size:30px;font-weight:700}
+.sptitle{position:absolute;left:30px;top:30px;font-size:40px;font-weight:900}.sptitle small{font-size:24px;color:#9aa4c4;font-weight:400}
+.spanel .sptitle{position:static;margin:-50px 0 20px 10px}
+.sdaily{display:flex;flex-wrap:wrap;justify-content:center;gap:18px}
+.sdaily .stile{width:240px}.sdaily .stile .im{width:240px;height:336px}
+.spb{position:absolute;left:0;bottom:0;display:flex;align-items:center;gap:6px;background:#3d4a7a;border-radius:0 30px 0 12px;padding:6px 16px;font-size:28px;font-weight:900;color:#fff}.spb .cry{width:32px;height:32px}
+.sallhd{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.btn.sfil{font-size:28px;padding:10px 20px;margin-bottom:6px}
+.sgrid5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sgrid5 .stile .im{width:100%;height:auto;aspect-ratio:5/7}.sgrid5 .spb{font-size:20px;padding:3px 8px;gap:3px}.sgrid5 .spb .cry{width:22px;height:22px}.sgrid5 .sq{font-size:20px;padding:0 8px;top:4px;right:4px}
+.mbox.shopbuy .bigcard{width:950px;height:1330px}
+.sbq{font-size:34px;color:#cfd6e0}
+.sbrow{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:center;gap:24px}.sbrow .btn.sbuy{width:auto;min-width:300px;font-size:48px;padding:20px 30px}.sbrow .btn.sbuy .cry{width:60px;height:60px}
 .sht{flex:1;text-align:center;font-size:64px;font-weight:900;font-style:italic}
 .shg,.shc{display:flex;align-items:center;gap:8px;font-size:34px;font-weight:900;padding:8px 18px;border-radius:30px;background:#000a;border:3px solid #fff}.shg .cry,.shc .cry{width:44px;height:44px}
 .stabs{display:flex;border-bottom:3px solid #2a3150}
 .stab{flex:1;text-align:center;font-size:42px;font-weight:900;font-style:italic;padding:18px 0;color:#7f8fc4;cursor:pointer}.stab.on{color:#fff;box-shadow:inset 0 -8px 0 #7fd6f5}
 .sbody{flex:1;display:flex;min-height:0}
-.sside{width:150px;flex:none;background:#06070d;display:flex;flex-direction:column;gap:10px;padding:20px 0}
-.ssb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;color:#7f8fc4;cursor:pointer;border-left:6px solid transparent}
+.sside{width:150px;flex:none;background:#06070d;padding-bottom:200px!important;display:flex;flex-direction:column;gap:10px;padding:20px 0}
+.ssb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;color:#7f8fc4;cursor:pointer;border-right:6px solid transparent}
 .ssb span{font-size:56px;filter:grayscale(1) brightness(.8)}.ssb small{font-size:24px;font-weight:700}
-.ssb.on{color:#fff;border-left-color:#7fd6f5;background:#ffffff0d}.ssb.on span{filter:none}
-.smain{flex:1;overflow-y:auto;padding:20px 24px 60px;-webkit-overflow-scrolling:touch}
+.ssb.on{color:#fff;border-right-color:#7fd6f5;background:#ffffff0d}.ssb.on span{filter:none}
+.smain{flex:1;overflow-y:auto;padding:20px 20px 220px;-webkit-overflow-scrolling:touch}
 .smain .shoptm{font-size:38px;margin:0 0 10px}.smain .shoptm small{font-size:26px;color:#9aa4c4}
 .tmb{display:inline-block;background:#b3122a;border-radius:12px;padding:4px 14px;font-size:30px;margin-right:6px}
 .prow{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
@@ -627,7 +641,8 @@ function clashVals(p, att, q, tgt){                              // ATQ de batal
   if(att.id===5) a+=300;                                        // Tenshinhan - Kikoho
   if(tgt.id===7) d=Math.max(0,d-300);                           // Yamcha - Autodestruição
   if(tgt.id===38) a=Math.max(0,a-500);                          // Antares - Magma vivo: quem ataca perde 500 na fase de dano
-  const ds = DS_MASTER.has(att.id) ? Math.floor(d/2) : (DS[att.id]||0);
+  const front = P(p).chars.indexOf(att)>=0 && P(p).chars.indexOf(att)===P(q).chars.indexOf(tgt);   // Duplo Sentido: só contra a coluna da frente
+  const ds = !front ? 0 : DS_MASTER.has(att.id) ? Math.floor(d/2) : (DS[att.id]||0);
   return [a+ds, Math.max(0,d-ds)];
 }
 /* Mestre da Água (Shizu/Taishizu): Personagens Água do dono não são afetados por Itens do oponente.
@@ -759,7 +774,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-163207';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-165433';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2910,7 +2925,6 @@ async function shopScreen(tab, side){
   const old=document.querySelector('.shopscr'); if(old){ clearInterval(old._t); old.remove(); }
   const ov=el('div','shopscr');
   const hd=el('div','shd');
-  const bk=el('button','sback','‹'); bk.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; hd.appendChild(bk);
   hd.appendChild(el('div','shg',golds(ACC.profile?ACC.profile.gold:0)));
   hd.appendChild(el('div','sht','Loja'));
   hd.appendChild(el('div','shc',crys(ACC.profile?ACC.profile.crystals:0)));
@@ -2919,10 +2933,11 @@ async function shopScreen(tab, side){
   [['cards','Cartas'],['cos','Cosméticos']].forEach(([k,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),n); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   ov.appendChild(tabs);
   const body=el('div','sbody'); ov.appendChild(body);
-  const sb=el('div','sside'); body.appendChild(sb);
+  const sb=el('div','sside');
   const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Do dia'],['all','🃏','Todas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span><small>${n}</small>`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
-  const mn=el('div','smain'); body.appendChild(mn);
+  const mn=el('div','smain'); body.appendChild(mn); body.appendChild(sb);
+  const bk=el('button','sback','‹ Voltar ao Início'); bk.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; ov.appendChild(bk);
   $('#stage').appendChild(ov);
   if(!ACC.user){ const g=el('div','mguest','<b>Crie uma conta para comprar na Loja</b>'); if(SB) g.appendChild(btn('Criar conta','',()=>{ ov.remove(); authModal('signup'); })); mn.appendChild(g); }
   if(SHOPV.side==='daily') await shopDaily(mn, ov);
@@ -2934,33 +2949,30 @@ const starRow=n=>`<img src="Icones/16.png" alt="">×${n}`;
 function shopTile(d, line, onClick){
   const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);
   if(ACC.user) t.appendChild(el('div','sq',`x${owned(d.id)}`));
-  t.appendChild(el('div','sprice',line)); t.onclick=onClick; return t;
+  t.appendChild(el('div','spb',line)); t.onclick=onClick; return t;
 }
 async function shopDaily(mn, ov){
-  const tm=el('div','shoptm','Carregando...'); mn.appendChild(tm);
-  if(!SB){ tm.textContent='Loja indisponível sem conexão.'; return; }
+  const panel=el('div','spanel'); mn.appendChild(panel);
+  const tm=el('div','stm','Carregando...'); panel.appendChild(tm);
+  panel.appendChild(el('div','sptitle','Cartas do dia<br><small>Preços promocionais</small>'));
+  if(!SB){ tm.textContent='Sem conexão'; return; }
   try{ const {data}=await SB.rpc('get_shop'); SHOP=data; }catch(e){}
-  if(!SHOP||!SHOP.cards){ tm.textContent='Não foi possível abrir a loja agora.'; return; }
+  if(!SHOP||!SHOP.cards){ tm.textContent='Indisponível'; return; }
   const end=new Date(SHOP.ends_at).getTime();
-  const tick=()=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4);
-    tm.innerHTML=`<span class="tmb">⏱ ${h}h ${String(m).padStart(2,'0')}m</span> <b>Cartas do dia</b><br><small>Preços promocionais. Novas cartas às 10h e às 22h.</small>`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
-  tick(); ov._t=setInterval(tick,30000);
-  for(let st=5; st>=1; st--){
-    const cs=SHOP.cards.filter(c=>c.stars===st && DEFS[c.id]); if(!cs.length) continue;
-    mn.appendChild(el('div','shead',starRow(st)));
-    const row=el('div','prow'); mn.appendChild(row);
-    cs.forEach(c=>row.appendChild(shopTile(DEFS[c.id], `<s>${c.normal.toLocaleString('pt-BR')}</s> ${golds(c.gold)}`, ()=>buyCard(DEFS[c.id],c,false))));
-  }
+  const tick=()=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4), sc=Math.floor(ms%6e4/1e3);
+    tm.innerHTML=`⏱ ${String(h).padStart(2,'0')} h ${String(m).padStart(2,'0')} m ${String(sc).padStart(2,'0')} s`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
+  tick(); ov._t=setInterval(tick,1000);
+  const g=el('div','sdaily'); panel.appendChild(g);
+  const cs=SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars);
+  cs.forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false))));
 }
+const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'rar_d'};
 function shopAll(mn){
-  mn.appendChild(el('div','shoptm','<b>Todas as cartas</b><br><small>Qualquer carta do jogo, a preço cheio.</small>'));
-  const all=Object.values(DEFS).sort((a,b)=>(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));
-  for(let st=5; st>=1; st--){
-    const cs=all.filter(d=>(STARS[d.id]||1)===st); if(!cs.length) continue;
-    mn.appendChild(el('div','shead',starRow(st)));
-    const g=el('div','sgrid3'); mn.appendChild(g);
-    cs.forEach(d=>g.appendChild(shopTile(d, golds(PRICE.normal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))));
-  }
+  const hd=el('div','sallhd'); hd.appendChild(el('div','shoptm','<b>Todas as cartas</b><br><small>Qualquer carta do jogo, a preço cheio.</small>'));
+  const n=filterCount(SV); const fb=btn(`🔍 Filtro${n?` <b>(${n})</b>`:''}`,'sec sfil',()=>filterSheet(SV,()=>shopScreen())); hd.appendChild(fb); mn.appendChild(hd);
+  const list=deckView(SV); const g=el('div','sgrid5'); mn.appendChild(g);
+  if(!list.length) mn.appendChild(el('div','note','Nenhuma carta com esses filtros.'));
+  list.forEach(d=>{ const st=STARS[d.id]||1; g.appendChild(shopTile(d, golds(PRICE.normal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))); });
 }
 function shopAvatars(mn){
   mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>${AV_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${AV_PRICE.cry} Cristais AMV cada.</small>`));
@@ -2987,9 +2999,9 @@ function shopBacks(mn){
     g.appendChild(t); });
 }
 function buyCos(kind, item, name, preview, price, after){
-  const box=el('div','mbox'); box.appendChild(preview());
-  box.appendChild(el('div','xres',`Comprar <b>${esc(name)}</b>?`));
-  const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
+  const box=el('div','mbox shopbuy'); box.appendChild(preview());
+  box.appendChild(el('div','xres',`<b>${esc(name)}</b>`));
+  const row=el('div','row sbrow');
   const go=cur=>async()=>{ const bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
     if(bal<price[cur]){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
     const {data,error}=await SB.rpc('buy_cosmetic',{p_kind:kind,p_item:item,p_cur:cur});
@@ -2997,24 +3009,24 @@ function buyCos(kind, item, name, preview, price, after){
     ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     if(kind==='avatar') COS.avatars.push(+item); else COS.backs.push(item);
     if(after) after(); closeModal(); sfx('heal'); vib([30,40,60]); toast(`${name} é seu!`); accChip(); shopScreen(); };
-  row.appendChild(btn(golds(price.gold),'sbuy',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy sec',go('cry')));
-  box.appendChild(row); showModal(box);
+  row.appendChild(btn(golds(price.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy',go('cry')));
+  box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 function buyCard(d, c, full){
   if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
   const st=STARS[d.id]||1;
-  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
-  box.appendChild(el('div','xres',`Comprar <b>${esc(d.name)}</b>? ${ACC.user?`(você tem ${owned(d.id)})`:''}`));
-  const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
+  const box=el('div','mbox shopbuy'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  box.appendChild(el('div','sbq',`Você tem ${owned(d.id)}`));
+  const row=el('div','row sbrow');
   const go=cur=>async()=>{ const price=cur==='gold'?(full?PRICE.normal[st]:c.gold):c.cry, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
     if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
     const {data,error}=await SB.rpc('buy_card',{p_card:d.id,p_cur:cur,p_full:!!full});
     if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Essa carta não está mais na vitrine.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
     if(!COLL) COLL={}; COLL[d.id]=data.qty; ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     closeModal(); sfx('heal'); vib([30,40,60]); toast(`${d.name} foi para a sua coleção!`); accChip(); shopScreen(); };
-  if(full) row.appendChild(btn(golds(PRICE.normal[st]),'sbuy',go('gold')));
-  else { row.appendChild(btn(golds(c.gold),'sbuy',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy sec',go('cry'))); }
-  box.appendChild(row); showModal(box);
+  if(full) row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold')));
+  else { row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy',go('cry'))); }
+  box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 function cardModalView(d, onChange){
   const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
