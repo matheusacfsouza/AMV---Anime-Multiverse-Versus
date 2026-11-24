@@ -253,8 +253,20 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .sback{position:absolute;right:24px;bottom:40px;z-index:5;padding:22px 40px;border-radius:50px;border:4px solid #ffffffd9;background:linear-gradient(180deg,#465063,#2c3342 55%,#1f2430);color:#fff;font:inherit;font-size:36px;font-weight:900;cursor:pointer;box-shadow:0 9px 0 #0b0d12,0 14px 22px #000a,inset 0 4px 0 #ffffff30}
 .sback:active{transform:translateY(7px);box-shadow:0 2px 0 #0b0d12}
 .sbanner{position:relative;width:100%;aspect-ratio:2/1;border-radius:36px;overflow:hidden;border:4px solid #ffd84d;background:#000 no-repeat;box-shadow:0 12px 30px #000a;margin-top:6px}
-.sbanner .bcard{position:absolute;width:auto;aspect-ratio:5/7}.sbanner .bcard .im{width:100%;height:100%}
-.spanel{position:relative;background:#1b2240;border:3px solid #2f3a66;border-radius:40px;padding:90px 20px 30px;margin-top:30px}
+.sbanner{container-type:size}
+.sbanner .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
+.sbanner .bname{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-shadow:0 3px 8px #000;line-height:1.05;pointer-events:none}
+.sbanner .bstars{position:absolute;display:flex;gap:.6cqh;pointer-events:none}.sbanner .bstars img{height:100%;filter:drop-shadow(0 2px 4px #000)}
+.sbanner .bcard{position:absolute;width:auto;aspect-ratio:5/7;z-index:2;animation:bcFloat 3.2s ease-in-out infinite;transform-origin:50% 60%}
+.sbanner .bcard .im{width:100%;height:100%;position:relative;overflow:hidden;box-shadow:0 0 30px #ffd84d88,0 10px 26px #000c}
+.sbanner .bcard .im::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite}
+@keyframes bcFloat{0%,100%{translate:0 -2%;rotate:-2deg}50%{translate:0 2%;rotate:2deg}}
+@keyframes bcSheen{0%,55%{background-position:160% 0}100%{background-position:-60% 0}}
+.stm{font-size:34px!important;padding:10px 26px!important}
+.stm.late{background:#d4142f!important;animation:latePulse 1s ease-in-out infinite}
+@keyframes latePulse{50%{transform:scale(1.08);box-shadow:0 0 24px #ff3b55}}
+.sbanner .stm.sbtm{position:absolute;right:16px;top:14px;left:auto;z-index:3}
+.spanel{position:relative;background:#1b2240;border:3px solid #2f3a66;border-radius:40px;padding:56px 20px 30px;margin-top:40px}
 .stm{position:absolute;left:20px;top:-26px;background:#3d4a7a;border-radius:30px;padding:8px 22px;font-size:30px;font-weight:700}
 .sptitle{position:absolute;left:30px;top:30px;font-size:40px;font-weight:900}.sptitle small{font-size:24px;color:#9aa4c4;font-weight:400}
 .spanel .sptitle{position:static;margin:-50px 0 20px 10px}
@@ -785,7 +797,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-183238';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-190006';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -884,7 +896,7 @@ const A = {
     const pl=P(p);
     if(slot==null||pl.chars[slot]) slot=freeIdx(pl.chars);
     if(G.drop!==c.uid && pl.hand.includes(c)) await playFromHand(p,c,slotRect(p,slot));   // oponente / efeito: a carta voa até o campo
-    detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`);
+    detach(pl,c); pl.chars[(slot!=null&&!pl.chars[slot])?slot:freeIdx(pl.chars)]=c; log(`${p?'Oponente invoca':'Você invoca'} ${c.def.name}.`); render();
     if(c.id===4){   // Kuririn - Kienzan: pode destruir uma Ferramenta do oponente
       const tools=chars(1-p).flatMap(x=>x.equips);
       if(tools.length){
@@ -952,10 +964,10 @@ const A = {
     theirs.attacked=false; theirs.direct=false; mine.attacked=false; mine.direct=false;   // quem muda de lado pode atacar (exceto no turno 1)
     log(`Troca de Marionetes: ${mine.def.name} e ${theirs.def.name} trocam de controle.`); render();
   },
-  async field(p, c){ const pl=P(p); if(G.drop!==c.uid) await playFromHand(p,c,{x:FIELD[0],y:FIELD[1],w:FIELD_W,h:FIELD_H}); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); },
-  async support(p, c, slot){ const pl=P(p); const si=(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers); if(G.drop!==c.uid) await playFromHand(p,c,{x:POS[p].powers[si][0],y:POS[p].powers[si][1],w:PW,h:PH}); detach(pl,c); pl.powers[si]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); },
+  async field(p, c){ const pl=P(p); if(G.drop!==c.uid) await playFromHand(p,c,{x:FIELD[0],y:FIELD[1],w:FIELD_W,h:FIELD_H}); for(const x of [0,1]) if(P(x).field) await sendVoid(x,P(x).field); detach(pl,c); pl.field=c; log(`${p?'Oponente ativa':'Você ativa'} ${c.def.name}.`); render(); },
+  async support(p, c, slot){ const pl=P(p); const si=(slot!=null&&!pl.powers[slot])?slot:freeIdx(pl.powers); if(G.drop!==c.uid) await playFromHand(p,c,{x:POS[p].powers[si][0],y:POS[p].powers[si][1],w:PW,h:PH}); detach(pl,c); pl.powers[si]=c; log(`${p?'Oponente coloca':'Você coloca'} ${c.def.name} em campo.`); render(); },
   async bulma(p, c){ const pl=P(p); c.used=true; const r=pl.deck.find(x=>x.id===13); await toHand(p,r); shuffle(pl.deck); log(`${p?'Oponente usa':'Você usa'} a Bulma e busca o Radar do dragão.`); },
-  async tool(p, c, goku){ const pl=P(p); if(pl.hand.includes(c) && G.drop!==c.uid){ const gi=pl.chars.indexOf(goku); if(gi>=0) await playFromHand(p,c,slotRect(p,gi)); } detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); },
+  async tool(p, c, goku){ const pl=P(p); if(pl.hand.includes(c) && G.drop!==c.uid){ const gi=pl.chars.indexOf(goku); if(gi>=0) await playFromHand(p,c,slotRect(p,gi)); } detach(pl,c); c.equipTo=goku; goku.equips.push(c); log(`${p?'Oponente equipa':'Você equipa'} ${c.def.name} em ${goku.def.name.split(' - ')[0]} (+400 ATQ).`); render(); },
   async dmgFx(p, c, n, name){ c.used=true; await activateFx(p,c,true); log(`${name} ${p?'Você recebe':'O oponente recebe'} ${n} de dano.`); await damage(1-p, n); },
   async muhriqa(p, c){ const q=1-p, h=P(q).hand; c.used=true; if(!h.length) return; await activateFx(p,c,true);
     const t=h[Math.floor(RNGF()*h.length)]; await handToPile(q,t,'void'); log(`Maldição da chama! ${p?'Uma carta da sua mão':'Uma carta da mão do oponente'} (${t.def.name}) vai para o vazio.`); },
@@ -1100,7 +1112,7 @@ function handSlot(p, n){                       // onde a n-ésima carta (1..n) f
   const W=190, st=n>1?Math.min(W+12,(930-W)/(n-1)):0, t=(n-1)*st+W;
   return {x:(1080-t)/2+(n-1)*st, y:1674, w:W, h:266};
 }
-function slideCard(a, bx, img, ms, rot, back, faceUp){       // desliza em curva, virando no caminho
+function slideCard(a, bx, img, ms, rot, back, faceUp, linger){       // desliza em curva, virando no caminho (linger: fica até o próximo desenho)
   return new Promise(res=>{
     const d=el('div','fly'+(faceUp?'':' bk')+(back&&!faceUp?' img':'')); if(faceUp) d.style.backgroundImage=`url("${img}")`; else if(back) d.style.backgroundImage=`url("${back}")`;
     d.style.left=a.x+'px'; d.style.top=a.y+'px'; d.style.width=a.w+'px'; d.style.height=a.h+'px';
@@ -1112,7 +1124,7 @@ function slideCard(a, bx, img, ms, rot, back, faceUp){       // desliza em curva
       d.style.transform=`rotateY(0deg) rotate(${rot}deg)`;
     }));
     if(img && !faceUp) setTimeout(()=>{ d.classList.remove('bk'); d.style.backgroundImage=`url("${img}")`; }, ms*0.42);   // vira no meio do caminho
-    setTimeout(()=>{ d.remove(); res(); }, ms+20);
+    setTimeout(()=>{ if(linger){ res(); requestAnimationFrame(()=>requestAnimationFrame(()=>d.remove())); } else { d.remove(); res(); } }, ms+20);
   });
 }
 function pileRect(p, where){ const s=POS[p][where]; return {x:s[0],y:s[1],w:SW,h:SH}; }
@@ -1146,7 +1158,7 @@ async function handToPile(p, inst, where){        // carta sai da mão (de quem 
 async function playFromHand(p, inst, to){         // a carta voa da mão até o lugar onde vai ser jogada (oponente / efeitos)
   if(window.__NOFX || !P(p).hand.includes(inst)) return;
   const from=handRectOf(p,inst); detach(P(p),inst); render();
-  await slideCard(from, to, mini(inst), 560, 0, backOf(p), p===0);
+  await slideCard(from, to, mini(inst), 560, 0, backOf(p), p===0, true);
   G.settle=inst.uid;                                // cai no lugar sem a animação de "aparecer"
 }
 async function chooseSlot(p, prompt){             // invocação por efeito: escolher em qual espaço vai
@@ -2971,7 +2983,7 @@ async function shopScreen(tab, side){
   const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
   [['cos','✨','Cosméticos'],['cards','🃏','Cartas']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   dock.appendChild(tabs); ov.appendChild(dock);
-  const SIDES=SHOPV.tab==='cards'?[['daily','⭐','Cartas do dia'],['all','📚','Todas as cartas']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
+  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','⭐','Cartas do dia']]:[['av','👤','Avatares'],['bk','🂠','Versos']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
   const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
@@ -2993,22 +3005,25 @@ async function shopDaily(mn, ov){
   const tm=el('div','stm','Carregando...'); panel.appendChild(tm);
   if(!SB){ tm.textContent='Sem conexão'; return; }
   try{ const {data}=await SB.rpc('get_shop'); SHOP=data; }catch(e){}
-  if(!SHOP||!SHOP.cards){ tm.textContent='Indisponível'; return; }
-  const end=new Date(SHOP.ends_at).getTime();
-  const tick=()=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4), sc=Math.floor(ms%6e4/1e3);
-    tm.innerHTML=`⏱ ${String(h).padStart(2,'0')} h ${String(m).padStart(2,'0')} m ${String(sc).padStart(2,'0')} s`; if(ms<=0){ clearInterval(ov._t); shopScreen(); } };
+  if(!SHOP||!SHOP.cards){ tm.textContent='Indisponível'; ban.remove(); return; }
+  const top=SHOP.banner&&DEFS[SHOP.banner.id]?SHOP.banner:null, btm=el('div','stm sbtm');
+  if(top){ bannerView(ban, DEFS[top.id], top); ban.appendChild(btm); } else ban.remove();
+  const ends=[[tm,new Date(SHOP.ends_at).getTime()],[btm,new Date(SHOP.banner_ends_at||SHOP.ends_at).getTime()]];
+  const tick=()=>{ let reload=false; ends.forEach(([e,end])=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4), sc=Math.floor(ms%6e4/1e3);
+      e.innerHTML=`⏱ ${String(h).padStart(2,'0')} h ${String(m).padStart(2,'0')} m ${String(sc).padStart(2,'0')} s`; e.classList.toggle('late', ms<36e5); if(ms<=0) reload=true; });
+    if(reload){ clearInterval(ov._t); shopScreen(); } };
   tick(); ov._t=setInterval(tick,1000);
   const g=el('div','sdaily'); panel.appendChild(g);
-  const cs=SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars);
-  const top=cs.find(c=>c.stars===5);
-  if(top) bannerView(ban, DEFS[top.id], top); else ban.remove();
-  cs.filter(c=>c!==top).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false))));
+  SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false))));
 }
 let BNC={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
 fetch(vq('banners.json'),{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{ BNC=j||{}; }).catch(()=>{});
-const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84}};
+const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:40,y:62,s:11},stars:{x:40,y:80,s:9},fade:55};
 function bannerView(ban, d, c){
-  const cf=BNC[d.id]||BN_DEF, bg=cf.bg||BN_DEF.bg, cd=cf.card||BN_DEF.card;
+  const cf=BNC[d.id]||{}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
+  ban.appendChild(el('div','bfade')).style.height=fd+'%';
+  const n=el('div','bname',esc(d.name)); n.style.cssText=`left:${nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
+  const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`left:${sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq('Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;
   const t=shopTile(d, golds(c.gold), ()=>buyCard(d,c,false)); t.classList.add('bcard');
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
