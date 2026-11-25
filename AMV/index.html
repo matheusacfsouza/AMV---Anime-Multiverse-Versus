@@ -321,6 +321,9 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bev.off{filter:saturate(.35) brightness(.75)}.bev:active{transform:scale(.97)}
 .bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
 .bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
+.bev .evm.pve,.bev .evm.pvp{font-size:28px;padding:6px 22px;border-radius:22px}
+.bev .evm.pve{background:linear-gradient(180deg,#5dff8f,#16a34a 55%,#0b6b2e);box-shadow:0 5px 0 #064d20,0 8px 14px #000a,inset 0 3px 0 #ffffff60;text-shadow:0 2px 0 #0007}
+.bev .evm.pvp{background:linear-gradient(180deg,#ff6b7d,#d4001f 55%,#7c0013);box-shadow:0 5px 0 #5c000e,0 8px 14px #000a,inset 0 3px 0 #ffffff60;text-shadow:0 2px 0 #0007}
 .bev .evm{position:absolute;right:3%;top:8%;z-index:3;border:3px solid #fff;border-radius:18px;padding:3px 14px;font-size:24px;font-weight:900;background:#0008}
 .bev .evs{position:absolute;right:3%;top:8%;z-index:3;font-size:24px;color:#fff;background:#0d1020e6;border:2px solid #ffffffb0;border-radius:20px;padding:4px 14px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bev .evc{position:absolute;right:3%;bottom:8%;z-index:3;background:#000c;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:28px;font-weight:900}
@@ -877,7 +880,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-015553';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-020330';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3434,7 +3437,7 @@ function eventBanner(e, ends){
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   v.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
-  v.appendChild(el('div','evm',e.modo==='pvp'?'Evento PvP':'Evento PvE'));
+  v.appendChild(el('div','evm '+(e.modo==='pvp'?'pvp':'pve'),e.modo==='pvp'?'Evento PvP':'Evento PvE'));   // PvE verde · PvP vermelho
   v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
   v.onclick=()=>eventOpen(e); return wrap;
 }
