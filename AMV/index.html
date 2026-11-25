@@ -292,7 +292,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .spackw{margin-top:40px}.spack{margin-top:0;border-color:#b98cff}.spack .pcards{position:absolute;display:flex;gap:1.5cqh;z-index:2}
 .spack .pc{height:100%;aspect-ratio:5/7;background:center/100% 100%;border-radius:1.2cqh;box-shadow:0 0 18px #b98cff88,0 8px 18px #000c;animation:bcFloat 3.2s ease-in-out infinite}
 .spack .pc:nth-child(2){animation-delay:-.6s}.spack .pc:nth-child(3){animation-delay:-1.2s}.spack .pc:nth-child(4){animation-delay:-1.8s}.spack .pc:nth-child(5){animation-delay:-2.4s}
-.spack .ppr{position:absolute;right:3%;bottom:6%;z-index:3;display:flex;gap:10px;align-items:center;background:#000b;border:3px solid #fff;border-radius:30px;padding:6px 18px;font-size:30px;font-weight:900}
+.sbanner .bcard .spb:empty{display:none}
+.sbanner .ppr,.spack .ppr{position:absolute;left:3%;right:auto;bottom:6%;z-index:3;display:flex;gap:10px;align-items:center;background:#000b;border:3px solid #fff;border-radius:30px;padding:6px 18px;font-size:30px;font-weight:900}
 .spack .ptag{position:absolute;left:3%;top:6%;z-index:3;background:#7b5cff;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:24px;font-weight:900}
 .pkrow{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;max-width:950px}.pkrow .pc{position:relative;width:150px;aspect-ratio:5/7;background:center/100% 100%;border-radius:10px;box-shadow:0 6px 16px #000a;cursor:pointer;overflow:visible}
 .pkrow .pc.sel{box-shadow:0 0 0 5px #3db6ff,0 0 28px 8px #3db6ffcc;transform:translateY(-6px)}
@@ -319,6 +320,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bev.pve{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#18b38a,#0b5a47)}
 .bev.pvp{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#7b6cf0,#352b8f)}
 .bev.off{filter:saturate(.35) brightness(.75)}.bev:active{transform:scale(.97)}
+.bev .bstars{position:absolute;display:flex;gap:.6cqh;pointer-events:none;z-index:2}.bev .bstars img{height:100%;filter:drop-shadow(0 2px 4px #000);animation:bsPulse 1.8s ease-in-out infinite}
+.spack .bstars{z-index:2}
 .bgsl{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .9s ease;background-repeat:no-repeat;pointer-events:none}.bev .ev2{font-weight:800}
 .bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
 .bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
@@ -889,7 +892,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-143933';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-163910';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3165,12 +3168,16 @@ const tLeft=ms=>{ ms=Math.max(0,ms); const d=Math.floor(ms/864e5), h=Math.floor(
 function periodRow(host, tag, endMs, icon){            // contador + tarja em cima do banner (o mesmo do 5 estrelas)
   const r=el('div','strow'); let t=null; if(endMs){ t=el('div','stm'); r.appendChild(t); } r.appendChild(el('div','stag',tag)); host.appendChild(r);
   const paint=()=>{ if(!t) return; const ms=endMs-Date.now(); t.innerHTML=`${icon||'⏱'} ${tLeft(ms)}`; t.classList.toggle('late',ms<36e5); }; paint(); return paint; }
+function starsOn(host, sr){                           // estrelas escolhidas no Arsenal (packs e eventos)
+  if(!sr||!(sr.n>0)) return; const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(Math.min(5,sr.n))); st.style.cssText=`right:${100-(sr.x??96)}%;top:${sr.y??80}%;height:${sr.s??8}cqh`; host.appendChild(st); }
 function bgSlides(elm, bg, folder){                  // fundo com várias artes: troca a cada X segundos com fade
   const fs=(bg.files||[]).filter(Boolean); if(fs.length<2) return; const url=f=>vq(f.includes('/')?f:folder+'/'+f);
   const lay=el('div','bgsl'); lay.style.backgroundSize=bg.size+'%'; lay.style.backgroundPosition=`${bg.x}% ${bg.y}%`; elm.insertBefore(lay, elm.firstChild);
   let i=0; const ms=Math.max(2,+bg.every||4)*1000; fs.forEach(f=>{ const im=new Image(); im.src=url(f); });
-  const t=setInterval(()=>{ if(!elm.isConnected){ clearInterval(t); return; } i=(i+1)%fs.length; lay.style.backgroundImage=`url("${url(fs[i])}")`; lay.style.opacity='1';
-    setTimeout(()=>{ elm.style.backgroundImage=`url("${url(fs[i])}")`; lay.style.transition='none'; lay.style.opacity='0'; void lay.offsetWidth; lay.style.transition=''; }, 900); }, ms); }
+  const P=f=>(bg.pos&&bg.pos[f])||bg, put=(x,f)=>{ const q=P(f); x.style.backgroundSize=q.size+'%'; x.style.backgroundPosition=`${q.x}% ${q.y}%`; };   // alinhamento de cada arte
+  put(elm, fs[0]);
+  const t=setInterval(()=>{ if(!elm.isConnected){ clearInterval(t); return; } i=(i+1)%fs.length; lay.style.backgroundImage=`url("${url(fs[i])}")`; put(lay, fs[i]); lay.style.opacity='1';
+    setTimeout(()=>{ elm.style.backgroundImage=`url("${url(fs[i])}")`; put(elm, fs[i]); lay.style.transition='none'; lay.style.opacity='0'; void lay.offsetWidth; lay.style.transition=''; }, 900); }, ms); }
 function packView(pk, ends){                                 // banner de pack especial (3 a 5 cartas, compra o pack inteiro)
   const ids=(pk.cartas||[]).map(Number).filter(id=>DEFS[id]); if(!ids.length) return null;
   const b=pk.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:97,y:40,s:10,...(b.name||{})}, cd={x:3,y:12,h:66,...(b.cards||{})}, fd=b.fade!=null?b.fade:55;
@@ -3179,6 +3186,7 @@ function packView(pk, ends){                                 // banner de pack e
   else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
   ban.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(ban,bg,'Banners/Packs');
   const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>row.appendChild(packCard(id))); ban.appendChild(row);
+  starsOn(ban, b.stars);
   const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const end=pk.quando==='aleatorio'?new Date(pk.ends_at||SHOP.banner_ends_at).getTime():(pk.fim?new Date(pk.fim+'-03:00').getTime():0);
   const t=periodRow(w,`Pack · ${ids.length} cartas`,end); if(end&&ends) ends.push([null,end,t]);
@@ -3222,10 +3230,11 @@ function bannerView(ban, d, c){
   const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; bgSlides(ban,bg,'Banners');   // fundo: arte do banner ou outra arte escolhida no Arsenal
-  const buy=()=>buyCard(d,c,false,true);
+  const buy=()=>buyCard(d,{...c,cry:cf.cristais|0},false,true);
   const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; ban.appendChild(a);
   ban.onclick=buy; ban.style.cursor='pointer';   // tocar em qualquer lugar do banner abre a compra
-  const t=shopTile(d, golds(c.gold), buy); t.classList.add('bcard'); t.onclick=null;
+  const cry=cf.cristais|0; ban.appendChild(el('div','ppr',golds(c.gold)+(cry?crys(cry):'')));   // preço do banner (cristais só se marcado no Arsenal)
+  const t=shopTile(d, '', buy); t.classList.add('bcard'); t.onclick=null;
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
 const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'cat'};   // Todas as cartas: Personagens, Poderes, Campo, Apoiador, Ferramenta, Item
@@ -3304,7 +3313,7 @@ function buyCard(d, c, full, bundle){
     if(!COLL) COLL={}; COLL[d.id]=data.qty; if(data.avatar && COS && !COS.avatars.includes(d.id)) COS.avatars.push(d.id); ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     closeModal(); vib([30,40,60]); toast(data.avatar?`${d.name} e o avatar são seus!`:`${d.name} foi para a sua coleção!`); accChip(); shopOwned(d.id); spendFx(cur, price, ()=>sfx('heal')); };
   if(full){ row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold'))); row.appendChild(btn(crys(PRICE.crynormal[st]),'sbuy',go('cry'))); }
-  else row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold')));   // cartas da promoção: só ouro
+  else { row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold'))); if(bundle&&c.cry>0) row.appendChild(btn(crys(c.cry),'sbuy',go('cry'))); }   // promoção: só ouro (o 5 estrelas pode ter cristais)
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 function bigCardView(d){                           // carta grande do tamanho da Loja; tocar de novo fecha
@@ -3458,6 +3467,7 @@ function eventBanner(e, ends){
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   v.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(v,bg,'Banners/Eventos');
   const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
+  starsOn(v, b.stars);
   const t2=b.text2; if(t2&&t2.t){ const x=el('div','evn ev2',esc(t2.t)); x.style.cssText=`right:${100-(t2.x??96)}%;top:${t2.y??55}%;font-size:${t2.s??8}cqh`; v.appendChild(x); }   // segundo texto do banner
   v.appendChild(el('div','evm '+(e.modo==='pvp'?'pvp':'pve'),e.modo==='pvp'?'Evento PvP':'Evento PvE'));   // PvE verde · PvP vermelho
   v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
