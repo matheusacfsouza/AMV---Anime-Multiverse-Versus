@@ -78,7 +78,7 @@
    "bg": {
     "size": 130,
     "x": 0,
-    "y": 49.7
+    "y": 44.9
    },
    "card": {
     "x": 6,
@@ -177,34 +177,34 @@
  },
  "packs": [
   {
-   "id": "pk1795576716305",
+   "id": "pk1795578277127",
    "nome": "Velha Guarda",
    "cartas": [
+    21,
     40,
-    34,
-    21
+    34
    ],
    "ouro": 10000,
-   "cristais": 20,
-   "quando": "fixo",
+   "cristais": 50,
+   "quando": "aleatorio",
    "inicio": "",
    "fim": "",
    "banner": {
     "bg": {
-     "size": 100,
+     "size": 155,
      "x": 0,
-     "y": 71.4,
-     "file": ""
+     "y": 12.8,
+     "file": "Banners/Fundos/Zé do Trovão - Velha Guarda.jpg"
     },
     "name": {
-     "x": 42.6,
-     "y": 82,
-     "s": 12
+     "x": 45.5,
+     "y": 80.8,
+     "s": 13
     },
     "cards": {
-     "x": 11.6,
-     "y": 8.6,
-     "h": 70
+     "x": 2.7,
+     "y": 26.8,
+     "h": 50
     },
     "fade": 55
    }
@@ -267,10 +267,47 @@
    ],
    "quando": "semanal",
    "dias": [
-    2
+    3
    ],
-   "de": "22:40",
-   "ate": "10:00",
+   "de": "00:00",
+   "ate": "23:00",
+   "loot": {
+    "31": 65.934,
+    "32": 15.385,
+    "33": 1.6,
+    "34": 1.6,
+    "35": 0.1,
+    "36": 15.385
+   },
+   "banner": {
+    "bg": {
+     "size": 100,
+     "x": 100,
+     "y": 45.9,
+     "file": "Banners/Fundos/Shifu Ma Mei.jpg"
+    },
+    "name": {
+     "x": 47.8,
+     "y": 78.9,
+     "s": 16
+    },
+    "fade": 55
+   }
+  },
+  {
+   "id": "ev1795579059812",
+   "nome": "Família Ma Mei",
+   "modo": "pvp",
+   "quando": "semanal",
+   "inicio": "",
+   "fim": "",
+   "restricao": {
+    "elementos": [
+     "agua"
+    ],
+    "arquetipos": []
+   },
+   "maquina": [],
    "loot": {
     "31": 65.934,
     "32": 15.385,
@@ -283,16 +320,21 @@
     "bg": {
      "size": 100,
      "x": 100,
-     "y": 40.2,
-     "file": ""
+     "y": 45.7,
+     "file": "Banners/Fundos/Taishizu Ma Mei.jpg"
     },
     "name": {
-     "x": 48.3,
-     "y": 78.1,
+     "x": 47.8,
+     "y": 78.9,
      "s": 16
     },
     "fade": 55
-   }
+   },
+   "dias": [
+    3
+   ],
+   "de": "00:00",
+   "ate": "23:00"
   }
  ],
  "loot": {
