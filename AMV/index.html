@@ -321,7 +321,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
 .bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
 .bev .evm{position:absolute;left:3%;top:8%;z-index:3;border:3px solid #fff;border-radius:18px;padding:3px 14px;font-size:24px;font-weight:900;background:#0008}
-.bev .evs{position:absolute;left:3%;bottom:9%;z-index:3;font-size:24px;color:#fff;text-shadow:0 2px 4px #000;max-width:62%}
+.bev .evs{position:absolute;right:3%;top:8%;z-index:3;font-size:24px;color:#fff;background:#0d1020e6;border:2px solid #ffffffb0;border-radius:20px;padding:4px 14px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bev .evc{position:absolute;right:3%;bottom:8%;z-index:3;background:#000c;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:28px;font-weight:900}
 .bev .evc.full{background:#2ee66b;color:#062;border-color:#fff}
 .bempty{font-size:28px;color:#8f9ab0;text-align:center;padding:30px}
@@ -346,7 +346,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .ssub{display:flex;gap:14px;padding:16px 20px 6px;justify-content:center}
 .ssub .ssb{flex:1;flex-direction:row;justify-content:center;gap:10px;padding:16px 10px;border-radius:40px;background:#1b2240;border:0;font-size:30px;font-weight:800}
 .ssub .ssb span{font-size:40px}
-.ssub .ssb .d50{font-style:normal;font-size:24px;line-height:1.1;text-align:left}.ssub .ssb:has(.d50),.ssub .ssb.on:has(.d50){background:linear-gradient(90deg,#ff5468,#d4001f 70%,#a3001a)!important;color:#fff;box-shadow:inset 0 3px 0 #ffffff40}
+.ssub .ssb .d50{font-style:normal;font-size:26px;line-height:1.1;text-align:center;flex:1}.ssub .ssb span:empty{display:none}.ssub .ssb:has(.d50),.ssub .ssb.on:has(.d50){background:linear-gradient(90deg,#ff5468,#d4001f 70%,#a3001a)!important;color:#fff;box-shadow:inset 0 3px 0 #ffffff40}
 .ssub .ssb.on:has(.d50){box-shadow:0 0 0 4px #fff,0 0 22px #ff2a4488}.ssub .ssb.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
 .sdock .stabs{border:0;padding:4px 0 10px}
 .sdock .stab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:28px;font-style:normal;padding:10px 0}.sdock .stab span{font-size:52px;line-height:1}
@@ -877,7 +877,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-011748';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-014033';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3107,7 +3107,7 @@ async function shopScreen(tab, side){
   const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
   [['cos','✨','Cosméticos'],['cards','🃏','Cartas']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   dock.appendChild(tabs); ov.appendChild(dock);
-  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','<i class="off50">50%</i>','<em class="d50">Cartas com até 50% de desconto</em>']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
+  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','','<em class="d50">Cartas com até 50% de desconto</em>']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
   const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
@@ -3194,8 +3194,9 @@ function bannerView(ban, d, c){
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;   // fundo: arte do banner ou outra arte escolhida no Arsenal
   const buy=()=>buyCard(d,c,false,true);
-  const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; a.onclick=buy; ban.appendChild(a);
-  const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard');
+  const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; ban.appendChild(a);
+  ban.onclick=buy; ban.style.cursor='pointer';   // tocar em qualquer lugar do banner abre a compra
+  const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard'); t.onclick=null;
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
 const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'cat'};   // Todas as cartas: Personagens, Poderes, Campo, Apoiador, Ferramenta, Item
