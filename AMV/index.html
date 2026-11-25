@@ -597,7 +597,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .flycry svg{width:100%;height:100%}
 .crybox.bump{animation:bump .35s cubic-bezier(.34,1.9,.5,1)}
 .cryhud,.coinhud{z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 0 30px #5fd4ff88}.cryhud.on,.coinhud.on{opacity:1}
-.coinhud.k-gold{left:50%!important;top:44px!important}.coinhud.k-cry{left:50%!important;top:136px!important}
+.ssb span:has(.off50){filter:none}.ssb .off50{display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:22px;letter-spacing:-1px;line-height:1;background:radial-gradient(circle at 35% 30%,#ff5a6e,#e8112d 60%,#a50a1f);color:#fff;border:4px solid #fff;border-radius:50%;width:70px;height:70px;margin:-14px 2px -14px 0;transform:rotate(-14deg);box-shadow:0 3px 8px #000a;margin-right:4px;flex:none}
+.coinhud.k-gold,.coinhud.k-cry{left:auto!important;right:30px;transform:none!important}.coinhud.k-gold{top:40px!important}.coinhud.k-cry{top:134px!important}
 @keyframes bump{50%{transform:translateX(-50%) scale(1.25)}}
 .dtabs{display:flex;gap:12px;overflow-x:auto;width:100%;padding:4px 4px 14px;box-sizing:border-box;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .dtabs::-webkit-scrollbar{display:none}
@@ -817,7 +818,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-212646';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-214121';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2748,7 +2749,9 @@ let COLL=null;
 const owned=id=> (ACC.user && COLL) ? (COLL[id]|0) : (DEFAULT_DECK[id]|0);
 async function loadCosmetics(){ COS={avatars:[],backs:[]}; if(!SB||!ACC.user) return; try{ const {data}=await SB.rpc('my_cosmetics'); if(data) COS={avatars:(data.avatars||[]).map(Number),backs:data.backs||[]}; }catch(e){} }
 const ownAvatar=id=> AVATARS.includes(id) || COS.avatars.includes(id) || (ACC.profile&&ACC.profile.avatar===id);
-const AV_PRICE={gold:1000,cry:10}, BK_PRICE={gold:2000,cry:20};
+const AV_GOLD=[0,200,500,1000,2000,5000], AV_CRY=[0,2,5,10,20,50];   // avatar custa conforme as estrelas da carta
+const avPrice=id=>{ const st=STARS[id]||1; return {gold:AV_GOLD[st], cry:AV_CRY[st]}; };
+const BK_PRICE={gold:2000,cry:20};
 async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){} }
 const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], crynormal:[0,2,8,15,30,75], dust:[0,10,50,100,200,500]};
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
@@ -3012,7 +3015,7 @@ async function shopScreen(tab, side){
   const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
   [['cos','✨','Cosméticos'],['cards','🃏','Cartas']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   dock.appendChild(tabs); ov.appendChild(dock);
-  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','⭐','Cartas do dia']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
+  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','<i class="off50">50%</i>','Cartas do dia']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
   const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
@@ -3073,16 +3076,16 @@ function shopAll(mn){
   list.forEach(d=>{ const st=STARS[d.id]||1; g.appendChild(shopTile(d, golds(PRICE.normal[st])+crys(PRICE.crynormal[st]), ()=>buyCard(d,{stars:st,normal:PRICE.normal[st]},true))); });
 }
 function shopAvatars(mn){
-  mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>${AV_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${AV_PRICE.cry} Cristais AMV cada.</small>`));
+  mn.appendChild(el('div','shoptm',`<b>Avatares</b><br><small>O preço depende das estrelas da carta: de 200 a 5.000 de Ouro.</small>`));
   const g=el('div','sgav'); mn.appendChild(g);
   const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && (avOn(id)||(ACC.profile&&ACC.profile.avatar===id))).sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
   ids.forEach(id=>{ const own=ownAvatar(id), using=ACC.profile&&ACC.profile.avatar===id;
     const t=el('div','savt'+(own?' own':'')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
-    t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(AV_PRICE.gold))));
+    t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(avPrice(id).gold)+crys(avPrice(id).cry))));
     t.onclick=async()=>{ if(!ACC.user){ toast('Entre na sua conta.'); return; }
       if(using) return;
       if(own){ await saveProfile({avatar:id}); accChip(); shopRedraw(); return; }
-      buyCos('avatar', String(id), DEFS[id].name.split(' - ')[0], ()=>{ const b=el('div','bigav'); b.appendChild(avatarEl(id)); return b; }, AV_PRICE); };
+      buyCos('avatar', String(id), DEFS[id].name.split(' - ')[0], ()=>{ const b=el('div','bigav'); b.appendChild(avatarEl(id)); return b; }, avPrice(id)); };
     g.appendChild(t); });
 }
 function shopBacks(mn){
