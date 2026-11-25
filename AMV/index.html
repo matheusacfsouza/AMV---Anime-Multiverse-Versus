@@ -289,7 +289,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .stile.holo .im::after,.savt.holo .av::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite;pointer-events:none}
 .savt.holo .av{position:relative;overflow:hidden}
 .stile.own .im,.savt.own .av{filter:saturate(.15)}.sbanner .bcard.own .im::after{display:none}
-.spack{margin-top:40px;border-color:#b98cff}.spack .pcards{position:absolute;display:flex;gap:1.5cqh;z-index:2}
+.spackw{margin-top:40px}.spack{margin-top:0;border-color:#b98cff}.spack .pcards{position:absolute;display:flex;gap:1.5cqh;z-index:2}
 .spack .pc{height:100%;aspect-ratio:5/7;background:center/100% 100%;border-radius:1.2cqh;box-shadow:0 0 18px #b98cff88,0 8px 18px #000c;animation:bcFloat 3.2s ease-in-out infinite}
 .spack .pc:nth-child(2){animation-delay:-.6s}.spack .pc:nth-child(3){animation-delay:-1.2s}.spack .pc:nth-child(4){animation-delay:-1.8s}.spack .pc:nth-child(5){animation-delay:-2.4s}
 .spack .ppr{position:absolute;right:3%;bottom:6%;z-index:3;display:flex;gap:10px;align-items:center;background:#000b;border:3px solid #fff;border-radius:30px;padding:6px 18px;font-size:30px;font-weight:900}
@@ -313,14 +313,15 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bsub{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:auto}.bsub button{font:inherit;font-size:28px;font-weight:800;color:#fff;border:3px solid #ffffffb0;border-radius:22px;padding:16px 6px;background:#ffffff1f;cursor:pointer}
 .bsub button em{display:block;font-style:normal;font-size:20px;color:#ffd84d}
 .blbl{width:1000px;font-size:34px;font-weight:900;margin:34px 0 14px;display:flex;align-items:center;gap:12px}
-.bevs{width:1000px;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding:4px 0 20px;-webkit-overflow-scrolling:touch}
+.bevw{position:relative;flex:none;margin-top:30px}.bevw .strow{left:24px}
+.bevs{width:1000px;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding:8px 0 20px;margin-top:20px;-webkit-overflow-scrolling:touch}
 .bev{position:relative;flex:none;width:100%;aspect-ratio:2.6/1;border-radius:30px;overflow:hidden;border:4px solid #ffffffcc;background:#000 no-repeat;cursor:pointer;container-type:size;box-shadow:0 10px 24px #000a}
 .bev.pve{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#18b38a,#0b5a47)}
 .bev.pvp{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#7b6cf0,#352b8f)}
 .bev.off{filter:saturate(.35) brightness(.75)}.bev:active{transform:scale(.97)}
 .bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
 .bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
-.bev .evm{position:absolute;left:3%;top:8%;z-index:3;border:3px solid #fff;border-radius:18px;padding:3px 14px;font-size:24px;font-weight:900;background:#0008}
+.bev .evm{position:absolute;right:3%;top:8%;z-index:3;border:3px solid #fff;border-radius:18px;padding:3px 14px;font-size:24px;font-weight:900;background:#0008}
 .bev .evs{position:absolute;right:3%;top:8%;z-index:3;font-size:24px;color:#fff;background:#0d1020e6;border:2px solid #ffffffb0;border-radius:20px;padding:4px 14px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bev .evc{position:absolute;right:3%;bottom:8%;z-index:3;background:#000c;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:28px;font-weight:900}
 .bev .evc.full{background:#2ee66b;color:#062;border-color:#fff}
@@ -566,7 +567,6 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .socials{display:flex;gap:24px;justify-content:center}.soc{display:flex;padding:8px;border-radius:24px;line-height:0}.soc:active{transform:scale(.9)}
 .cfgfoot{display:flex;justify-content:space-between;align-items:center;gap:20px;width:100%;margin-top:20px}
 .swrap{position:relative;margin-top:40px}.swrap .sbanner{margin-top:0}
-.swrap .strow{left:auto;right:20px;flex-direction:row-reverse}
 .strow{position:absolute;left:20px;top:0;transform:translateY(-50%);display:flex;align-items:center;gap:12px;z-index:4}
 .strow .stm{position:static!important;margin:0}
 .stag{background:#0d1020e6;border:2px solid #3d4a7a;border-radius:30px;padding:8px 20px;font-size:26px;color:#cfd6e0;white-space:nowrap}
@@ -877,7 +877,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-014033';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-015553';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3135,26 +3135,31 @@ async function shopDaily(mn, ov){
   const btm=top?timer(bw,'Muda às 9h e 21h'):el('div');
   if(top) bannerView(ban, DEFS[top.id], top); else bw.remove();
   const ends=[[tm,new Date(SHOP.ends_at).getTime()],[btm,new Date(SHOP.banner_ends_at||SHOP.ends_at).getTime()]];
-  const tick=()=>{ let reload=false; ends.forEach(([e,end])=>{ const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4), sc=Math.floor(ms%6e4/1e3);
+  const tick=()=>{ let reload=false; ends.forEach(([e,end,fn])=>{ if(fn){ fn(); if(end-Date.now()<=0) reload=true; return; } const ms=Math.max(0,end-Date.now()), h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4), sc=Math.floor(ms%6e4/1e3);
       e.innerHTML=`⏱ ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`; e.classList.toggle('late', ms<36e5); if(ms<=0) reload=true; });
     if(reload){ clearInterval(ov._t); shopScreen(); } };
   tick(); ov._t=setInterval(tick,1000);
-  (SHOP.packs||[]).forEach(pk=>{ const v=packView(pk); if(v) mn.insertBefore(v, panel); });          // ordem: ULTRA (futuro), 5 estrelas, packs, cartas
+  (SHOP.packs||[]).forEach(pk=>{ const v=packView(pk, ends); if(v) mn.insertBefore(v, panel); });          // ordem: ULTRA (futuro), 5 estrelas, packs, cartas
   for(const st of [4,3,2,1]){ const L=SHOP.cards.filter(c=>DEFS[c.id] && (STARS[c.id]||c.stars)===st); if(!L.length) continue;   // 5 por linha: 4★, 3★, 2★, 1★
     const row=el('div','srow5'); L.slice(0,5).forEach(c=>row.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false)))); panel.appendChild(row); }
 }
-function packView(pk){                                 // banner de pack especial (3 a 5 cartas, compra o pack inteiro)
+const tLeft=ms=>{ ms=Math.max(0,ms); const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4); return d?`${d}d ${String(h).padStart(2,'0')}h`:`${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`; };
+function periodRow(host, tag, endMs, icon){            // contador + tarja em cima do banner (o mesmo do 5 estrelas)
+  const r=el('div','strow'); let t=null; if(endMs){ t=el('div','stm'); r.appendChild(t); } r.appendChild(el('div','stag',tag)); host.appendChild(r);
+  const paint=()=>{ if(!t) return; const ms=endMs-Date.now(); t.innerHTML=`${icon||'⏱'} ${tLeft(ms)}`; t.classList.toggle('late',ms<36e5); }; paint(); return paint; }
+function packView(pk, ends){                                 // banner de pack especial (3 a 5 cartas, compra o pack inteiro)
   const ids=(pk.cartas||[]).map(Number).filter(id=>DEFS[id]); if(!ids.length) return null;
   const b=pk.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:97,y:40,s:10,...(b.name||{})}, cd={x:3,y:12,h:66,...(b.cards||{})}, fd=b.fade!=null?b.fade:55;
-  const ban=el('div','sbanner spack');
+  const w=el('div','swrap spackw'); const ban=el('div','sbanner spack'); w.appendChild(ban);
   if(bg.file){ ban.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
   const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>row.appendChild(packCard(id))); ban.appendChild(row);
   const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
-  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`)); if(pk.quando==='aleatorio') ban.appendChild(el('div','pper','Muda às 9h e 21h'));
+  const end=pk.quando==='aleatorio'?new Date(pk.ends_at||SHOP.banner_ends_at).getTime():(pk.fim?new Date(pk.fim+'-03:00').getTime():0);
+  const t=periodRow(w,`Pack · ${ids.length} cartas`,end); if(end&&ends) ends.push([null,end,t]);
   ban.appendChild(el('div','ppr',(pk.ouro?golds(pk.ouro):'')+(pk.cristais?crys(pk.cristais):'')));
-  ban.onclick=()=>buyPack(pk, ids); return ban;
+  ban.onclick=()=>buyPack(pk, ids); return w;
 }
 function packCard(id){                               // carta do pack: tem = cor apagada + número vermelho · não tem = laminado
   const n=ACC.user?owned(id):0, c=el('div','pc '+(n>0?'own':'holo')); c.dataset.cid=id; const im=el('div','pim'); im.style.backgroundImage=`url("${DEFS[id].mini}")`; c.appendChild(im);
@@ -3409,16 +3414,29 @@ const ruleText=r=>{ const el2=(r&&r.elementos||[]).map(k=>ELEM[k]?ELEM[k].n:k), 
   if(!el2.length && !aq.length) return 'Sem regra: qualquer baralho vale.';
   return 'Personagens permitidos: '+[el2.length?'tipo '+el2.join(' ou '):'', aq.length?'arquétipo '+aq.join(' ou '):''].filter(Boolean).join(' e ')+'.'; };
 const ruleOk=(c,r)=>{ const d=DEFS[c]; if(!d||d.kind!=='char'||!r) return true; if(r.elementos&&r.elementos.length&&!r.elementos.includes(d.el)) return false; if(r.arquetipos&&r.arquetipos.length&&!(d.arq||[]).some(a=>r.arquetipos.includes(a))) return false; return true; };
-function eventBanner(e){
+function evWindow(e){                                // janela atual (ou a próxima) do evento, em ms
+  const SP=-3*36e5, now=Date.now(), L=t=>new Date(t+'-03:00').getTime();
+  if(e.quando==='semanal'){ const mins=s=>{ const [h,m]=String(s||'0:0').split(':').map(Number); return h*60+(m||0); };
+    const de=mins(e.de||'00:00'), at=mins(e.ate||'23:59'), len=(at>de?at-de:1440-de+at)*6e4, dias=e.dias||[];
+    const local=new Date(now+SP), d0=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())-SP, dow=local.getUTCDay(); let best=null;
+    for(let k=-1;k<=7;k++){ const dd=(dow+k+7)%7; if(!dias.includes(dd)) continue; const st=d0+k*864e5+de*6e4, en=st+len;
+      if(now>=st&&now<en) return {on:true,end:en}; if(st>now&&(!best||st<best)) best=st; }
+    return {on:false,start:best}; }
+  const a=e.inicio?L(e.inicio):0, z=e.fim?L(e.fim):0;
+  if(a&&now<a) return {on:false,start:a}; return {on:true,end:z||0}; }
+function evTag(e){ if(e.quando==='semanal'){ const d=(e.dias||[]).map(x=>EV_DIAS[x]).join(', '), all=(e.de==='00:00'&&e.ate==='24:00'); return `Toda ${d||'semana'} · ${all?'dia todo':`${e.de||'00:00'} às ${e.ate||'23:59'}`}`; }
+  const w=evWindow(e), f=t=>new Date(t).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).replace(',',' às');
+  if(!w.on) return 'Começa '+f(w.start); return w.end?'Até '+f(w.end):'Sem data para acabar'; }
+function eventBanner(e, ends){
   const b=e.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:96,y:30,s:16,...(b.name||{})}, fd=b.fade!=null?b.fade:55, full=(e.wins|0)>=10;
-  const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off'));
+  const wrap=el('div','bevw'); const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off')); wrap.appendChild(v);
+  const win=evWindow(e), endMs=win.on?win.end:win.start; const paint=periodRow(wrap, evTag(e), endMs, win.on?'⏱':'⏳'); if(endMs&&ends) ends.push(paint);
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   v.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
-  v.appendChild(el('div','evm',e.modo==='pvp'?'PvP':'PvE'));
-  v.appendChild(el('div','evs',(e.ativo?'🟢 ':'⏳ ')+esc(evWhen(e))));
+  v.appendChild(el('div','evm',e.modo==='pvp'?'Evento PvP':'Evento PvE'));
   v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
-  v.onclick=()=>eventOpen(e); return v;
+  v.onclick=()=>eventOpen(e); return wrap;
 }
 function eventOpen(e){
   sfx('click');
@@ -3443,10 +3461,9 @@ function modesScreen(){
   const bot=el('button','bbox bot slidein','<span class="bi">🤖</span><b>Contra a máquina</b><small>Ganhe XP e Ouro.</small>'); bot.onclick=()=>startFlow(null); top.appendChild(bot);
   const pvp=el('div','bbox pvp slidein','<span class="bi">👥</span><b>Contra jogadores</b>'); pvp.style.setProperty('--d','.08s');
   const sub=el('div','bsub'); [['🎲 Aleatória'],['🔑 Privada']].forEach(([n])=>{ const x=el('button','',`${n}<em>Em breve</em>`); x.onclick=()=>toast(`${n.slice(3)}: em breve!`); sub.appendChild(x); }); pvp.appendChild(sub); top.appendChild(pvp);
-  s.appendChild(el('div','blbl','🎪 Eventos'));
   const L=el('div','bevs'); s.appendChild(L);
   const draw=()=>{ L.replaceChildren(); const list=EVTS.filter(e=>e.modo==='pve'||e.modo==='pvp').sort((a,b)=>(b.ativo?1:0)-(a.ativo?1:0));
-    if(!list.length){ L.appendChild(el('div','bempty','Nenhum evento agora. Volte mais tarde!')); return; } list.forEach(e=>L.appendChild(eventBanner(e))); };
+    if(!list.length){ L.appendChild(el('div','bempty','Nenhum evento agora. Volte mais tarde!')); return; } const ends=[]; list.forEach(e=>L.appendChild(eventBanner(e,ends))); clearInterval(s._t); s._t=setInterval(()=>{ if(!s.isConnected){ clearInterval(s._t); return; } ends.forEach(f=>f()); },1000); };
   L.appendChild(el('div','bempty','Carregando eventos...')); loadEvents().then(()=>{ if(s.isConnected) draw(); });
   const rk=el('button','brank',`<span>🏆</span><div><b>Ranqueada</b><small>${ACC.user&&ACC.profile?`${rankName(ACC.profile.honor)} · ${ACC.profile.honor|0} de honra`:'Suba de patente contra outros jogadores.'}</small></div><i>›</i>`);
   rk.onclick=rankedFlow; s.appendChild(rk);                                               // bem embaixo, perto do dedo
