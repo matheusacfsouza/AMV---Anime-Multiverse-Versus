@@ -864,7 +864,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-000954';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-004111';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3134,12 +3134,12 @@ function packView(pk){                                 // banner de pack especia
   const ids=(pk.cartas||[]).map(Number).filter(id=>DEFS[id]); if(!ids.length) return null;
   const b=pk.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:97,y:40,s:10,...(b.name||{})}, cd={x:3,y:12,h:66,...(b.cards||{})}, fd=b.fade!=null?b.fade:55;
   const ban=el('div','sbanner spack');
-  if(bg.file){ ban.style.backgroundImage=`url("${vq('Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
+  if(bg.file){ ban.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
   const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>{ const c=el('div','pc'); c.style.backgroundImage=`url("${DEFS[id].mini}")`; row.appendChild(c); }); ban.appendChild(row);
   const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
-  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`));
+  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`+(pk.quando==='aleatorio'?' · MUDA ÀS 9H E 21H':'')));
   ban.appendChild(el('div','ppr',(pk.ouro?golds(pk.ouro):'')+(pk.cristais?crys(pk.cristais):'')));
   ban.onclick=()=>buyPack(pk, ids); return ban;
 }
@@ -3170,7 +3170,7 @@ function bannerView(ban, d, c){
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
-  ban.style.backgroundImage=`url("${vq('Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;
+  ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;   // fundo: arte do banner ou outra arte escolhida no Arsenal
   const buy=()=>buyCard(d,c,false,true);
   const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; a.onclick=buy; ban.appendChild(a);
   const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard');
@@ -3389,7 +3389,7 @@ const ruleOk=(c,r)=>{ const d=DEFS[c]; if(!d||d.kind!=='char'||!r) return true; 
 function eventBanner(e){
   const b=e.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:96,y:30,s:16,...(b.name||{})}, fd=b.fade!=null?b.fade:55, full=(e.wins|0)>=10;
   const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off'));
-  if(bg.file){ v.style.backgroundImage=`url("${vq('Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
+  if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   v.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
   v.appendChild(el('div','evm',e.modo==='pvp'?'PvP':'PvE'));
