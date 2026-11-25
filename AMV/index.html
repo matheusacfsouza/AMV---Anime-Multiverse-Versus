@@ -894,7 +894,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-172606';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-191216';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2161,7 +2161,7 @@ function endGame(winner, gaveUp){
     if(gaveUp) box.appendChild(el('div','',`<span style="font-size:40px;color:#bbb">Você desistiu da partida.</span>`));
     if(oppLeft) box.appendChild(el('div','',`<span style="font-size:40px;color:#bbb">${esc(oppName)} ${oppLeft==='desistiu'?'desistiu':'saiu da partida'}.</span>`));
     const rw=el('div','rew'); rw.appendChild(el('div','note','Calculando XP...')); box.appendChild(rw);
-    const row=el('div','row'); const ev0=EVT; const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); if(net) rankedFlow(); else startFlow(ev0&&(ev0.wins|0)<10?ev0:null); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
+    const row=el('div','row'); const ev0=EVT; const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); if(net) rankedFlow(); else startFlow(ev0&&(ev0.wins|0)<evMax(ev0)?ev0:null); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
     showModal(box);
     const rr=await reward; if(net){ if(rr.ok){ showReward(rw, rr); rankBox(rw, rr); } else { rw.innerHTML=''; rw.appendChild(el('div','note','Resultado registrado.')); } netClose(); } else { showReward(rw, rr); if(ev0) eventResult(rw, ev0, won && !gaveUp && rr.ok && !rr.guest); }
   },gaveUp?150:900);
@@ -2169,12 +2169,12 @@ function endGame(winner, gaveUp){
 
 async function eventResult(rw, ev, won){              // vitória de evento: conta até 10 e mostra a carta do loot
   const bx=el('div','ln'); rw.appendChild(bx);
-  if(!won){ bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${ev.wins|0}/10</b>`; return; }
+  if(!won){ bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${ev.wins|0}/${evMax(ev)}</b>`; return; }
   if(!SB||!ACC.user){ bx.innerHTML='<span>Entre na sua conta para contar vitórias de evento.</span>'; return; }
   try{ const {data}=await SB.rpc('event_win',{p_event:ev.id});
-    if(data&&data.ok){ ev.wins=data.wins; bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data.wins}/10</b>`;
+    if(data&&data.ok){ ev.wins=data.wins; bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data.wins}/${evMax(ev)}</b>`;
       if(data.card && DEFS[data.card]){ if(COLL) COLL[data.card]=(COLL[data.card]|0)+1; const c=el('div','ln',`<span>Carta do evento: <b>${esc(DEFS[data.card].name)}</b></span>`); const m=el('div','pc'); m.style.cssText=`width:110px;aspect-ratio:5/7;background:url("${DEFS[data.card].mini}") center/100% 100%;border-radius:8px`; c.appendChild(m); rw.appendChild(c); sfx('heal'); } }
-    else bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data&&data.reason==='limite'?'10/10':data&&data.reason==='fora_do_horario'?'Evento encerrado':'Não contou'}</b>`;
+    else bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data&&data.reason==='limite'?`${evMax(ev)}/${evMax(ev)}`:data&&data.reason==='fora_do_horario'?'Evento encerrado':'Não contou'}</b>`;
   }catch(e){ bx.innerHTML='<span>Sem conexão: a vitória do evento não foi contada.</span>'; }
 }
 function saveStreakBox(rw, r){                      // perdeu a sequência: pode pagar 20 de ouro por vitória para salvar
@@ -3439,7 +3439,8 @@ function goTab(k){
   if(CUR_TAB!=='home'){ try{ history.replaceState({s:k},''); }catch(e){} }
   if(k==='deck') deckScreen(); else if(k==='mis') missionsScreen(); else modesScreen();
 }
-let EVTS=[];                                           // eventos da tela de Batalhas (definidos no Arsenal Visual)
+let EVTS=[];
+const evMax=e=>Math.max(1,(e&&e.max)|0||10);   // vitórias máximas do evento (definidas no Arsenal; padrão 10)                                           // eventos da tela de Batalhas (definidos no Arsenal Visual)
 const EV_DIAS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 function evWhen(e){
   if(e.quando==='semanal'){ const d=(e.dias||[]).map(x=>EV_DIAS[x]).join(', '); return `Toda ${d||'semana'} · ${e.de||'00:00'} às ${e.ate||'23:59'}`; }
@@ -3465,7 +3466,7 @@ function evTag(e){ if(e.quando==='semanal'){ const d=(e.dias||[]).map(x=>EV_DIAS
   const w=evWindow(e), f=t=>new Date(t).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).replace(',',' às');
   if(!w.on) return 'Começa '+f(w.start); return w.end?'Até '+f(w.end):'Sem data para acabar'; }
 function eventBanner(e, ends){
-  const b=e.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:96,y:30,s:16,...(b.name||{})}, fd=b.fade!=null?b.fade:55, full=(e.wins|0)>=10;
+  const b=e.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:96,y:30,s:16,...(b.name||{})}, fd=b.fade!=null?b.fade:55, mx=evMax(e), full=(e.wins|0)>=mx;
   const wrap=el('div','bevw'); const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off')); wrap.appendChild(v);
   const win=evWindow(e), endMs=win.on?win.end:win.start; const paint=periodRow(wrap, evTag(e), endMs, win.on?'⏱':'⏳'); if(endMs&&ends) ends.push(paint);
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
@@ -3474,16 +3475,16 @@ function eventBanner(e, ends){
   starsOn(v, b.stars);
   const t2=b.text2; if(t2&&t2.t){ const x=el('div','evn ev2',esc(t2.t)); x.style.cssText=`${alCss(t2,96)};top:${t2.y??55}%;font-size:${t2.s??8}cqh`; v.appendChild(x); }   // segundo texto do banner
   v.appendChild(el('div','evm '+(e.modo==='pvp'?'pvp':'pve'),e.modo==='pvp'?'Evento PvP':'Evento PvE'));   // PvE verde · PvP vermelho
-  v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
+  v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(mx,e.wins|0)}/${mx}`));                   // vitórias máximas do evento
   v.onclick=()=>eventOpen(e); return wrap;
 }
 function eventOpen(e){
   sfx('click');
   if(e.modo==='pvp'){ toast('Eventos PvP: em breve!'); return; }
   if(!e.ativo){ toast(`${e.nome}: ${evWhen(e)}.`); return; }
-  if((e.wins|0)>=10){ toast('Você já ganhou este evento 10 vezes.'); return; }
+  if((e.wins|0)>=evMax(e)){ toast(`Você já ganhou este evento ${evMax(e)} vezes.`); return; }
   const box=el('div','mbox evbox'); box.appendChild(el('div','xres',`<b>${esc(e.nome||'Evento')}</b>`));
-  box.appendChild(el('div','evwins',`Vitórias: ${e.wins|0}/10`));
+  box.appendChild(el('div','evwins',`Vitórias: ${e.wins|0}/${evMax(e)}`));
   box.appendChild(el('div','evrule',esc(ruleText(e.restricao))+'<br>Cada vitória dá uma carta do loot do evento.'));
   const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
   row.appendChild(btn('Jogar','breathe',()=>{ const dk=loadDeck(), bad=Object.keys(dk).filter(id=>(dk[id]|0)>0 && !ruleOk(+id,e.restricao));
