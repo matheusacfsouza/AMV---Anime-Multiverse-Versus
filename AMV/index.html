@@ -409,6 +409,12 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .form .err{color:#ff8a7a;font-size:32px;min-height:40px;text-align:center}
 .form .ok{color:#2ee66b;font-size:34px;text-align:center}
 .form .lbl{align-self:flex-start;margin-left:30px;font-size:32px;color:#bbb}
+.stpick h2{margin:0;font-size:52px}.stpick .note{font-size:28px;max-width:900px;text-align:center;color:#cfd6e0}.stlist{display:flex;flex-direction:column;gap:18px;width:920px;max-height:1100px;overflow-y:auto}
+.stdeck{display:flex;gap:22px;align-items:center;padding:18px 22px;border-radius:28px;background:#ffffff12;border:4px solid transparent;cursor:pointer}
+.stdeck.on{border-color:#ffd84d;background:#ffd84d22;box-shadow:0 0 30px #ffd84d55}
+.stav .av{width:150px;height:150px;border-radius:50%;border:5px solid #fff}.stinfo{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stinfo b{font-size:40px}.stinfo small{font-size:28px;color:#cfd6e0}.ststrip{display:flex;gap:8px;margin-top:6px}
+.stm2{width:72px;height:101px;border-radius:6px;background:center/100% 100%;box-shadow:0 3px 8px #000a}
 .avgrid{display:grid;grid-template-columns:repeat(4,170px);gap:22px}
 .avgrid .av{width:170px;height:170px;cursor:pointer;border-color:#555}
 .avgrid .av.sel{border-color:#ffd84d;box-shadow:0 0 24px #ffd84d}
@@ -818,7 +824,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-214121';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-215355';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2749,10 +2755,32 @@ let COLL=null;
 const owned=id=> (ACC.user && COLL) ? (COLL[id]|0) : (DEFAULT_DECK[id]|0);
 async function loadCosmetics(){ COS={avatars:[],backs:[]}; if(!SB||!ACC.user) return; try{ const {data}=await SB.rpc('my_cosmetics'); if(data) COS={avatars:(data.avatars||[]).map(Number),backs:data.backs||[]}; }catch(e){} }
 const ownAvatar=id=> AVATARS.includes(id) || COS.avatars.includes(id) || (ACC.profile&&ACC.profile.avatar===id);
-const AV_GOLD=[0,200,500,1000,2000,5000], AV_CRY=[0,2,5,10,20,50];   // avatar custa conforme as estrelas da carta
-const avPrice=id=>{ const st=STARS[id]||1; return {gold:AV_GOLD[st], cry:AV_CRY[st]}; };
+const AV_GOLD=[0,200,500,1000,2000,5000];   // avatar custa conforme as estrelas da carta
+const avPrice=id=>{ const st=STARS[id]||1; return {gold:AV_GOLD[st]}; };   // avatares só com ouro
 const BK_PRICE={gold:2000,cry:20};
-async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){} }
+async function loadCollection(){ if(!SB||!ACC.user) { COLL=null; return; } try{ const {data}=await SB.rpc('my_collection'); if(data && typeof data==='object'){ COLL={}; for(const k in data) COLL[+k]=data[k]|0; } }catch(e){}
+  if(ACC.profile && ACC.profile.nickname) checkStarter(); }
+async function checkStarter(){                       // conta nova escolhe 1 dos baralhos iniciais (definidos no Arsenal Visual)
+  if(!SB||!ACC.user||document.querySelector('.stpick')) return;
+  let data=null; try{ ({data}=await SB.rpc('get_starter')); }catch(e){ return; }
+  if(!data || data.given || !Array.isArray(data.baralhos) || !data.baralhos.length) return;
+  const box=el('div','mbox stpick'); box.appendChild(el('h2','','Escolha seu primeiro baralho'));
+  box.appendChild(el('div','note','As cartas do baralho escolhido vão para a sua coleção. Você pode trocar as cartas depois, em Baralhos.'));
+  let sel=-1; const list=el('div','stlist'); box.appendChild(list);
+  const ok=btn('Escolher este baralho','',async()=>{ if(sel<0) return; ok.disabled=true;
+    const {data:r,error}=await SB.rpc('choose_starter',{p_idx:sel});
+    if(error||!r||!r.ok){ ok.disabled=false; toast(r&&r.reason==='ja_escolheu'?'Você já escolheu seu baralho.':'Não foi possível escolher agora.'); if(r&&r.reason==='ja_escolheu') closeModal(); return; }
+    const deck={}; for(const k in r.cartas) if(DEFS[k]) deck[k]=r.cartas[k]|0; saveDeck(deck);
+    closeModal(); await loadCollection(); vib([30,40,60]); sfx('heal'); toast(`${data.baralhos[sel].nome||'Baralho'} é seu!`); accChip(); });
+  ok.disabled=true;
+  data.baralhos.forEach((dk,i)=>{ const it=el('div','stdeck'); const av=el('div','stav'); if(DEFS[dk.avatar]) av.appendChild(avatarEl(dk.avatar)); it.appendChild(av);
+    const n=Object.values(dk.cartas||{}).reduce((a,b)=>a+(b|0),0); const info=el('div','stinfo',`<b>${esc(dk.nome||('Baralho '+(i+1)))}</b><small>${n} cartas</small>`);
+    const strip=el('div','ststrip'); Object.keys(dk.cartas||{}).filter(k=>DEFS[k]).sort((a,b)=>(STARS[b]||1)-(STARS[a]||1)).slice(0,8).forEach(k=>{ const m=el('div','stm2'); m.style.backgroundImage=`url("${DEFS[k].mini}")`; strip.appendChild(m); });
+    info.appendChild(strip); it.appendChild(info);
+    it.onclick=()=>{ sel=i; list.querySelectorAll('.stdeck').forEach((x,k)=>x.classList.toggle('on',k===i)); ok.disabled=false; sfx('click'); };
+    list.appendChild(it); });
+  box.appendChild(ok); showModal(box);
+}
 const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], crynormal:[0,2,8,15,30,75], dust:[0,10,50,100,200,500]};
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
@@ -2875,7 +2903,7 @@ function profileEdit(first){
       let {data:upd,error}=await SB.from('profiles').update({nickname:n, avatar:av}).eq('id',ACC.user.id).select('id');
       if(!error && (!upd || !upd.length)) ({error}=await SB.from('profiles').insert({id:ACC.user.id, nickname:n, avatar:av}));
       if(error){ if(/duplicate|unique/i.test(error.message||'')){ err.textContent='Esse apelido já está em uso. Escolha outro.'; return; } throw error; }
-      ACC.profile=Object.assign(ACC.profile||{}, {nickname:n, avatar:av}); closeModal(); accChip(); reopenProfile(); toast('Perfil salvo!');
+      ACC.profile=Object.assign(ACC.profile||{}, {nickname:n, avatar:av}); closeModal(); accChip(); reopenProfile(); toast('Perfil salvo!'); if(first) setTimeout(checkStarter,400);
     }catch(e){ err.textContent=errPt(e); } finally{ sv.disabled=false; }
   });
   f.appendChild(sv);
@@ -3050,11 +3078,12 @@ async function shopDaily(mn, ov){
   const g=el('div','sdaily'); panel.appendChild(g);
   SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false))));
 }
-let BNC={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
+let BNC={}, ARS={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
 // Arsenal Visual (arsenal.json, feito pelo criador): avatares + banners num arquivo só; os arquivos antigos ficam de reserva
 const getJ=f=>fetch(vq(f),{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
 getJ('arsenal.json').then(async j=>{ if(!j){ j={avatares:await getJ('avatares.json'), banners:await getJ('banners.json')}; }
-  AVC=j.avatares||{}; BNC=j.banners||{}; try{ accChip(); }catch(e){} });
+  AVC=j.avatares||{}; BNC=j.banners||{}; ARS=j;
+  if(j.iniciante && Array.isArray(j.iniciante.avatares) && j.iniciante.avatares.length) AVATARS.splice(0, AVATARS.length, ...j.iniciante.avatares.filter(id=>DEFS[id])); try{ accChip(); }catch(e){} });
 const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:94,y:62,s:11},stars:{x:94,y:80,s:9},avatar:{x:40,y:10,s:30},fade:55};
 function bannerView(ban, d, c){
   const cf={...(BNC.__default||{}), ...(BNC[d.id]||{})}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, av={...BN_DEF.avatar,...cf.avatar}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
@@ -3081,7 +3110,7 @@ function shopAvatars(mn){
   const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && (avOn(id)||(ACC.profile&&ACC.profile.avatar===id))).sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
   ids.forEach(id=>{ const own=ownAvatar(id), using=ACC.profile&&ACC.profile.avatar===id;
     const t=el('div','savt'+(own?' own':'')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
-    t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(avPrice(id).gold)+crys(avPrice(id).cry))));
+    t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(avPrice(id).gold))));
     t.onclick=async()=>{ if(!ACC.user){ toast('Entre na sua conta.'); return; }
       if(using) return;
       if(own){ await saveProfile({avatar:id}); accChip(); shopRedraw(); return; }
@@ -3126,7 +3155,7 @@ function buyCos(kind, item, name, preview, price, after){
     ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     if(kind==='avatar') COS.avatars.push(+item); else COS.backs.push(item);
     if(after) after(); closeModal(); vib([30,40,60]); toast(`${name} é seu!`); accChip(); shopRedraw(); spendFx(cur, price[cur], ()=>sfx('heal')); };
-  row.appendChild(btn(golds(price.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(price.cry),'sbuy',go('cry')));
+  row.appendChild(btn(golds(price.gold),'sbuy sec',go('gold'))); if(price.cry) row.appendChild(btn(crys(price.cry),'sbuy',go('cry')));   // avatar: só ouro
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 function buyCard(d, c, full, bundle){
