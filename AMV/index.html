@@ -603,7 +603,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .flycry svg{width:100%;height:100%}
 .crybox.bump{animation:bump .35s cubic-bezier(.34,1.9,.5,1)}
 .cryhud,.coinhud{z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 0 30px #5fd4ff88}.cryhud.on,.coinhud.on{opacity:1}
-.ssb span:has(.off50){filter:none}.ssb .off50{display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:22px;letter-spacing:-1px;line-height:1;background:radial-gradient(circle at 35% 30%,#ff5a6e,#e8112d 60%,#a50a1f);color:#fff;border:4px solid #fff;border-radius:50%;width:70px;height:70px;margin:-14px 2px -14px 0;transform:rotate(-14deg);box-shadow:0 3px 8px #000a;margin-right:4px;flex:none}
+.ssb span:has(.off50){filter:none}.ssb .off50{display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:22px;letter-spacing:-1px;line-height:1;background:radial-gradient(circle at 35% 30%,#ff5a6e,#e8112d 60%,#a50a1f);color:#fff;border:4px solid #fff;border-radius:50%;width:70px;height:70px;margin:-14px 2px -14px 0;box-shadow:0 3px 8px #000a;margin-right:4px;flex:none}
 .coinhud.k-gold,.coinhud.k-cry{left:auto!important;right:30px;transform:none!important}.coinhud.k-gold{top:40px!important}.coinhud.k-cry{top:134px!important}
 @keyframes bump{50%{transform:translateX(-50%) scale(1.25)}}
 .dtabs{display:flex;gap:12px;overflow-x:auto;width:100%;padding:4px 4px 14px;box-sizing:border-box;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -710,9 +710,9 @@ const isDSL=c=>/Da Shui Long/.test(c.def.name);
 const oppPowers=q=>[...P(q).powers.filter(Boolean), ...(P(q).field?[P(q).field]:[]), ...chars(q).flatMap(c=>c.equips)];
 const TOOL_FOR={17:1,22:21};                                   // Ferramenta -> Personagem que pode equipá-la
 const canEquip=(t,c)=>!!c && c.id===TOOL_FOR[t.id] && c.equips.length<2;
-const ELEM = {terra:{n:'Terra',c:'#410e00'},planta:{n:'Planta',c:'#32bf0b'},agua:{n:'Água',c:'#0796de'},fogo:{n:'Fogo',c:'#ff0803'},ar:{n:'Ar',c:'#f2efe9'},raio:{n:'Raio',c:'#fdcd00'},metal:{n:'Metal',c:'#677d82'},escuridao:{n:'Escuridão',c:'#28003b'},divino:{n:'Divino',c:'#fb9e23'}};
-for(const i in DEFS) if(DEFS[i].kind==='char' && !DEFS[i].el) DEFS[i].el = (i==3?'planta':'terra');
-const EL_ICO={agua:2,terra:3,fogo:4,ar:5,raio:6,planta:7,metal:8,escuridao:9,divino:10}, KIND_ICO={support:12,item:13,tool:14,field:15};
+const ELEM = {terra:{n:'Terra',c:'#410e00'},grama:{n:'Grama',c:'#32bf0b'},agua:{n:'Água',c:'#0796de'},fogo:{n:'Fogo',c:'#ff0803'},ar:{n:'Ar',c:'#f2efe9'},raio:{n:'Raio',c:'#fdcd00'},metal:{n:'Metal',c:'#677d82'},escuridao:{n:'Escuridão',c:'#28003b'},divino:{n:'Divino',c:'#fb9e23'}};
+for(const i in DEFS) if(DEFS[i].kind==='char' && !DEFS[i].el) DEFS[i].el = (i==3?'grama':'terra');
+const EL_ICO={agua:2,terra:3,fogo:4,ar:5,raio:6,grama:7,metal:8,escuridao:9,divino:10}, KIND_ICO={support:12,item:13,tool:14,field:15};
 const elIco=k=>`<img class="tico" src="Icones/${EL_ICO[k]}.png" alt="">`, kindIco=k=>KIND_ICO[k]?`<img class="tico" src="Icones/${KIND_ICO[k]}.png" alt="">`:'';
 const KIND = {char:'Personagem',field:'Campo',support:'Apoiador',item:'Item',tool:'Ferramenta'};
 
@@ -824,7 +824,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-215355';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-223131';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3096,7 +3096,7 @@ function bannerView(ban, d, c){
   const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard');
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
-const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'rar_d'};
+const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'cat'};   // Todas as cartas: Personagens, Poderes, Campo, Apoiador, Ferramenta, Item
 function shopAll(mn){
   const hd=el('div','sallhd'); hd.appendChild(el('div','shoptm','<b>Todas as cartas</b><br><small>Qualquer carta do jogo, a preço cheio.</small>'));
   const n=filterCount(SV); const fb=btn(`🔍 Filtro${n?` <b>(${n})</b>`:''}`,'sec sfil',()=>filterSheet(SV,()=>shopScreen())); hd.appendChild(fb); mn.appendChild(hd);
@@ -3214,7 +3214,8 @@ function deckView(v){
     return true;
   });
   const atk=d=>d.kind==='char'?d.atk:-1;
-  const cmp={padrao:(a,b)=>st(a)-st(b)||nm(a,b), nome:nm, rar_d:(a,b)=>st(b)-st(a)||nm(a,b), rar_a:(a,b)=>st(a)-st(b)||nm(a,b),
+  const KO={char:0,poder:1,field:2,support:3,tool:4,item:5}, ko=d=>KO[d.kind]??9;
+  const cmp={cat:(a,b)=>ko(a)-ko(b)||st(b)-st(a)||nm(a,b), padrao:(a,b)=>st(a)-st(b)||nm(a,b), nome:nm, rar_d:(a,b)=>st(b)-st(a)||nm(a,b), rar_a:(a,b)=>st(a)-st(b)||nm(a,b),
              atk_d:(a,b)=>atk(b)-atk(a)||nm(a,b), atk_a:(a,b)=>(a.kind==='char'?0:1)-(b.kind==='char'?0:1)||atk(a)-atk(b)||nm(a,b)}[v.sort];
   return L.sort(cmp);
 }
@@ -3227,8 +3228,9 @@ function filterSheet(v, done){
   const {ov,sh}=sheetShell();
   const sr=el('div','search','<span style="font-size:40px">🔍</span>'); const inp=document.createElement('input'); inp.placeholder='Pesquisar pelo nome'; inp.value=w.q; inp.oninput=()=>{ w.q=inp.value; }; sr.appendChild(inp); sh.appendChild(sr);
   const body=el('div','body'); sh.appendChild(body);
-  const sec=(title,items,set,single)=>{
+  const sec=(title,items,set,single,cols)=>{
     const h=el('h4','',title); body.appendChild(h); const bx=el('div','box'); body.appendChild(bx);
+    if(cols){ bx.style.gridAutoFlow='column'; bx.style.gridTemplateRows=`repeat(${Math.ceil(items.length/2)},auto)`; }   // preenche coluna 1 e depois coluna 2
     const pills=items.map(([k,label])=>{ const pl=el('div','pill',label); const on=()=>single?w.fav===k:set.has(k);
       pl.classList.toggle('on',on()); pl.onclick=()=>{ if(single) w.fav=(w.fav===k?null:k); else (set.has(k)?set.delete(k):set.add(k)); pills.forEach(x=>x.sync()); };
       pl.sync=()=>pl.classList.toggle('on',on()); bx.appendChild(pl); return pl; });
@@ -3240,9 +3242,9 @@ function filterSheet(v, done){
   sec('Favoritas',[['fav','Favoritas'],['nfav','Não favoritas']],null,true);
   sec('Raridade',[1,2,3,4,5].map(n=>[n,`<img src="Icones/16.png" alt="">×${n}`]),w.stars);
   sec('Categoria',CATS,w.cat);
-  sec('Tipo',Object.keys(ELEM).map(k=>[k,`<img src="Icones/${EL_ICO[k]}.png" alt="">${ELEM[k].n}`]),w.el);
+  sec('Tipo',['agua','terra','fogo','ar','divino','raio','grama','metal','escuridao'].map(k=>[k,`<img src="Icones/${EL_ICO[k]}.png" alt="">${ELEM[k].n}`]),w.el,false,true);
   const arqs=[...new Set(Object.values(DEFS).flatMap(d=>d.arq||[]))].sort((a,b)=>a.localeCompare(b,'pt'));
-  sec('Arquétipo',arqs.map(a=>[a,a]),w.arq);
+  sec('Arquétipo',arqs.map(a=>[a,a]),w.arq,false,true);
   const foot=el('div','foot');
   const x=el('div','x','✕'); x.onclick=()=>ov.remove();
   const ok=el('div','ok','OK'); ok.onclick=()=>{ Object.assign(v,w); ov.remove(); done(); };
