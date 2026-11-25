@@ -667,7 +667,6 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   34:{id:34,name:'Shizu Ma Mei - Velha Guarda',kind:'char',atk:800,arq:['Elemental','Mestre'],el:'agua',dsl:true,img:'Cartas/Shizu Ma Mei - Velha Guarda.jpg'},
   35:{id:35,name:'Taishizu Ma Mei',kind:'char',atk:2200,arq:['Mestre','Lenda'],el:'agua',dsl:true,dslzg:true,img:'Cartas/Taishizu Ma Mei.jpg'},
   36:{id:36,name:'Tee Ma Mei',kind:'char',atk:1300,arq:['Atirador'],el:'agua',img:'Cartas/Tee Ma Mei.jpg'},
-  37:{id:37,name:'Botão de Reset',kind:'char',atk:11000,arq:['Mestre'],el:'raio',first:true,direct:true,img:'Cartas/Botão de Reset.jpg'},
   38:{id:38,name:'Antares',kind:'char',atk:3000,arq:['Dragão','Lenda'],el:'fogo',img:'Cartas/Antares.jpg'},
   39:{id:39,name:'Blaze Baller',kind:'char',atk:1400,arq:['Atirador'],el:'fogo',img:'Cartas/Blaze Baller.jpg'},
   40:{id:40,name:'Muhriqa - Velha Guarda',kind:'char',atk:1500,arq:['Elemental','Mestre'],el:'fogo',img:'Cartas/Muhriqa - Velha Guarda.jpg'},
@@ -675,7 +674,7 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   42:{id:42,name:'Tronco Queimado',kind:'char',atk:1800,arq:['Planta'],el:'fogo',img:'Cartas/Tronco Queimado.jpg'}
 };
 /* estrelas: 1 a 3 = até 3 cópias, 4 = 1 cópia, 5 = só 1 carta de 5 estrelas no baralho inteiro */
-const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,37:5,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1};   // estrelas = as da carta (não dependem do número de habilidades)
+const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1};   // estrelas = as da carta (não dependem do número de habilidades)
 const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?1:3; };
 const isMaMei=c=>/Ma Mei/.test(c.def.name);
 const DS={31:100,32:200,33:300,36:100};                         // Duplo Sentido (valor fixo)
@@ -818,7 +817,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-204316';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261124-212646';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2470,7 +2469,8 @@ async function botTurn(){
 function loadDeck(){
   try{
     const s=JSON.parse(localStorage.getItem('amv_deck2')||'null');
-    if(s && validDeck(s)===null) return s;
+    if(s){ let gone=false; for(const id in s) if(!DEFS[id]){ delete s[id]; gone=true; }   // cartas retiradas do jogo saem do baralho
+      if(gone) saveDeck(s); if(validDeck(s)===null) return s; }
   }catch(e){}
   return Object.assign({},DEFAULT_DECK);
 }
@@ -2897,7 +2897,7 @@ function titleScreen(){
   [[60,40,-12],[350,10,0],[640,40,12]].forEach(([x,y,r],k)=>{ const d=el('div'); d.style.cssText=`left:${x}px;top:${y}px;transform:rotate(${r}deg);background-image:url("${DEFS[ids[k]].mini}")`; d.onclick=()=>{ sfx('click'); bigCardView(DEFS[ids[k]]); }; fan.appendChild(d); });
   s.appendChild(fan);
   const shop=el('button','shopc breathe','<span>🛍️</span><b>Loja</b><small>Cartas com desconto</small>'); shop.setAttribute('aria-label','Loja');
-  shop.onclick=()=>{ sfx('click'); shopScreen(); }; s.appendChild(shop);
+  shop.onclick=()=>{ sfx('click'); shopScreen('cards','daily'); }; s.appendChild(shop);   // a Loja sempre abre nas Cartas do dia
   CUR_TAB='home'; DECK_LEAVE=null; tabBar(s,'home');
   s.classList.add('enter'); setTimeout(()=>s.classList.remove('enter'),1100);
   setScreen(s); accChip(); guardHome(); loadNews(); loadGifts();
