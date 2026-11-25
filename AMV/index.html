@@ -279,6 +279,46 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .sptitle{position:absolute;left:30px;top:30px;font-size:40px;font-weight:900}.sptitle small{font-size:24px;color:#9aa4c4;font-weight:400}
 .spanel .sptitle{position:static;margin:-50px 0 20px 10px}
 .sdaily{display:flex;flex-wrap:wrap;justify-content:center;gap:18px}
+.srow5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.spanel .srow5 .stile{width:auto}.spanel .srow5 .stile .im{width:100%;height:auto;aspect-ratio:5/7}.srow5 .spb{font-size:19px;padding:3px 6px;gap:3px;flex-wrap:wrap;justify-content:center}.srow5 .spb .cry{width:20px;height:20px}
+.srowl{display:flex;align-items:center;gap:4px;margin:0 0 10px 4px}.srowl img{height:30px}
+.stile .im{position:relative;overflow:hidden}
+.stile.holo .im::after,.savt.holo .av::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite;pointer-events:none}
+.savt.holo .av{position:relative;overflow:hidden}
+.stile.own .im,.savt.own .av{filter:saturate(.15)}.sbanner .bcard.own .im::after{display:none}
+.spack{margin-top:40px;border-color:#b98cff}.spack .pcards{position:absolute;display:flex;gap:1.5cqh;z-index:2}
+.spack .pc{height:100%;aspect-ratio:5/7;background:center/100% 100%;border-radius:1.2cqh;box-shadow:0 0 18px #b98cff88,0 8px 18px #000c;animation:bcFloat 3.2s ease-in-out infinite}
+.spack .pc:nth-child(2){animation-delay:-.6s}.spack .pc:nth-child(3){animation-delay:-1.2s}.spack .pc:nth-child(4){animation-delay:-1.8s}.spack .pc:nth-child(5){animation-delay:-2.4s}
+.spack .ppr{position:absolute;right:3%;bottom:6%;z-index:3;display:flex;gap:10px;align-items:center;background:#000b;border:3px solid #fff;border-radius:30px;padding:6px 18px;font-size:30px;font-weight:900}
+.spack .ptag{position:absolute;left:3%;top:6%;z-index:3;background:#7b5cff;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:24px;font-weight:900}
+.pkrow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:950px}.pkrow .pc{width:170px;aspect-ratio:5/7;background:center/100% 100%;border-radius:10px;box-shadow:0 6px 16px #000a;cursor:pointer}
+/* Batalhas */
+.scr.modes{padding:50px 40px 190px;justify-content:flex-start}
+.btop{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;width:1000px}
+.bbox{border-radius:30px;border:4px solid #ffffffd9;padding:26px;color:#fff;font-family:inherit;text-align:left;cursor:pointer;box-shadow:0 10px 0 #0009,0 16px 26px #000a,inset 0 4px 0 #ffffff40;display:flex;flex-direction:column;gap:12px;text-shadow:0 3px 0 #0007}
+.bbox b{font-size:42px;line-height:1.05}.bbox small{font-size:26px;color:#e6e9f2cc}.bbox .bi{font-size:70px;line-height:1}
+.bbox.bot{background:repeating-linear-gradient(118deg,#ffffff12 0 26px,transparent 26px 52px),linear-gradient(170deg,#ff5468,#d4001f)}
+.bbox.pvp{background:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(170deg,#4a5a88,#273257);cursor:default}
+.bbox:active{transform:scale(.96)}.bbox.pvp:active{transform:none}
+.bsub{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:auto}.bsub button{font:inherit;font-size:28px;font-weight:800;color:#fff;border:3px solid #ffffffb0;border-radius:22px;padding:16px 6px;background:#ffffff1f;cursor:pointer}
+.bsub button em{display:block;font-style:normal;font-size:20px;color:#ffd84d}
+.blbl{width:1000px;font-size:34px;font-weight:900;margin:34px 0 14px;display:flex;align-items:center;gap:12px}
+.bevs{width:1000px;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding:4px 0 20px;-webkit-overflow-scrolling:touch}
+.bev{position:relative;flex:none;width:100%;aspect-ratio:2.6/1;border-radius:30px;overflow:hidden;border:4px solid #ffffffcc;background:#000 no-repeat;cursor:pointer;container-type:size;box-shadow:0 10px 24px #000a}
+.bev.pve{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#18b38a,#0b5a47)}
+.bev.pvp{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#7b6cf0,#352b8f)}
+.bev.off{filter:saturate(.35) brightness(.75)}.bev:active{transform:scale(.97)}
+.bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
+.bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
+.bev .evm{position:absolute;left:3%;top:8%;z-index:3;border:3px solid #fff;border-radius:18px;padding:3px 14px;font-size:24px;font-weight:900;background:#0008}
+.bev .evs{position:absolute;left:3%;bottom:9%;z-index:3;font-size:24px;color:#fff;text-shadow:0 2px 4px #000;max-width:62%}
+.bev .evc{position:absolute;right:3%;bottom:8%;z-index:3;background:#000c;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:28px;font-weight:900}
+.bev .evc.full{background:#2ee66b;color:#062;border-color:#fff}
+.bempty{font-size:28px;color:#8f9ab0;text-align:center;padding:30px}
+.brank{width:1000px;flex:none;margin-top:16px;display:flex;align-items:center;gap:26px;padding:28px 36px;border-radius:36px;border:4px solid #ffffffd9;color:#fff;font-family:inherit;text-align:left;cursor:pointer;background:repeating-linear-gradient(118deg,#ffffff12 0 26px,transparent 26px 52px),linear-gradient(170deg,#ffb23e,#d9661a);box-shadow:0 12px 0 #7a3300,0 18px 30px #000a,inset 0 4px 0 #ffffff60;text-shadow:0 3px 0 #0007}
+.brank span{font-size:84px;line-height:1}.brank div{flex:1}.brank b{display:block;font-size:46px}.brank small{font-size:28px;color:#fff3dccc}.brank i{font-size:60px;font-style:normal}
+.brank:active{transform:scale(.96)}
+.evbox .evrule{font-size:30px;color:#cfd6e0;text-align:center;max-width:880px}.evbox .evwins{font-size:40px;font-weight:900}
 .sdaily .stile{width:240px}.sdaily .stile .im{width:240px;height:336px}
 .spb{position:absolute;left:0;bottom:0;display:flex;align-items:center;gap:6px;background:#3d4a7a;border-radius:0 30px 0 12px;padding:6px 16px;font-size:28px;font-weight:900;color:#fff}.spb .cry{width:32px;height:32px}
 .sallhd{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.btn.sfil{font-size:28px;padding:10px 20px;margin-bottom:6px}
@@ -824,7 +864,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261124-223131';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-000954';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1887,7 +1927,7 @@ function render(){
     frag.appendChild(z);
     const za=zone(frag,p?23:952,95,p?99:98,98,p?'avatar oponente':'Seu avatar',true); za.classList.add('av');
     if(p===0 && ACC.user && ACC.profile && DEFS[ACC.profile.avatar]){ za.textContent=''; za.classList.add('me'); za.appendChild(avatarEl(ACC.profile.avatar,'bav')); }
-    if(p===1 && !NET && DEFS[BOT_AVATAR]){ za.textContent=''; za.classList.add('me'); za.appendChild(avatarEl(BOT_AVATAR,'bav')); }
+    const bAv=(EVT_BOT&&DEFS[EVT_BOT.avatar])?EVT_BOT.avatar:BOT_AVATAR; if(p===1 && !NET && DEFS[bAv]){ za.textContent=''; za.classList.add('me'); za.appendChild(avatarEl(bAv,'bav')); }
     if(p===1 && NET && NET.opp && DEFS[NET.opp.avatar]){ za.textContent=''; za.classList.add('me'); za.appendChild(avatarEl(NET.opp.avatar,'bav')); }
   }
   const zt=el('div','zone turn'); zt.style.cssText='left:492px;top:25px;width:99px;height:99px';
@@ -2091,12 +2131,22 @@ function endGame(winner, gaveUp){
     if(gaveUp) box.appendChild(el('div','',`<span style="font-size:40px;color:#bbb">Você desistiu da partida.</span>`));
     if(oppLeft) box.appendChild(el('div','',`<span style="font-size:40px;color:#bbb">${esc(oppName)} ${oppLeft==='desistiu'?'desistiu':'saiu da partida'}.</span>`));
     const rw=el('div','rew'); rw.appendChild(el('div','note','Calculando XP...')); box.appendChild(rw);
-    const row=el('div','row'); const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); if(net) rankedFlow(); else startFlow(); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
+    const row=el('div','row'); const ev0=EVT; const again=btn('Jogar de novo','breathe',()=>{ leaveMatch(); if(net) rankedFlow(); else startFlow(ev0&&(ev0.wins|0)<10?ev0:null); }); row.appendChild(again); row.appendChild(btn('Modos de batalha','sec',quitToModes)); box.appendChild(row);
     showModal(box);
-    const rr=await reward; if(net){ if(rr.ok){ showReward(rw, rr); rankBox(rw, rr); } else { rw.innerHTML=''; rw.appendChild(el('div','note','Resultado registrado.')); } netClose(); } else showReward(rw, rr);
+    const rr=await reward; if(net){ if(rr.ok){ showReward(rw, rr); rankBox(rw, rr); } else { rw.innerHTML=''; rw.appendChild(el('div','note','Resultado registrado.')); } netClose(); } else { showReward(rw, rr); if(ev0) eventResult(rw, ev0, won && !gaveUp && rr.ok && !rr.guest); }
   },gaveUp?150:900);
 }
 
+async function eventResult(rw, ev, won){              // vitória de evento: conta até 10 e mostra a carta do loot
+  const bx=el('div','ln'); rw.appendChild(bx);
+  if(!won){ bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${ev.wins|0}/10</b>`; return; }
+  if(!SB||!ACC.user){ bx.innerHTML='<span>Entre na sua conta para contar vitórias de evento.</span>'; return; }
+  try{ const {data}=await SB.rpc('event_win',{p_event:ev.id});
+    if(data&&data.ok){ ev.wins=data.wins; bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data.wins}/10</b>`;
+      if(data.card && DEFS[data.card]){ if(COLL) COLL[data.card]=(COLL[data.card]|0)+1; const c=el('div','ln',`<span>Carta do evento: <b>${esc(DEFS[data.card].name)}</b></span>`); const m=el('div','pc'); m.style.cssText=`width:110px;aspect-ratio:5/7;background:url("${DEFS[data.card].mini}") center/100% 100%;border-radius:8px`; c.appendChild(m); rw.appendChild(c); sfx('heal'); } }
+    else bx.innerHTML=`<span>${esc(ev.nome)}</span><b>${data&&data.reason==='limite'?'10/10':data&&data.reason==='fora_do_horario'?'Evento encerrado':'Não contou'}</b>`;
+  }catch(e){ bx.innerHTML='<span>Sem conexão: a vitória do evento não foi contada.</span>'; }
+}
 function saveStreakBox(rw, r){                      // perdeu a sequência: pode pagar 20 de ouro por vitória para salvar
   const n=r.lost_streak, cost=r.save_cost||20*n, box=el('div','savest');
   box.appendChild(el('div','ss1',`<i class="fire">🔥<em>${n}</em></i> Sua sequência de ${n} vitórias acabou.`));
@@ -2168,7 +2218,8 @@ async function beginMatch(first){
   if(si && si.decode) await si.decode().catch(()=>{});
   LF=[MAX_LIFE,MAX_LIFE];
   if(SB && ACC.user) SB.rpc('start_match').then(()=>{},()=>{});       // o servidor marca o início (confere a duração no fim)
-  G={p:[newPlayer(myDeck),newPlayer(BOT_DECK)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
+  const botDeck=EVT_BOT?Object.fromEntries(Object.entries(EVT_BOT.cartas).filter(([k])=>DEFS[k]).map(([k,v])=>[k,v|0])):BOT_DECK;
+  G={p:[newPlayer(myDeck),newPlayer(botDeck)],turn:0,first,over:false,busy:true,pick:null,log:[],index:new Map(),turnNo:0,scen};
   G.tut=tutOn()?{shown:new Set()}:null;
   G.p.forEach((pl,i)=>pl.deck.forEach(c=>{ c.own=i; }));        // dono da carta (o vazio é sempre o do dono)
   for(const p of [0,1]){
@@ -3055,7 +3106,7 @@ async function shopScreen(tab, side){
 }
 const starRow=n=>`<img src="Icones/16.png" alt="">×${n}`;
 function shopTile(d, line, onClick){
-  const t=el('div','stile'); t.dataset.cid=d.id; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);
+  const t=el('div','stile '+(ACC.user&&owned(d.id)>0?'own':'holo')); t.dataset.cid=d.id; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; t.appendChild(im);   // não tem: laminado · tem: quase sem cor
   if(ACC.user && owned(d.id)>0) t.appendChild(el('div','sq',String(owned(d.id))));
   t.appendChild(el('div','spb',line)); t.onclick=onClick; return t;
 }
@@ -3075,8 +3126,37 @@ async function shopDaily(mn, ov){
       e.innerHTML=`⏱ ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`; e.classList.toggle('late', ms<36e5); if(ms<=0) reload=true; });
     if(reload){ clearInterval(ov._t); shopScreen(); } };
   tick(); ov._t=setInterval(tick,1000);
-  const g=el('div','sdaily'); panel.appendChild(g);
-  SHOP.cards.filter(c=>DEFS[c.id]).sort((a,b)=>b.stars-a.stars).forEach(c=>g.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false))));
+  (SHOP.packs||[]).forEach(pk=>{ const v=packView(pk); if(v) mn.insertBefore(v, panel); });          // ordem: ULTRA (futuro), 5 estrelas, packs, cartas
+  for(const st of [4,3,2,1]){ const L=SHOP.cards.filter(c=>DEFS[c.id] && (STARS[c.id]||c.stars)===st); if(!L.length) continue;   // 5 por linha: 4★, 3★, 2★, 1★
+    const row=el('div','srow5'); L.slice(0,5).forEach(c=>row.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false)))); panel.appendChild(row); }
+}
+function packView(pk){                                 // banner de pack especial (3 a 5 cartas, compra o pack inteiro)
+  const ids=(pk.cartas||[]).map(Number).filter(id=>DEFS[id]); if(!ids.length) return null;
+  const b=pk.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:97,y:40,s:10,...(b.name||{})}, cd={x:3,y:12,h:66,...(b.cards||{})}, fd=b.fade!=null?b.fade:55;
+  const ban=el('div','sbanner spack');
+  if(bg.file){ ban.style.backgroundImage=`url("${vq('Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
+  else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
+  ban.appendChild(el('div','bfade')).style.height=fd+'%';
+  const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>{ const c=el('div','pc'); c.style.backgroundImage=`url("${DEFS[id].mini}")`; row.appendChild(c); }); ban.appendChild(row);
+  const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
+  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`));
+  ban.appendChild(el('div','ppr',(pk.ouro?golds(pk.ouro):'')+(pk.cristais?crys(pk.cristais):'')));
+  ban.onclick=()=>buyPack(pk, ids); return ban;
+}
+function buyPack(pk, ids){
+  if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
+  const box=el('div','mbox shopbuy'); box.appendChild(el('div','xres',`<b>${esc(pk.nome||'Pack especial')}</b>`));
+  const row=el('div','pkrow'); ids.forEach(id=>{ const c=el('div','pc'); c.style.backgroundImage=`url("${DEFS[id].mini}")`; c.onclick=()=>{ box.querySelectorAll('.pkbig').forEach(x=>x.remove()); const big=el('div','bigcard pkbig'); bigArt(big,DEFS[id]); big.onclick=()=>big.remove(); box.insertBefore(big,row); }; row.appendChild(c); }); box.appendChild(row);
+  box.appendChild(el('div','sbq',`Você leva as ${ids.length} cartas de uma vez. Toque numa carta para ver grande.`));
+  const br=el('div','row sbrow');
+  const go=cur=>async()=>{ const price=cur==='gold'?pk.ouro:pk.cristais, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
+    if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
+    const {data,error}=await SB.rpc('buy_pack',{p_pack:pk.id,p_cur:cur});
+    if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Esse pack não está mais na Loja.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
+    if(!COLL) COLL={}; ids.forEach(id=>{ COLL[id]=(COLL[id]|0)+1; }); ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
+    $('#modal').onclick=null; closeModal(); vib([30,40,60]); toast(`${pk.nome||'Pack'}: ${ids.length} cartas foram para a sua coleção!`); accChip(); ids.forEach(shopOwned); spendFx(cur, price, ()=>sfx('heal')); };
+  if(pk.ouro) br.appendChild(btn(golds(pk.ouro),'sbuy sec',go('gold'))); if(pk.cristais) br.appendChild(btn(crys(pk.cristais),'sbuy',go('cry')));
+  box.appendChild(br); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 let BNC={}, ARS={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
 // Arsenal Visual (arsenal.json, feito pelo criador): avatares + banners num arquivo só; os arquivos antigos ficam de reserva
@@ -3109,7 +3189,7 @@ function shopAvatars(mn){
   const g=el('div','sgav'); mn.appendChild(g);
   const ids=Object.keys(DEFS).map(Number).filter(id=>DEFS[id].kind==='char' && (avOn(id)||(ACC.profile&&ACC.profile.avatar===id))).sort((a,b)=>(ownAvatar(a)?0:1)-(ownAvatar(b)?0:1));
   ids.forEach(id=>{ const own=ownAvatar(id), using=ACC.profile&&ACC.profile.avatar===id;
-    const t=el('div','savt'+(own?' own':'')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
+    const t=el('div','savt'+(own?' own':' holo')); t.appendChild(avatarEl(id)); t.appendChild(el('div','sn',esc(DEFS[id].name.split(' - ')[0])));
     t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(avPrice(id).gold))));
     t.onclick=async()=>{ if(!ACC.user){ toast('Entre na sua conta.'); return; }
       if(using) return;
@@ -3121,7 +3201,7 @@ function shopBacks(mn){
   mn.appendChild(el('div','shoptm',`<b>Versos de carta</b><br><small>${BK_PRICE.gold.toLocaleString('pt-BR')} de Ouro ou ${BK_PRICE.cry} Cristais AMV cada.</small>`));
   const g=el('div','sgrid3'); mn.appendChild(g); const cur=myBack();
   BACKS.forEach((b,i)=>{ const own=ownBack(i), using=cur===i;
-    const t=el('div','stile'); const im=el('div','im'); im.style.backgroundImage=`url("${b.img}")`; t.appendChild(im);
+    const t=el('div','stile '+(own?'own':'holo')); const im=el('div','im'); im.style.backgroundImage=`url("${b.img}")`; t.appendChild(im);
     t.appendChild(el('div','sn',b.n)); t.appendChild(el('div','sprice', using?'✓ Em uso':(own?'Usar':golds(BK_PRICE.gold))));
     t.onclick=()=>{ if(using) return; if(own){ try{ localStorage.setItem('amv_back',i); }catch(e){} toast(`Verso ${b.n} selecionado.`); shopRedraw(); return; }
       if(!ACC.user){ toast('Entre na sua conta.'); return; }
@@ -3130,7 +3210,7 @@ function shopBacks(mn){
 }
 function shopOwned(id){                             // atualiza só o balãozinho das cópias, sem recarregar a Loja
   document.querySelectorAll(`.shopscr .stile[data-cid="${id}"]`).forEach(t=>{ let q=t.querySelector('.sq'); const n=owned(id);
-    if(n>0){ if(!q){ q=el('div','sq'); t.insertBefore(q,t.querySelector('.spb')); } q.textContent=String(n); q.classList.remove('pop'); void q.offsetWidth; q.classList.add('pop'); } });
+    if(n>0){ t.classList.remove('holo'); t.classList.add('own'); if(!q){ q=el('div','sq'); t.insertBefore(q,t.querySelector('.spb')); } q.textContent=String(n); q.classList.remove('pop'); void q.offsetWidth; q.classList.add('pop'); } });
 }
 function shopRedraw(){                               // redesenha só a lista de cosméticos, mantendo a rolagem
   const mn=document.querySelector('.shopscr .smain'); if(!mn){ shopScreen(); return; } const y=mn.scrollTop;
@@ -3294,19 +3374,59 @@ function goTab(k){
   if(CUR_TAB!=='home'){ try{ history.replaceState({s:k},''); }catch(e){} }
   if(k==='deck') deckScreen(); else if(k==='mis') missionsScreen(); else modesScreen();
 }
+let EVTS=[];                                           // eventos da tela de Batalhas (definidos no Arsenal Visual)
+const EV_DIAS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function evWhen(e){
+  if(e.quando==='semanal'){ const d=(e.dias||[]).map(x=>EV_DIAS[x]).join(', '); return `Toda ${d||'semana'} · ${e.de||'00:00'} às ${e.ate||'23:59'}`; }
+  const fmt=ms=>{ const h=Math.floor(ms/36e5), d=Math.floor(h/24); return d?`${d}d ${h%24}h`:`${h}h ${Math.floor(ms%36e5/6e4)}m`; };
+  const now=Date.now(), a=e.inicio?new Date(e.inicio).getTime():0, z=e.fim?new Date(e.fim).getTime():0;
+  if(a>now) return 'Começa em '+fmt(a-now); if(z) return 'Termina em '+fmt(Math.max(0,z-now)); return 'Sem data para acabar';
+}
+const ruleText=r=>{ const el2=(r&&r.elementos||[]).map(k=>ELEM[k]?ELEM[k].n:k), aq=(r&&r.arquetipos||[]);
+  if(!el2.length && !aq.length) return 'Sem regra: qualquer baralho vale.';
+  return 'Personagens permitidos: '+[el2.length?'tipo '+el2.join(' ou '):'', aq.length?'arquétipo '+aq.join(' ou '):''].filter(Boolean).join(' e ')+'.'; };
+const ruleOk=(c,r)=>{ const d=DEFS[c]; if(!d||d.kind!=='char'||!r) return true; if(r.elementos&&r.elementos.length&&!r.elementos.includes(d.el)) return false; if(r.arquetipos&&r.arquetipos.length&&!(d.arq||[]).some(a=>r.arquetipos.includes(a))) return false; return true; };
+function eventBanner(e){
+  const b=e.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:96,y:30,s:16,...(b.name||{})}, fd=b.fade!=null?b.fade:55, full=(e.wins|0)>=10;
+  const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off'));
+  if(bg.file){ v.style.backgroundImage=`url("${vq('Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
+  v.appendChild(el('div','bfade')).style.height=fd+'%';
+  const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
+  v.appendChild(el('div','evm',e.modo==='pvp'?'PvP':'PvE'));
+  v.appendChild(el('div','evs',(e.ativo?'🟢 ':'⏳ ')+esc(evWhen(e))));
+  v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
+  v.onclick=()=>eventOpen(e); return v;
+}
+function eventOpen(e){
+  sfx('click');
+  if(e.modo==='pvp'){ toast('Eventos PvP: em breve!'); return; }
+  if(!e.ativo){ toast(`${e.nome}: ${evWhen(e)}.`); return; }
+  if((e.wins|0)>=10){ toast('Você já ganhou este evento 10 vezes.'); return; }
+  const box=el('div','mbox evbox'); box.appendChild(el('div','xres',`<b>${esc(e.nome||'Evento')}</b>`));
+  box.appendChild(el('div','evwins',`Vitórias: ${e.wins|0}/10`));
+  box.appendChild(el('div','evrule',esc(ruleText(e.restricao))+'<br>Cada vitória dá uma carta do loot do evento.'));
+  const row=el('div','row'); row.appendChild(btn('Cancelar','sec',closeModal));
+  row.appendChild(btn('Jogar','breathe',()=>{ const dk=loadDeck(), bad=Object.keys(dk).filter(id=>(dk[id]|0)>0 && !ruleOk(+id,e.restricao));
+    if(bad.length){ closeModal(); toast(`Seu baralho não segue a regra do evento: tire ${bad.map(id=>DEFS[id].name.split(' - ')[0]).join(', ')}.`); deckScreen(); return; }
+    closeModal(); startFlow(e); }));
+  box.appendChild(row); showModal(box);
+}
+async function loadEvents(){ if(!SB) return []; try{ const {data}=await SB.rpc('get_events'); EVTS=Array.isArray(data)?data:[]; }catch(e){} return EVTS; }
 function modesScreen(){
   if(!history.state || history.state.s!=='modes') nav('modes');
   CUR_TAB='modes'; DECK_LEAVE=null;
-  const s=el('div','scr modes'); s.style.padding='60px 40px 200px';
-  s.appendChild(el('div','mtitle','Modos de batalha'));
-  const L=el('div','modelist'); s.appendChild(L);
-  [['🤖','Contra a máquina','Batalhe contra o bot e ganhe XP e Ouro.',startFlow],
-   ['🏆','Ranqueada', ACC.user&&ACC.profile?`${rankName(ACC.profile.honor)} · ${ACC.profile.honor|0} de honra`:'Suba de patente contra outros jogadores.',rankedFlow],
-   ['🎲','Batalha aleatória','Jogue online contra um jogador desconhecido.',null],
-   ['🔑','Batalha privada','Jogue com um amigo usando um código.',null],
-   ['🗺️','Campanha','Siga a história do multiverso.',null]].forEach(([ic,n,d,fn])=>{
-    const c=el('button','modec slidein'+(fn?' breathe':' soon'),`<span>${ic}</span><div><b>${n}</b><small>${d}</small></div>${fn?'<i>›</i>':'<em>Em breve</em>'}`);
-    c.style.setProperty('--d',(L.children.length*0.08)+'s'); c.onclick=()=>{ if(fn) fn(); else toast(`${n}: em breve!`); }; L.appendChild(c); });
+  const s=el('div','scr modes');
+  const top=el('div','btop'); s.appendChild(top);
+  const bot=el('button','bbox bot slidein','<span class="bi">🤖</span><b>Contra a máquina</b><small>Ganhe XP e Ouro.</small>'); bot.onclick=()=>startFlow(null); top.appendChild(bot);
+  const pvp=el('div','bbox pvp slidein','<span class="bi">👥</span><b>Contra jogadores</b>'); pvp.style.setProperty('--d','.08s');
+  const sub=el('div','bsub'); [['🎲 Aleatória'],['🔑 Privada']].forEach(([n])=>{ const x=el('button','',`${n}<em>Em breve</em>`); x.onclick=()=>toast(`${n.slice(3)}: em breve!`); sub.appendChild(x); }); pvp.appendChild(sub); top.appendChild(pvp);
+  s.appendChild(el('div','blbl','🎪 Eventos'));
+  const L=el('div','bevs'); s.appendChild(L);
+  const draw=()=>{ L.replaceChildren(); const list=EVTS.filter(e=>e.modo==='pve'||e.modo==='pvp').sort((a,b)=>(b.ativo?1:0)-(a.ativo?1:0));
+    if(!list.length){ L.appendChild(el('div','bempty','Nenhum evento agora. Volte mais tarde!')); return; } list.forEach(e=>L.appendChild(eventBanner(e))); };
+  L.appendChild(el('div','bempty','Carregando eventos...')); loadEvents().then(()=>{ if(s.isConnected) draw(); });
+  const rk=el('button','brank',`<span>🏆</span><div><b>Ranqueada</b><small>${ACC.user&&ACC.profile?`${rankName(ACC.profile.honor)} · ${ACC.profile.honor|0} de honra`:'Suba de patente contra outros jogadores.'}</small></div><i>›</i>`);
+  rk.onclick=rankedFlow; s.appendChild(rk);                                               // bem embaixo, perto do dedo
   tabBar(s,'modes'); setScreen(s);
 }
 // ===== Notícias =====
@@ -3369,7 +3489,10 @@ async function giftsScreen(){
     row.appendChild(act); list.appendChild(row);
   });
 }
-function startFlow(){
+let EVT=null, EVT_BOT=null;                          // evento em jogo e o baralho que a máquina sorteou
+function startFlow(ev){
+  EVT=ev||null; EVT_BOT=null;
+  if(EVT){ const ds=(EVT.maquina||[]).filter(d=>d&&d.cartas&&Object.keys(d.cartas).some(k=>DEFS[k])); if(ds.length) EVT_BOT=ds[Math.floor(Math.random()*ds.length)]; }
   const err=validDeck(loadDeck());
   if(err){ toast('Baralho inválido: '+err); deckScreen(); return; }
   if(!history.state || history.state.s!=='game') nav('game');
