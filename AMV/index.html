@@ -140,6 +140,9 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .zone .lbl.flip{transform:rotate(180deg)}
 .zone.av{font-size:18px}
 .zone.turn{font-size:58px;line-height:1;color:#fff;font-weight:900}
+#stage .zone.turn.tme,#stage .zone.turn.tfoe{border-radius:50%;border:4px solid #fff;text-shadow:0 2px 0 #0008;transition:background .3s}
+#stage .zone.turn.tme{background:radial-gradient(circle at 35% 30%,#5dff8f,#16a34a 60%,#0b6b2e);box-shadow:0 0 22px #2ee66b99}
+#stage .zone.turn.tfoe{background:radial-gradient(circle at 35% 30%,#ff6b7d,#d4001f 60%,#7c0013);box-shadow:0 0 22px #ff2a4499}
 .zone.turn b{font-size:22px}
 .zone.turn u{font-size:19px;color:var(--gold);text-decoration:none;font-weight:800}
 #msg{position:absolute;left:160px;top:922px;width:760px;height:84px;border:3px solid #444;border-radius:14px;background:#0b0b0b;padding:4px 14px;
@@ -291,7 +294,14 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .spack .pc:nth-child(2){animation-delay:-.6s}.spack .pc:nth-child(3){animation-delay:-1.2s}.spack .pc:nth-child(4){animation-delay:-1.8s}.spack .pc:nth-child(5){animation-delay:-2.4s}
 .spack .ppr{position:absolute;right:3%;bottom:6%;z-index:3;display:flex;gap:10px;align-items:center;background:#000b;border:3px solid #fff;border-radius:30px;padding:6px 18px;font-size:30px;font-weight:900}
 .spack .ptag{position:absolute;left:3%;top:6%;z-index:3;background:#7b5cff;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:24px;font-weight:900}
-.pkrow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:950px}.pkrow .pc{width:170px;aspect-ratio:5/7;background:center/100% 100%;border-radius:10px;box-shadow:0 6px 16px #000a;cursor:pointer}
+.pkrow{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;max-width:950px}.pkrow .pc{position:relative;width:150px;aspect-ratio:5/7;background:center/100% 100%;border-radius:10px;box-shadow:0 6px 16px #000a;cursor:pointer;overflow:visible}
+.pkrow .pc.sel{box-shadow:0 0 0 5px #3db6ff,0 0 28px 8px #3db6ffcc;transform:translateY(-6px)}
+.pkbuy .bigcard{width:700px;height:980px}.pkbuy .bigcard.own{filter:saturate(.15)}
+.pc .pim{position:absolute;inset:0;background:center/100% 100%;border-radius:inherit}.pc.own .pim{filter:saturate(.15)}.pc.holo{overflow:hidden}.spack .pc.holo{overflow:hidden}
+.pc.holo::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 38%,#ffffffaa 50%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;animation:bcSheen 3.6s ease-in-out infinite;pointer-events:none}
+.pc{position:relative}.pc .sq{position:absolute;top:-10px;right:-10px;background:#e8112d;border:3px solid #fff;border-radius:50%;min-width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;filter:none;z-index:2}
+.spack .pc .sq{min-width:5cqh;height:5cqh;font-size:2.6cqh;top:-1.5cqh;right:-1.5cqh;border-width:2px}
+.spack .pper{position:absolute;right:3%;top:6%;z-index:3;background:#0d1020e6;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:24px;font-weight:800}
 /* Batalhas */
 .scr.modes{padding:50px 40px 190px;justify-content:flex-start}
 .btop{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;width:1000px}
@@ -315,8 +325,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bev .evc{position:absolute;right:3%;bottom:8%;z-index:3;background:#000c;border:3px solid #fff;border-radius:20px;padding:4px 16px;font-size:28px;font-weight:900}
 .bev .evc.full{background:#2ee66b;color:#062;border-color:#fff}
 .bempty{font-size:28px;color:#8f9ab0;text-align:center;padding:30px}
-.brank{width:1000px;flex:none;margin-top:16px;display:flex;align-items:center;gap:26px;padding:28px 36px;border-radius:36px;border:4px solid #ffffffd9;color:#fff;font-family:inherit;text-align:left;cursor:pointer;background:repeating-linear-gradient(118deg,#ffffff12 0 26px,transparent 26px 52px),linear-gradient(170deg,#ffb23e,#d9661a);box-shadow:0 12px 0 #7a3300,0 18px 30px #000a,inset 0 4px 0 #ffffff60;text-shadow:0 3px 0 #0007}
-.brank span{font-size:84px;line-height:1}.brank div{flex:1}.brank b{display:block;font-size:46px}.brank small{font-size:28px;color:#fff3dccc}.brank i{font-size:60px;font-style:normal}
+.brank{width:1000px;flex:none;margin-top:16px;display:flex;align-items:center;gap:26px;padding:28px 36px;min-height:300px;box-sizing:border-box;border-radius:36px;border:4px solid #ffffffd9;color:#fff;font-family:inherit;text-align:left;cursor:pointer;background:repeating-linear-gradient(118deg,#ffffff12 0 26px,transparent 26px 52px),linear-gradient(170deg,#ffb23e,#d9661a);box-shadow:0 12px 0 #7a3300,0 18px 30px #000a,inset 0 4px 0 #ffffff60;text-shadow:0 3px 0 #0007}
+.brank span{font-size:130px;line-height:1}.brank div{flex:1}.brank b{display:block;font-size:46px}.brank small{font-size:28px;color:#fff3dccc}.brank i{font-size:60px;font-style:normal}
 .brank:active{transform:scale(.96)}
 .evbox .evrule{font-size:30px;color:#cfd6e0;text-align:center;max-width:880px}.evbox .evwins{font-size:40px;font-weight:900}
 .sdaily .stile{width:240px}.sdaily .stile .im{width:240px;height:336px}
@@ -335,7 +345,9 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .sdock{flex:none;background:#06070d;border-top:3px solid #2a3150;box-shadow:0 -10px 30px #0009}
 .ssub{display:flex;gap:14px;padding:16px 20px 6px;justify-content:center}
 .ssub .ssb{flex:1;flex-direction:row;justify-content:center;gap:10px;padding:16px 10px;border-radius:40px;background:#1b2240;border:0;font-size:30px;font-weight:800}
-.ssub .ssb span{font-size:40px}.ssub .ssb.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
+.ssub .ssb span{font-size:40px}
+.ssub .ssb .d50{font-style:normal;font-size:24px;line-height:1.1;text-align:left}.ssub .ssb:has(.d50),.ssub .ssb.on:has(.d50){background:linear-gradient(90deg,#ff5468,#d4001f 70%,#a3001a)!important;color:#fff;box-shadow:inset 0 3px 0 #ffffff40}
+.ssub .ssb.on:has(.d50){box-shadow:0 0 0 4px #fff,0 0 22px #ff2a4488}.ssub .ssb.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
 .sdock .stabs{border:0;padding:4px 0 10px}
 .sdock .stab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:28px;font-style:normal;padding:10px 0}.sdock .stab span{font-size:52px;line-height:1}
 .sdock .stab.on{box-shadow:none;color:#7fd6f5}.sdock .stab.sexit{color:#cfd6e0}.sdock .stab.sexit span{font-weight:900}
@@ -554,6 +566,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .socials{display:flex;gap:24px;justify-content:center}.soc{display:flex;padding:8px;border-radius:24px;line-height:0}.soc:active{transform:scale(.9)}
 .cfgfoot{display:flex;justify-content:space-between;align-items:center;gap:20px;width:100%;margin-top:20px}
 .swrap{position:relative;margin-top:40px}.swrap .sbanner{margin-top:0}
+.swrap .strow{left:auto;right:20px;flex-direction:row-reverse}
 .strow{position:absolute;left:20px;top:0;transform:translateY(-50%);display:flex;align-items:center;gap:12px;z-index:4}
 .strow .stm{position:static!important;margin:0}
 .stag{background:#0d1020e6;border:2px solid #3d4a7a;border-radius:30px;padding:8px 20px;font-size:26px;color:#cfd6e0;white-space:nowrap}
@@ -864,7 +877,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-004111';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-011748';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -1931,7 +1944,7 @@ function render(){
     if(p===1 && NET && NET.opp && DEFS[NET.opp.avatar]){ za.textContent=''; za.classList.add('me'); za.appendChild(avatarEl(NET.opp.avatar,'bav')); }
   }
   const zt=el('div','zone turn'); zt.style.cssText='left:492px;top:25px;width:99px;height:99px';
-  zt.textContent=G.turnNo;
+  zt.textContent=G.turnNo; zt.classList.add(G.turn===0?'tme':'tfoe');   // seu turno: verde · turno do oponente: vermelho
   frag.appendChild(zt);
   let lab='Turno do oponente';
   if(G.turn===0) lab=G.phase==='attack'?'Fim do turno':((G.phase==='prep' && P(0).chars.some(c=>c&&canAtk(0,c)))?'Ir para o ataque':'Fim do turno');
@@ -2609,7 +2622,7 @@ function flyCoins(from, n, kind){                   // moedas voando até o cont
     setTimeout(()=>{ c.remove(); if(hud){ hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump'); } }, 1000+i*55); }
   if(hud){ setTimeout(()=>{ const b=hud.querySelector('b'), t0=Date.now(), ms=900;
       hud._i=setInterval(()=>{ const q=Math.min(1,(Date.now()-t0)/ms), v=Math.round(before+(after-before)*(1-Math.pow(1-q,3))); b.textContent=v.toLocaleString('pt-BR'); if(q>=1){ clearInterval(hud._i); sfx('heal'); } },30);
-      hud._t=setTimeout(()=>{ hud.classList.remove('on'); accChip(); }, 2600); }, 1000); }
+      hud._t=setTimeout(()=>{ hud.classList.remove('on'); accChip(); }, 1730); }, 1000); }
   setTimeout(()=>sfx('click'),700); vib([20,40,20]);
 }
 const flyCrystals=(from,n)=>flyCoins(from,n,'cry');
@@ -3094,7 +3107,7 @@ async function shopScreen(tab, side){
   const bkb=el('div','stab sexit','<span>🏠</span>Início'); bkb.onclick=()=>{ clearInterval(ov._t); ov.remove(); accChip(); }; tabs.appendChild(bkb);
   [['cos','✨','Cosméticos'],['cards','🃏','Cartas']].forEach(([k,ic,n])=>{ const t=el('div','stab'+(SHOPV.tab===k?' on':''),`<span>${ic}</span>${n}`); t.onclick=()=>{ sfx('click'); shopScreen(k, k==='cards'?'daily':'av'); }; tabs.appendChild(t); });
   dock.appendChild(tabs); ov.appendChild(dock);
-  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','<i class="off50">50%</i>','Cartas do dia']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
+  const SIDES=SHOPV.tab==='cards'?[['all','📚','Todas as cartas'],['daily','<i class="off50">50%</i>','<em class="d50">Cartas com até 50% de desconto</em>']]:[['bk','🂠','Versos'],['av','👤','Avatares']];
   SIDES.forEach(([k,ic,n])=>{ const b=el('div','ssb'+(SHOPV.side===k?' on':''),`<span>${ic}</span>${n}`); b.onclick=()=>{ sfx('click'); shopScreen(null,k); }; sb.appendChild(b); });
   const mn=el('div','smain'); body.appendChild(mn);
   $('#stage').appendChild(ov);
@@ -3137,27 +3150,36 @@ function packView(pk){                                 // banner de pack especia
   if(bg.file){ ban.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
-  const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>{ const c=el('div','pc'); c.style.backgroundImage=`url("${DEFS[id].mini}")`; row.appendChild(c); }); ban.appendChild(row);
+  const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>row.appendChild(packCard(id))); ban.appendChild(row);
   const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
-  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`+(pk.quando==='aleatorio'?' · MUDA ÀS 9H E 21H':'')));
+  ban.appendChild(el('div','ptag',`PACK · ${ids.length} CARTAS`)); if(pk.quando==='aleatorio') ban.appendChild(el('div','pper','Muda às 9h e 21h'));
   ban.appendChild(el('div','ppr',(pk.ouro?golds(pk.ouro):'')+(pk.cristais?crys(pk.cristais):'')));
   ban.onclick=()=>buyPack(pk, ids); return ban;
 }
+function packCard(id){                               // carta do pack: tem = cor apagada + número vermelho · não tem = laminado
+  const n=ACC.user?owned(id):0, c=el('div','pc '+(n>0?'own':'holo')); c.dataset.cid=id; const im=el('div','pim'); im.style.backgroundImage=`url("${DEFS[id].mini}")`; c.appendChild(im);
+  if(n>0) c.appendChild(el('div','sq',String(n))); return c; }
 function buyPack(pk, ids){
   if(!ACC.user||!ACC.profile){ toast('Entre na sua conta para comprar.'); return; }
-  const box=el('div','mbox shopbuy'); box.appendChild(el('div','xres',`<b>${esc(pk.nome||'Pack especial')}</b>`));
-  const row=el('div','pkrow'); ids.forEach(id=>{ const c=el('div','pc'); c.style.backgroundImage=`url("${DEFS[id].mini}")`; c.onclick=()=>{ box.querySelectorAll('.pkbig').forEach(x=>x.remove()); const big=el('div','bigcard pkbig'); bigArt(big,DEFS[id]); big.onclick=()=>big.remove(); box.insertBefore(big,row); }; row.appendChild(c); }); box.appendChild(row);
-  box.appendChild(el('div','sbq',`Você leva as ${ids.length} cartas de uma vez. Toque numa carta para ver grande.`));
+  const box=el('div','mbox shopbuy pkbuy'); box.appendChild(el('div','xres',`<b>${esc(pk.nome||'Pack especial')}</b>`));
+  const big=el('div','bigcard'); box.appendChild(big);
+  const row=el('div','pkrow'); box.appendChild(row);
+  const pick=i=>{ bigArt(big,DEFS[ids[i]]); row.querySelectorAll('.pc').forEach((x,k)=>x.classList.toggle('sel',k===i)); sfx('click'); };
+  ids.forEach((id,i)=>{ const c=packCard(id); c.onclick=()=>pick(i); row.appendChild(c); });
+  big.onclick=()=>{ $('#modal').onclick=null; closeModal(); };
+  box.appendChild(el('div','sbq',`Você leva as ${ids.length} cartas de uma vez. Toque numa carta pequena para ver grande.`));
   const br=el('div','row sbrow');
   const go=cur=>async()=>{ const price=cur==='gold'?pk.ouro:pk.cristais, bal=cur==='gold'?(ACC.profile.gold|0):(ACC.profile.crystals|0);
     if(bal<price){ toast(cur==='gold'?'Você não tem ouro suficiente.':'Você não tem Cristais AMV suficientes.'); return; }
     const {data,error}=await SB.rpc('buy_pack',{p_pack:pk.id,p_cur:cur});
     if(error||!data||!data.ok){ toast({saldo:'Saldo insuficiente.',fora_da_loja:'Esse pack não está mais na Loja.'}[data&&data.reason]||'Não foi possível comprar agora.'); return; }
     if(!COLL) COLL={}; ids.forEach(id=>{ COLL[id]=(COLL[id]|0)+1; }); ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
-    $('#modal').onclick=null; closeModal(); vib([30,40,60]); toast(`${pk.nome||'Pack'}: ${ids.length} cartas foram para a sua coleção!`); accChip(); ids.forEach(shopOwned); spendFx(cur, price, ()=>sfx('heal')); };
+    $('#modal').onclick=null; closeModal(); vib([30,40,60]); toast(`${pk.nome||'Pack'}: ${ids.length} cartas foram para a sua coleção!`); accChip(); ids.forEach(shopOwned); packOwned(ids); spendFx(cur, price, ()=>sfx('heal')); };
   if(pk.ouro) br.appendChild(btn(golds(pk.ouro),'sbuy sec',go('gold'))); if(pk.cristais) br.appendChild(btn(crys(pk.cristais),'sbuy',go('cry')));
-  box.appendChild(br); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
+  box.appendChild(br); showModal(box); pick(0); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
+function packOwned(ids){ ids.forEach(id=>document.querySelectorAll(`.spack .pc[data-cid="${id}"]`).forEach(c=>c.replaceWith(packCard(id)))); }
+
 let BNC={}, ARS={};                                           // posição dos elementos do banner (banners.json, feito pelo criador)
 // Arsenal Visual (arsenal.json, feito pelo criador): avatares + banners num arquivo só; os arquivos antigos ficam de reserva
 const getJ=f=>fetch(vq(f),{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
