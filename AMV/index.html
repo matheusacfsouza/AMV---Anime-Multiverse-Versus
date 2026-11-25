@@ -718,7 +718,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 const MAX_LIFE = 6000;     // vida inicial e máxima
 const DECK_MIN = 20, DECK_MAX = 25, COPY_MAX = 3;
 const HAND_START = 5;      // cartas iniciais
-const DEFAULT_DECK = {31:3,32:3,36:3,34:1,26:3,27:3,30:2,29:1,28:1};  // 20 cartas, sem 5 estrelas (sem Shizu e Taishizu)
+const DEFAULT_DECK = {31:3,32:3,36:3,33:1,26:3,27:3,30:2,29:1,28:1};  // 20 cartas, sem 5 estrelas (sem Shizu e Taishizu)
 const BOT_DECK = {31:3,32:3,36:3,33:1,34:1,35:1,26:2,27:2,30:2,29:1,28:1};   // baralho do bot
 const BOT_AVATAR = 35;           // avatar do baralho do bot (Taishizu Ma Mei)
 
@@ -889,7 +889,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-143834';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-143933';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
