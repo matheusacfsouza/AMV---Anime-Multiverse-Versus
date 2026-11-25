@@ -319,6 +319,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .bev.pve{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#18b38a,#0b5a47)}
 .bev.pvp{background-image:repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#7b6cf0,#352b8f)}
 .bev.off{filter:saturate(.35) brightness(.75)}.bev:active{transform:scale(.97)}
+.bgsl{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .9s ease;background-repeat:no-repeat;pointer-events:none}.bev .ev2{font-weight:800}
 .bev .bfade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000e,#0000);pointer-events:none}
 .bev .evn{position:absolute;color:#fff;font-weight:900;white-space:nowrap;text-align:right;text-shadow:0 3px 8px #000;line-height:1.05;z-index:2}
 .bev .evm.pve,.bev .evm.pvp{font-size:28px;padding:6px 22px;border-radius:22px}
@@ -465,6 +466,14 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .form .err{color:#ff8a7a;font-size:32px;min-height:40px;text-align:center}
 .form .ok{color:#2ee66b;font-size:34px;text-align:center}
 .form .lbl{align-self:flex-start;margin-left:30px;font-size:32px;color:#bbb}
+.albx .bigcard{width:600px;height:840px}
+.trpan{width:900px;background:#ffffff10;border:3px solid #ffffff30;border-radius:34px;padding:22px 28px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.trt{font-size:38px;font-weight:900}.trwarn{color:#ff6b7d;font-size:30px;font-weight:700;text-align:center}
+.trbar{display:flex;align-items:center;gap:20px;width:100%;justify-content:space-between}
+.trlab{display:flex;flex-direction:column;gap:6px}.trlab small{font-size:22px;color:#aab3c2;background:#ffffff18;border-radius:14px;padding:2px 12px;align-self:flex-start}
+.trlab span{display:flex;align-items:center;gap:12px;font-size:36px;font-weight:900}.trlab img{width:46px;border-radius:4px}.trlab em{font-style:normal;color:#2ee66b}.trlab em.no{color:#ff6b7d}
+.trstep{display:flex;align-items:center;gap:12px}.trstep b{font-size:40px;min-width:40px;text-align:center}
+.trgo{min-width:240px}.trgo:disabled{opacity:.45;filter:grayscale(.6)}
 .stpick h2{margin:0;font-size:52px}.stpick .note{font-size:28px;max-width:900px;text-align:center;color:#cfd6e0}.stlist{display:flex;flex-direction:column;gap:18px;width:920px;max-height:1100px;overflow-y:auto}
 .stdeck{display:flex;gap:22px;align-items:center;padding:18px 22px;border-radius:28px;background:#ffffff12;border:4px solid transparent;cursor:pointer}
 .stdeck.on{border-color:#ffd84d;background:#ffd84d22;box-shadow:0 0 30px #ffd84d55}
@@ -707,10 +716,10 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
    CONFIGURAÇÃO (fácil de mexer quando suas regras chegarem)
    ============================================================ */
 const MAX_LIFE = 6000;     // vida inicial e máxima
-const DECK_MIN = 15, DECK_MAX = 20, COPY_MAX = 3;
+const DECK_MIN = 20, DECK_MAX = 25, COPY_MAX = 3;
 const HAND_START = 5;      // cartas iniciais
-const DEFAULT_DECK = {31:3,32:3,36:3,33:1,34:1,35:1,26:2,27:2,30:2,29:1,28:1};  // 20 cartas
-const BOT_DECK = DEFAULT_DECK;   // baralho do bot
+const DEFAULT_DECK = {31:3,32:3,36:3,34:1,26:3,27:3,30:2,29:1,28:1};  // 20 cartas, sem 5 estrelas (sem Shizu e Taishizu)
+const BOT_DECK = {31:3,32:3,36:3,33:1,34:1,35:1,26:2,27:2,30:2,29:1,28:1};   // baralho do bot
 const BOT_AVATAR = 35;           // avatar do baralho do bot (Taishizu Ma Mei)
 
 const DEFS = {   // arquivos com nome, pasta Cartas
@@ -880,7 +889,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-020330';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-143834';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2544,7 +2553,7 @@ function loadDeck(){
   try{
     const s=JSON.parse(localStorage.getItem('amv_deck2')||'null');
     if(s){ let gone=false; for(const id in s) if(!DEFS[id]){ delete s[id]; gone=true; }   // cartas retiradas do jogo saem do baralho
-      if(gone) saveDeck(s); if(validDeck(s)===null) return s; }
+      if(gone) saveDeck(s); if(Object.keys(s).length) return s; }
   }catch(e){}
   return Object.assign({},DEFAULT_DECK);
 }
@@ -2684,8 +2693,8 @@ function accChip(){
   home.querySelector('.tbn.gift').classList.toggle('dot', !!ACC.user && GIFTS.some(g=>!g.claimed));
   home.querySelector('.tbn.mail').classList.toggle('dot', NEWS.length>0 && NEWS[0].id>newsSeen());
   home.querySelectorAll('.crybox,.coins').forEach(x=>x.remove());
-  if(ACC.user && ACC.profile && ACC.profile.nickname){ const row=el('div','coins'); const gb=el('div','crybox goldbox',golds(ACC.profile.gold)); gb.title='Ouro'; gb.onclick=exchangeModal; row.appendChild(gb); home.appendChild(row);
-    const cc=el('div','crybox cry2',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; cc.onclick=exchangeModal; row.appendChild(cc); }
+  if(ACC.user && ACC.profile && ACC.profile.nickname){ const row=el('div','coins'); const gb=el('div','crybox goldbox',golds(ACC.profile.gold)); gb.title='Ouro'; row.appendChild(gb); home.appendChild(row);
+    const cc=el('div','crybox cry2',crys(ACC.profile.crystals)); cc.title='Cristais AMV'; row.appendChild(cc); }
   document.querySelectorAll('.tab.t-mis').forEach(t=>t.classList.toggle('dot', MIS.some(m=>m.progress>=m.goal && !m.claimed)));
   let fs=home.querySelector('.streak'); if(fs) fs.remove();
   const sk=myStreak(); if(sk>=2){ fs=el('div','streak',`<span>🔥</span><b>${sk}</b>`); fs.title=`${sk} vitórias seguidas: +${streakPct(sk)}% de XP e ouro`; fs.onclick=()=>toast(`🔥 ${sk} vitórias seguidas: +${streakPct(sk)}% de XP e Ouro`); home.appendChild(fs); const ch=home.querySelector('.acc'); if(ch){ fs.style.left=(ch.offsetLeft+ch.offsetWidth+14)+'px'; fs.style.top=(ch.offsetTop+ch.offsetHeight/2)+'px'; fs.style.transform='translateY(-50%)'; } }
@@ -2848,7 +2857,7 @@ async function checkStarter(){                       // conta nova escolhe 1 dos
     list.appendChild(it); });
   box.appendChild(ok); showModal(box);
 }
-const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,300,1500,3000,6000,15000], cry:[0,1,5,10,20,50], crynormal:[0,2,8,15,30,75], dust:[0,10,50,100,200,500]};
+const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,400,2000,4000,8000,20000], crynormal:[0,1,2,5,10,20], dust:[0,30,150,300,600,1500]};   // promoção só com ouro
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
 async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
@@ -3074,22 +3083,28 @@ function albumView(box, onChange){                  // Álbum: todas as cartas; 
     if(n) im.onclick=()=>albumCard(d, ()=>{ albumView(box,onChange); if(onChange) onChange(); });
     g.appendChild(t); });
 }
-function albumCard(d, onChange){                    // carta do álbum: ver e transformar repetidas em ouro
+function albumCard(d, onChange){                    // carta do álbum: ver e trocar repetidas por ouro (fica sempre 1 cópia)
   const n=owned(d.id), st=STARS[d.id]||1, per=PRICE.dust[st];
-  const box=el('div','mbox'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
+  const box=el('div','mbox albx'); const big=el('div','bigcard'); bigArt(big,d); box.appendChild(big);
   box.appendChild(el('div','aqbig',`Você tem <b>${n}</b> cópia(s)`));
-  if(ACC.user && n>1){
-    let k=n-1; const row=el('div','xch'), v=el('b','',String(k)), res=el('div','xres');
-    const updK=()=>{ v.textContent=k; res.innerHTML=`${k} repetida(s) → ${golds(k*per)}`; };
-    row.appendChild(btn('−','sec',()=>{ k=Math.max(1,k-1); updK(); })); row.appendChild(v); row.appendChild(btn('+','sec',()=>{ k=Math.min(n-1,k+1); updK(); }));
-    box.appendChild(el('div','note',`Cada repetida vale ${per} de Ouro. Fica sempre pelo menos 1 cópia.`)); box.appendChild(row); box.appendChild(res);
-    const go=btn('Transformar em ouro','',async()=>{ go.disabled=true; const {data,error}=await SB.rpc('dust_card',{p_card:d.id,p_n:k});
-      if(error||!data||!data.ok){ toast('Não foi possível transformar agora.'); go.disabled=false; return; }
-      COLL[d.id]=data.qty; closeModal(); gotReward({gold:data.gold,total_gold:data.total_gold}, go.isConnected?go:document.body); if(onChange) onChange(); });
-    const r2=el('div','row'); r2.appendChild(btn('Fechar','sec',closeModal)); r2.appendChild(go); box.appendChild(r2);
-  } else { if(!ACC.user) box.appendChild(el('div','note','Entre na sua conta para transformar cartas repetidas em ouro.')); else box.appendChild(el('div','note','Só cartas repetidas podem virar ouro.')); box.appendChild(btn('Fechar','sec',closeModal)); }
-  showModal(box);
+  if(!ACC.user){ box.appendChild(el('div','note','Entre na sua conta para trocar cartas repetidas por ouro.')); box.appendChild(btn('Fechar','sec',closeModal)); showModal(box); return; }
+  const pan=el('div','trpan'); box.appendChild(pan); pan.appendChild(el('div','trt','Trocar por ouro'));
+  const can=n>1; let k=can?1:0;
+  if(!can) pan.appendChild(el('div','trwarn','⚠️ Você não pode trocar a não ser que sobre 1 ou mais cartas após a troca.'));
+  const bar=el('div','trbar'); pan.appendChild(bar);
+  const lab=el('div','trlab'); bar.appendChild(lab);
+  const step=el('div','trstep'); const v=el('b','',String(k));
+  const mi=btn('−','sec',()=>{ k=Math.max(1,k-1); upd(); }), pl=btn('+','sec',()=>{ k=Math.min(n-1,k+1); upd(); });
+  step.append(mi,v,pl); if(can) bar.appendChild(step);
+  const go=btn('Trocar','trgo',async()=>{ if(!can) return; go.disabled=true; const {data,error}=await SB.rpc('dust_card',{p_card:d.id,p_n:k});
+    if(error||!data||!data.ok){ toast('Não foi possível trocar agora.'); go.disabled=false; return; }
+    COLL[d.id]=data.qty; closeModal(); gotReward({gold:data.gold,total_gold:data.total_gold}, document.body); if(onChange) onChange(); });
+  bar.appendChild(go);
+  const upd=()=>{ v.textContent=k; lab.innerHTML=`<small>Cartas trocáveis</small><span><img src="${d.mini}" alt=""><em class="${can?'':'no'}">${can?k:0}</em> ${golds((can?k:0)*per)}</span>`; go.disabled=!can; };
+  upd(); pan.appendChild(el('div','note',`Cada carta de ${st}★ vale ${per.toLocaleString('pt-BR')} de Ouro.`));
+  box.appendChild(btn('Fechar','sec',closeModal)); showModal(box);
 }
+
 /* ===== Loja: 18 cartas com desconto, trocam às 10h e às 22h ===== */
 let SHOP=null;
 let SHOPV={tab:'cards',side:'daily'};
@@ -3144,19 +3159,25 @@ async function shopDaily(mn, ov){
   tick(); ov._t=setInterval(tick,1000);
   (SHOP.packs||[]).forEach(pk=>{ const v=packView(pk, ends); if(v) mn.insertBefore(v, panel); });          // ordem: ULTRA (futuro), 5 estrelas, packs, cartas
   for(const st of [4,3,2,1]){ const L=SHOP.cards.filter(c=>DEFS[c.id] && (STARS[c.id]||c.stars)===st); if(!L.length) continue;   // 5 por linha: 4★, 3★, 2★, 1★
-    const row=el('div','srow5'); L.slice(0,5).forEach(c=>row.appendChild(shopTile(DEFS[c.id], golds(c.gold)+crys(c.cry), ()=>buyCard(DEFS[c.id],c,false)))); panel.appendChild(row); }
+    const row=el('div','srow5'); L.slice(0,5).forEach(c=>row.appendChild(shopTile(DEFS[c.id], golds(c.gold), ()=>buyCard(DEFS[c.id],c,false)))); panel.appendChild(row); }
 }
 const tLeft=ms=>{ ms=Math.max(0,ms); const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4); return d?`${d}d ${String(h).padStart(2,'0')}h`:`${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`; };
 function periodRow(host, tag, endMs, icon){            // contador + tarja em cima do banner (o mesmo do 5 estrelas)
   const r=el('div','strow'); let t=null; if(endMs){ t=el('div','stm'); r.appendChild(t); } r.appendChild(el('div','stag',tag)); host.appendChild(r);
   const paint=()=>{ if(!t) return; const ms=endMs-Date.now(); t.innerHTML=`${icon||'⏱'} ${tLeft(ms)}`; t.classList.toggle('late',ms<36e5); }; paint(); return paint; }
+function bgSlides(elm, bg, folder){                  // fundo com várias artes: troca a cada X segundos com fade
+  const fs=(bg.files||[]).filter(Boolean); if(fs.length<2) return; const url=f=>vq(f.includes('/')?f:folder+'/'+f);
+  const lay=el('div','bgsl'); lay.style.backgroundSize=bg.size+'%'; lay.style.backgroundPosition=`${bg.x}% ${bg.y}%`; elm.insertBefore(lay, elm.firstChild);
+  let i=0; const ms=Math.max(2,+bg.every||4)*1000; fs.forEach(f=>{ const im=new Image(); im.src=url(f); });
+  const t=setInterval(()=>{ if(!elm.isConnected){ clearInterval(t); return; } i=(i+1)%fs.length; lay.style.backgroundImage=`url("${url(fs[i])}")`; lay.style.opacity='1';
+    setTimeout(()=>{ elm.style.backgroundImage=`url("${url(fs[i])}")`; lay.style.transition='none'; lay.style.opacity='0'; void lay.offsetWidth; lay.style.transition=''; }, 900); }, ms); }
 function packView(pk, ends){                                 // banner de pack especial (3 a 5 cartas, compra o pack inteiro)
   const ids=(pk.cartas||[]).map(Number).filter(id=>DEFS[id]); if(!ids.length) return null;
   const b=pk.banner||{}, bg={size:100,x:50,y:50,...(b.bg||{})}, nm={x:97,y:40,s:10,...(b.name||{})}, cd={x:3,y:12,h:66,...(b.cards||{})}, fd=b.fade!=null?b.fade:55;
   const w=el('div','swrap spackw'); const ban=el('div','sbanner spack'); w.appendChild(ban);
   if(bg.file){ ban.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Packs/'+bg.file)}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   else ban.style.background='repeating-linear-gradient(118deg,#ffffff10 0 26px,transparent 26px 52px),linear-gradient(160deg,#5b3fd1,#1d1450)';
-  ban.appendChild(el('div','bfade')).style.height=fd+'%';
+  ban.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(ban,bg,'Banners/Packs');
   const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>row.appendChild(packCard(id))); ban.appendChild(row);
   const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const end=pk.quando==='aleatorio'?new Date(pk.ends_at||SHOP.banner_ends_at).getTime():(pk.fim?new Date(pk.fim+'-03:00').getTime():0);
@@ -3200,11 +3221,11 @@ function bannerView(ban, d, c){
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
   const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
-  ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`;   // fundo: arte do banner ou outra arte escolhida no Arsenal
+  ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; bgSlides(ban,bg,'Banners');   // fundo: arte do banner ou outra arte escolhida no Arsenal
   const buy=()=>buyCard(d,c,false,true);
   const a=el('div','bava'); a.appendChild(avatarEl(d.id)); a.appendChild(el('div','bavt','+ Avatar')); a.style.cssText=`left:${av.x}%;top:${av.y}%;height:${av.s}%`; ban.appendChild(a);
   ban.onclick=buy; ban.style.cursor='pointer';   // tocar em qualquer lugar do banner abre a compra
-  const t=shopTile(d, golds(c.gold)+crys(c.cry), buy); t.classList.add('bcard'); t.onclick=null;
+  const t=shopTile(d, golds(c.gold), buy); t.classList.add('bcard'); t.onclick=null;
   t.style.left=cd.x+'%'; t.style.top=cd.y+'%'; t.style.height=cd.h+'%'; ban.appendChild(t);
 }
 const SV={q:'', fav:null, stars:new Set(), cat:new Set(), el:new Set(), arq:new Set(), sort:'cat'};   // Todas as cartas: Personagens, Poderes, Campo, Apoiador, Ferramenta, Item
@@ -3283,7 +3304,7 @@ function buyCard(d, c, full, bundle){
     if(!COLL) COLL={}; COLL[d.id]=data.qty; if(data.avatar && COS && !COS.avatars.includes(d.id)) COS.avatars.push(d.id); ACC.profile.gold=data.total_gold; ACC.profile.crystals=data.total_crystals;
     closeModal(); vib([30,40,60]); toast(data.avatar?`${d.name} e o avatar são seus!`:`${d.name} foi para a sua coleção!`); accChip(); shopOwned(d.id); spendFx(cur, price, ()=>sfx('heal')); };
   if(full){ row.appendChild(btn(golds(PRICE.normal[st]),'sbuy sec',go('gold'))); row.appendChild(btn(crys(PRICE.crynormal[st]),'sbuy',go('cry'))); }
-  else { row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold'))); row.appendChild(btn(crys(c.cry),'sbuy',go('cry'))); }
+  else row.appendChild(btn(golds(c.gold),'sbuy sec',go('gold')));   // cartas da promoção: só ouro
   box.appendChild(row); showModal(box); $('#modal').onclick=e=>{ if(e.target.id==='modal'){ $('#modal').onclick=null; closeModal(); } };
 }
 function bigCardView(d){                           // carta grande do tamanho da Loja; tocar de novo fecha
@@ -3435,8 +3456,9 @@ function eventBanner(e, ends){
   const wrap=el('div','bevw'); const v=el('div','bev '+(e.modo==='pvp'?'pvp':'pve')+(e.ativo?'':' off')); wrap.appendChild(v);
   const win=evWindow(e), endMs=win.on?win.end:win.start; const paint=periodRow(wrap, evTag(e), endMs, win.on?'⏱':'⏳'); if(endMs&&ends) ends.push(paint);
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
-  v.appendChild(el('div','bfade')).style.height=fd+'%';
+  v.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(v,bg,'Banners/Eventos');
   const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
+  const t2=b.text2; if(t2&&t2.t){ const x=el('div','evn ev2',esc(t2.t)); x.style.cssText=`right:${100-(t2.x??96)}%;top:${t2.y??55}%;font-size:${t2.s??8}cqh`; v.appendChild(x); }   // segundo texto do banner
   v.appendChild(el('div','evm '+(e.modo==='pvp'?'pvp':'pve'),e.modo==='pvp'?'Evento PvP':'Evento PvE'));   // PvE verde · PvP vermelho
   v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
   v.onclick=()=>eventOpen(e); return wrap;
