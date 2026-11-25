@@ -750,7 +750,9 @@ const DEFS = {   // arquivos com nome, pasta Cartas
 };
 /* estrelas: 1 a 3 = até 3 cópias, 4 = 1 cópia, 5 = só 1 carta de 5 estrelas no baralho inteiro */
 const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1};   // estrelas = as da carta (não dependem do número de habilidades)
-const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?1:3; };
+const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?2:3; };
+const STAR_CAP={5:2,4:8};   // máximo de cartas no baralho por estrela
+const starTotal=(c,st)=>Object.keys(c).reduce((t,k)=>t+((STARS[k]||1)===st?(c[k]|0):0),0);
 const isMaMei=c=>/Ma Mei/.test(c.def.name);
 const DS={31:100,32:200,33:300,36:100};                         // Duplo Sentido (valor fixo)
 const DS_MASTER=new Set([34,35]);                               // Mestre do Duplo Sentido (metade do ATQ do alvo)
@@ -892,7 +894,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-163910';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-172606';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2565,7 +2567,8 @@ function validDeck(c){
   let t=0, ch=0;
   let five=0;
   for(const id in c){ const n=c[id]|0; if(n>0&&!DEFS[id]) return 'Carta inexistente no baralho.'; if(n>owned(id)) return `Você tem só ${owned(id)} cópia(s) de "${DEFS[id].name}".`; if((STARS[id]||0)>=5) five+=n; if(n<0||n>maxCopies(id)) return `Máximo de ${maxCopies(id)} cópia(s) de "${DEFS[id]?DEFS[id].name:id}".`; t+=n; if(DEFS[id]&&DEFS[id].kind==='char') ch+=n; }
-  if(five>1) return 'Só pode ter 1 carta de 5 estrelas no baralho.';
+  if(five>STAR_CAP[5]) return `Só pode ter ${STAR_CAP[5]} cartas de 5 estrelas no baralho.`;
+  if(starTotal(c,4)>STAR_CAP[4]) return `Só pode ter ${STAR_CAP[4]} cartas de 4 estrelas no baralho.`;
   if(t<DECK_MIN) return `Faltam ${DECK_MIN-t} cartas (mínimo ${DECK_MIN}).`;
   if(t>DECK_MAX) return `Sobram ${t-DECK_MAX} cartas (máximo ${DECK_MAX}).`;
   if(ch<1) return 'O baralho precisa de pelo menos 1 Personagem.';
@@ -2860,7 +2863,7 @@ async function checkStarter(){                       // conta nova escolhe 1 dos
     list.appendChild(it); });
   box.appendChild(ok); showModal(box);
 }
-const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,400,2000,4000,8000,20000], crynormal:[0,1,2,5,10,20], dust:[0,30,150,300,600,1500]};   // promoção só com ouro
+const PRICE={gold:[0,200,1000,2000,4000,10000], normal:[0,400,2000,4000,8000,20000], crynormal:[0,1,2,5,10,20], dust:[0,40,200,400,800,2000]};   // promoção só com ouro
 async function loadMissions(){ if(!SB) return; try{ const {data}=await SB.rpc('get_missions'); MIS=Array.isArray(data)?data:[]; }catch(e){} accChip(); }
 let LOGIN_TOUCHED=false;
 async function touchLogin(){ if(!SB||!ACC.user||LOGIN_TOUCHED) return; LOGIN_TOUCHED=true; try{ await SB.rpc('touch_login'); }catch(e){} loadMissions(); }
@@ -3039,8 +3042,8 @@ function deckScreen(){
     const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
     ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
     ctl.appendChild(nb);
-    ctl.appendChild(btn('+','',()=>{ const five=Object.keys(counts).reduce((t,k)=>t+((STARS[k]||0)>=5?counts[k]:0),0);
-      if((STARS[d.id]||0)>=5 && five>=1) toast('Só pode ter 1 carta de 5 estrelas no baralho.');
+    ctl.appendChild(btn('+','',()=>{ const sd=STARS[d.id]||1, cap=STAR_CAP[sd];
+      if(cap && starTotal(counts,sd)>=cap) toast(`Só pode ter ${cap} cartas de ${sd} estrelas no baralho.`);
       else if(counts[d.id]>=owned(d.id)) toast(`Você tem só ${owned(d.id)} cópia(s) desta carta. Compre mais na Loja.`);
       else if(counts[d.id]<maxCopies(d.id)){counts[d.id]++;upd();} else toast(`Máximo de ${maxCopies(d.id)} cópia(s) desta carta.`); }));
     t.appendChild(el('div','own',`Possui ${owned(d.id)}`));
@@ -3168,6 +3171,7 @@ const tLeft=ms=>{ ms=Math.max(0,ms); const d=Math.floor(ms/864e5), h=Math.floor(
 function periodRow(host, tag, endMs, icon){            // contador + tarja em cima do banner (o mesmo do 5 estrelas)
   const r=el('div','strow'); let t=null; if(endMs){ t=el('div','stm'); r.appendChild(t); } r.appendChild(el('div','stag',tag)); host.appendChild(r);
   const paint=()=>{ if(!t) return; const ms=endMs-Date.now(); t.innerHTML=`${icon||'⏱'} ${tLeft(ms)}`; t.classList.toggle('late',ms<36e5); }; paint(); return paint; }
+const alCss=(o,dx)=>{ const x=o.x??dx; return o.al==='c'?`left:${x}%;transform:translateX(-50%);text-align:center`:o.al==='l'?`left:${x}%;text-align:left`:`right:${100-x}%;text-align:right`; };   // texto pela direita, centro ou esquerda
 function starsOn(host, sr){                           // estrelas escolhidas no Arsenal (packs e eventos)
   if(!sr||!(sr.n>0)) return; const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(Math.min(5,sr.n))); st.style.cssText=`right:${100-(sr.x??96)}%;top:${sr.y??80}%;height:${sr.s??8}cqh`; host.appendChild(st); }
 function bgSlides(elm, bg, folder){                  // fundo com várias artes: troca a cada X segundos com fade
@@ -3187,7 +3191,7 @@ function packView(pk, ends){                                 // banner de pack e
   ban.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(ban,bg,'Banners/Packs');
   const row=el('div','pcards'); row.style.cssText=`left:${cd.x}%;top:${cd.y}%;height:${cd.h}%`; ids.forEach(id=>row.appendChild(packCard(id))); ban.appendChild(row);
   starsOn(ban, b.stars);
-  const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
+  const n=el('div','bname',esc(pk.nome||'Pack especial')); n.style.cssText=`${alCss(nm,96)};top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const end=pk.quando==='aleatorio'?new Date(pk.ends_at||SHOP.banner_ends_at).getTime():(pk.fim?new Date(pk.fim+'-03:00').getTime():0);
   const t=periodRow(w,`Pack · ${ids.length} cartas`,end); if(end&&ends) ends.push([null,end,t]);
   ban.appendChild(el('div','ppr',(pk.ouro?golds(pk.ouro):'')+(pk.cristais?crys(pk.cristais):'')));
@@ -3227,7 +3231,7 @@ const BN_DEF={bg:{size:100,x:50,y:30},card:{x:6,y:8,h:84},name:{x:94,y:62,s:11},
 function bannerView(ban, d, c){
   const cf={...(BNC.__default||{}), ...(BNC[d.id]||{})}, bg={...BN_DEF.bg,...cf.bg}, cd={...BN_DEF.card,...cf.card}, nm={...BN_DEF.name,...cf.name}, sr={...BN_DEF.stars,...cf.stars}, av={...BN_DEF.avatar,...cf.avatar}, fd=cf.fade!=null?cf.fade:BN_DEF.fade;
   ban.appendChild(el('div','bfade')).style.height=fd+'%';
-  const n=el('div','bname',esc(d.name)); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
+  const n=el('div','bname',esc(d.name)); n.style.cssText=`${alCss(nm,96)};top:${nm.y}%;font-size:${nm.s}cqh`; ban.appendChild(n);
   const st=el('div','bstars','<img src="Icones/16.png" alt="">'.repeat(STARS[d.id]||5)); st.style.cssText=`right:${100-sr.x}%;top:${sr.y}%;height:${sr.s}cqh`; ban.appendChild(st);
   ban.style.backgroundImage=`url("${vq(bg.file?bg.file:'Banners/'+d.id+'.jpg')}")`; ban.style.backgroundSize=bg.size+'%'; ban.style.backgroundPosition=`${bg.x}% ${bg.y}%`; bgSlides(ban,bg,'Banners');   // fundo: arte do banner ou outra arte escolhida no Arsenal
   const buy=()=>buyCard(d,{...c,cry:cf.cristais|0},false,true);
@@ -3466,9 +3470,9 @@ function eventBanner(e, ends){
   const win=evWindow(e), endMs=win.on?win.end:win.start; const paint=periodRow(wrap, evTag(e), endMs, win.on?'⏱':'⏳'); if(endMs&&ends) ends.push(paint);
   if(bg.file){ v.style.backgroundImage=`url("${vq(bg.file.includes('/')?bg.file:'Banners/Eventos/'+bg.file)}")`; v.style.backgroundSize=bg.size+'%'; v.style.backgroundPosition=`${bg.x}% ${bg.y}%`; }
   v.appendChild(el('div','bfade')).style.height=fd+'%'; if(bg.file) bgSlides(v,bg,'Banners/Eventos');
-  const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`right:${100-nm.x}%;top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
+  const n=el('div','evn',esc(e.nome||'Evento')); n.style.cssText=`${alCss(nm,96)};top:${nm.y}%;font-size:${nm.s}cqh`; v.appendChild(n);
   starsOn(v, b.stars);
-  const t2=b.text2; if(t2&&t2.t){ const x=el('div','evn ev2',esc(t2.t)); x.style.cssText=`right:${100-(t2.x??96)}%;top:${t2.y??55}%;font-size:${t2.s??8}cqh`; v.appendChild(x); }   // segundo texto do banner
+  const t2=b.text2; if(t2&&t2.t){ const x=el('div','evn ev2',esc(t2.t)); x.style.cssText=`${alCss(t2,96)};top:${t2.y??55}%;font-size:${t2.s??8}cqh`; v.appendChild(x); }   // segundo texto do banner
   v.appendChild(el('div','evm '+(e.modo==='pvp'?'pvp':'pve'),e.modo==='pvp'?'Evento PvP':'Evento PvE'));   // PvE verde · PvP vermelho
   v.appendChild(el('div','evc'+(full?' full':''),`${Math.min(10,e.wins|0)}/10`));                   // só dá para ganhar 10 vezes cada evento
   v.onclick=()=>eventOpen(e); return wrap;
