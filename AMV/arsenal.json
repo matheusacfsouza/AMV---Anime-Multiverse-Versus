@@ -76,31 +76,32 @@
  "banners": {
   "35": {
    "bg": {
-    "size": 130,
+    "size": 145,
     "x": 0,
-    "y": 44.9
+    "y": 45
    },
    "card": {
-    "x": 6,
-    "y": 8,
-    "h": 84
+    "x": 3.1,
+    "y": 6,
+    "h": 75
    },
    "name": {
-    "x": 96,
-    "y": 70.3,
+    "x": 97,
+    "y": 70.9,
     "s": 10.5
    },
    "stars": {
-    "x": 97,
-    "y": 84.3,
-    "s": 10.5
+    "x": 98.2,
+    "y": 83,
+    "s": 13
    },
    "avatar": {
-    "x": 38.5,
-    "y": 7,
-    "s": 25
+    "x": 31.3,
+    "y": 24.1,
+    "s": 40
    },
-   "fade": 55
+   "fade": 55,
+   "cristais": 10
   },
   "37": {
    "card": {
@@ -126,52 +127,53 @@
   },
   "38": {
    "bg": {
-    "size": 110,
-    "x": 69.2,
-    "y": 19
+    "size": 120,
+    "x": 85.3,
+    "y": 21.7
    },
    "card": {
-    "x": 6,
-    "y": 8,
-    "h": 84
+    "x": 3.1,
+    "y": 6,
+    "h": 75
    },
    "name": {
-    "x": 96,
-    "y": 70.3,
+    "x": 97,
+    "y": 70.9,
     "s": 10.5
    },
    "stars": {
-    "x": 97,
-    "y": 84.3,
-    "s": 10.5
+    "x": 98.2,
+    "y": 83,
+    "s": 13
    },
    "avatar": {
-    "x": 38.5,
-    "y": 7,
-    "s": 25
+    "x": 31.3,
+    "y": 24.1,
+    "s": 40
    },
-   "fade": 55
+   "fade": 40,
+   "cristais": 10
   },
   "__default": {
    "card": {
-    "x": 6,
-    "y": 8,
-    "h": 84
+    "x": 3.1,
+    "y": 6,
+    "h": 75
    },
    "name": {
-    "x": 96,
-    "y": 70.3,
+    "x": 97,
+    "y": 70.9,
     "s": 10.5
    },
    "stars": {
-    "x": 97,
-    "y": 84.3,
-    "s": 10.5
+    "x": 98.2,
+    "y": 83,
+    "s": 13
    },
    "avatar": {
-    "x": 38.5,
-    "y": 7,
-    "s": 25
+    "x": 31.3,
+    "y": 24.1,
+    "s": 40
    }
   }
  },
@@ -181,32 +183,73 @@
    "nome": "Velha Guarda",
    "cartas": [
     21,
-    40,
-    34
+    34,
+    40
    ],
    "ouro": 10000,
-   "cristais": 50,
+   "cristais": 10,
    "quando": "aleatorio",
    "inicio": "",
    "fim": "",
    "banner": {
     "bg": {
-     "size": 155,
-     "x": 0,
-     "y": 12.8,
-     "file": "Banners/Fundos/Zé do Trovão - Velha Guarda.jpg"
+     "size": 195,
+     "x": 26.2,
+     "y": 13,
+     "file": "Banners/Fundos/Zé do Trovão - Velha Guarda.jpg",
+     "every": 3,
+     "_multi": true,
+     "pos": {
+      "Banners/Fundos/Zé do Trovão - Velha Guarda.jpg": {
+       "size": 195,
+       "x": 26.2,
+       "y": 13
+      },
+      "Banners/Fundos/Muhriqa - Velha Guarda.jpg": {
+       "size": 160,
+       "x": 0,
+       "y": 13
+      },
+      "Banners/Fundos/Shizu Ma Mei - Velha Guarda.jpg": {
+       "size": 160,
+       "x": 0,
+       "y": 42.2
+      },
+      "Banners/Fundos/Item - Fios invisíveis.jpg": {
+       "size": 155,
+       "x": 5.7,
+       "y": 7.8
+      },
+      "Banners/Fundos/Item - Irmãos Ma Mei.jpg": {
+       "size": 155,
+       "x": 5.7,
+       "y": 7.8
+      }
+     },
+     "files": [
+      "Banners/Fundos/Zé do Trovão - Velha Guarda.jpg",
+      "Banners/Fundos/Shizu Ma Mei - Velha Guarda.jpg",
+      "Banners/Fundos/Muhriqa - Velha Guarda.jpg"
+     ]
     },
     "name": {
-     "x": 45.5,
-     "y": 80.8,
-     "s": 13
+     "x": 3.6,
+     "y": 8.5,
+     "s": 13,
+     "al": "l"
     },
     "cards": {
-     "x": 2.7,
-     "y": 26.8,
-     "h": 50
+     "x": 3.4,
+     "y": 26.4,
+     "h": 55
     },
-    "fade": 55
+    "fade": 55,
+    "stars": {
+     "n": 4,
+     "x": 98.1,
+     "y": 82.8,
+     "s": 13
+    }
    }
   }
  ],
@@ -218,17 +261,17 @@
   ],
   "baralhos": [
    {
-    "nome": "Água",
+    "nome": "Água - Família Ma Mei",
     "avatar": 32,
     "cartas": {
-     "26": 2,
+     "26": 3,
      "27": 2,
      "29": 1,
-     "30": 2,
-     "31": 2,
+     "30": 3,
+     "31": 3,
      "32": 3,
-     "33": 1,
-     "36": 2
+     "33": 2,
+     "36": 3
     }
    }
   ]
@@ -249,92 +292,58 @@
    "maquina": [
     {
      "nome": "Família Ma Mei",
-     "avatar": 32,
+     "avatar": 33,
      "cartas": {
       "26": 3,
       "27": 3,
-      "28": 1,
-      "29": 1,
-      "30": 1,
+      "29": 2,
+      "30": 3,
       "31": 2,
       "32": 2,
-      "33": 1,
+      "33": 2,
       "34": 1,
-      "35": 1,
       "36": 2
      }
     }
    ],
    "quando": "semanal",
-   "dias": [
-    3
-   ],
+   "dias": [],
    "de": "00:00",
-   "ate": "23:00",
+   "ate": "24:00",
    "loot": {
-    "31": 65.934,
+    "31": 55.934,
     "32": 15.385,
-    "33": 1.6,
-    "34": 1.6,
-    "35": 0.1,
-    "36": 15.385
+    "33": 1.76,
+    "34": 1.538,
+    "36": 25.385
    },
    "banner": {
     "bg": {
      "size": 100,
-     "x": 100,
-     "y": 45.9,
+     "x": 0,
+     "y": 45.6,
      "file": "Banners/Fundos/Shifu Ma Mei.jpg"
     },
     "name": {
-     "x": 47.8,
-     "y": 78.9,
-     "s": 16
+     "x": 2.9,
+     "y": 70.3,
+     "s": 16,
+     "al": "l"
     },
-    "fade": 55
+    "fade": 55,
+    "text2": {
+     "t": "Apenas Personagens de Água",
+     "x": 29.8,
+     "y": 87.4,
+     "s": 5
+    },
+    "stars": {
+     "n": 4,
+     "x": 97.8,
+     "y": 15.6,
+     "s": 13
+    }
    }
-  },
-  {
-   "id": "ev1795579059812",
-   "nome": "Família Ma Mei",
-   "modo": "pvp",
-   "quando": "semanal",
-   "inicio": "",
-   "fim": "",
-   "restricao": {
-    "elementos": [
-     "agua"
-    ],
-    "arquetipos": []
-   },
-   "maquina": [],
-   "loot": {
-    "31": 65.934,
-    "32": 15.385,
-    "33": 1.538,
-    "34": 1.538,
-    "35": 0.22,
-    "36": 15.385
-   },
-   "banner": {
-    "bg": {
-     "size": 100,
-     "x": 100,
-     "y": 45.7,
-     "file": "Banners/Fundos/Taishizu Ma Mei.jpg"
-    },
-    "name": {
-     "x": 47.8,
-     "y": 78.9,
-     "s": 16
-    },
-    "fade": 55
-   },
-   "dias": [
-    3
-   ],
-   "de": "00:00",
-   "ate": "23:00"
   }
  ],
  "loot": {
