@@ -395,7 +395,8 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rk2{font-size:34px;margin-top:6px}.rk2 b{color:#ffd84d}.rk3{font-size:28px;color:#ffb347;margin-top:6px}
 .rkcard{display:flex;align-items:center;gap:18px;margin-top:12px;font-size:30px;text-align:left}.rkcard .im{width:110px;height:154px;border-radius:8px;background-size:100% 100%}
 .dmode{display:flex;gap:0;background:#1d2129;border-radius:40px;padding:6px;margin:10px 0 6px}
-.dlist{width:100%}.dedit>*{width:100%;box-sizing:border-box}.dedit>.ddock{width:auto}.dedit>.gridwrap{display:flex;justify-content:center}.deinfo{flex:none;min-width:260px}.dename{min-width:0;width:100%}
+.dlist{width:100%;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:40px}
+.dbox.drag{transform:scale(1.06);z-index:5;box-shadow:0 0 0 5px #3db6ff,0 20px 40px #000c;opacity:.92}.dboxes.dragging .dbox:not(.drag){transition:transform .15s}.dedit>*{width:100%;box-sizing:border-box}.dedit>.ddock{width:auto}.dedit>.gridwrap{display:flex;justify-content:center}.deinfo{flex:none;min-width:260px}.dename{min-width:0;width:100%}
 .dlhead{display:flex;align-items:center;gap:18px;margin:10px 4px 22px;font-size:52px;font-weight:900}.dlhead small{font-size:30px;color:#aab3c2;background:#ffffff14;border-radius:20px;padding:4px 16px}.dlhead .btn{margin-left:auto;font-size:30px;padding:12px 30px}
 .dboxes{display:grid;grid-template-columns:1fr 1fr;gap:26px}
 .dbox{position:relative;height:560px;border-radius:34px;background:linear-gradient(170deg,var(--dc,#3d9bd6) 0 22%,#1b2032 22.2%);border:4px solid #ffffff22;overflow:hidden;cursor:pointer;box-shadow:0 10px 26px #000a}
@@ -405,7 +406,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .dbox .dcv{width:190px;height:266px;border-radius:10px;background:center/100% 100%;box-shadow:0 4px 10px #000a}
 .dbox .dname{position:absolute;left:18px;right:18px;bottom:18px;background:#0d1120;border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:2px}
 .dbox .dname.inuse{background:linear-gradient(180deg,#5dff8f,#16a34a 60%,#0b6b2e);box-shadow:inset 0 3px 0 #ffffff60,0 5px 0 #064d20}.dbox .dname.inuse b{color:#fff;text-shadow:0 2px 0 #0007}.dbox .dname.inuse small{color:#eafff0}
-.dbox .dcopy{position:absolute;left:12px;bottom:12px;width:66px;height:66px;border-radius:50%;background:#3d9bd6;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
+.dbox .dcopy{position:absolute;right:16px;top:98px;width:66px;height:66px;border-radius:50%;background:#3d9bd6;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
 .dbox .dname b{font-size:36px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dbox .dname small{font-size:24px;color:#aab3c2}.dbox .dname em{color:#ffb347;font-style:normal}
 .dbox .duse{position:absolute;right:16px;top:20px;background:#2ee66b;color:#062;font-weight:900;font-size:24px;border-radius:18px;padding:4px 14px;border:3px solid #fff}
 .dbox .ddel{position:absolute;right:14px;top:14px;width:70px;height:70px;border-radius:50%;background:#e8112d;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
@@ -919,7 +920,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-230926';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-231658';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3052,7 +3053,8 @@ function deckScreen(tab){
   const s=el('div','scr'); s.style.padding='30px 30px 300px';
   const mt=el('div','dmode ddock'); const mb1=el('div','dm'+(tab==='album'?'':' on'),'Montar baralho'), mb2=el('div','dm'+(tab==='album'?' on':''),'Álbum'); mt.appendChild(mb2); mt.appendChild(mb1); s.appendChild(mt);   // embaixo: Álbum à esquerda, Montar baralho à direita
   const list=el('div','dlist'), alb=el('div','dalbum'); s.appendChild(list); s.appendChild(alb);
-  let editing=false;
+  let editing=false, drag=null;
+  list.addEventListener('touchmove',e=>{ if(drag) e.preventDefault(); },{passive:false});   // sem rolar a tela enquanto arrasta
   const show=k=>{ mb1.classList.toggle('on',k!=='album'); mb2.classList.toggle('on',k==='album'); list.style.display=k==='album'?'none':''; alb.style.display=k==='album'?'':'none'; if(k==='album') albumView(alb,()=>drawList()); else drawList(); };
   mb1.onclick=()=>{ sfx('click'); show('build'); }; mb2.onclick=()=>{ sfx('click'); show('album'); };
   function drawList(){
@@ -3070,7 +3072,19 @@ function deckScreen(tab){
       if(editing && L.length>1){ const del=el('button','ddel','✕'); del.onclick=e=>{ e.stopPropagation(); confirmBox(`Apagar o baralho "${esc(dk.nome)}"?`,'Apagar',()=>{ const L2=decksAll().filter(z=>z.id!==dk.id); decksSave(L2); if(dk.id===on) try{ localStorage.setItem('amv_deck_on',L2[0].id); }catch(e2){} drawList(); }); }; x.appendChild(del); }
       if(editing && L.length<DECKS_MAX){ const cp=el('button','dcopy','⧉'); cp.title='Copiar baralho'; cp.onclick=e=>{ e.stopPropagation(); const L2=decksAll(); if(L2.length>=DECKS_MAX){ toast(`Você já tem ${DECKS_MAX} baralhos.`); return; }
         L2.splice(L2.findIndex(z=>z.id===dk.id)+1,0,{...JSON.parse(JSON.stringify(dk)),id:'d'+Date.now(),nome:((dk.nome||'Baralho')+' (cópia)').slice(0,24)}); decksSave(L2); sfx('heal'); toast('Baralho copiado!'); drawList(); }; x.appendChild(cp); }   // copiar: só se ainda houver espaço
-      x.onclick=()=>{ if(editing) return; sfx('click'); deckEdit(dk.id); }; g.appendChild(x); });
+      x.dataset.id=dk.id; x.onclick=()=>{ if(editing||x._dragged) return; sfx('click'); deckEdit(dk.id); };
+      x.onpointerdown=e=>{ if(e.target.closest('button')) return; clearTimeout(x._lp); x._dragged=false; const sx=e.clientX, sy=e.clientY;
+        const cancel=ev=>{ if(Math.hypot(ev.clientX-sx,ev.clientY-sy)>14) clearTimeout(x._lp); };
+        x.addEventListener('pointermove',cancel); x.addEventListener('pointerup',()=>{ clearTimeout(x._lp); x.removeEventListener('pointermove',cancel); },{once:true});
+        x._lp=setTimeout(()=>{ x.removeEventListener('pointermove',cancel); startDrag(x,e.pointerId); },420); };   // segurar o dedo: arrastar para mudar a ordem
+      g.appendChild(x); });
+    function startDrag(x,pid){ vib(30); sfx('click'); x._dragged=true; drag=x; x.classList.add('drag'); g.classList.add('dragging');
+      const mv=ev=>{ ev.preventDefault(); const t=document.elementFromPoint(ev.clientX,ev.clientY), o=t&&t.closest('.dbox:not(.dnew)'); if(!o||o===x||o.parentNode!==g) return;
+        const kids=[...g.children], a=kids.indexOf(x), b=kids.indexOf(o); g.insertBefore(x, a<b?o.nextSibling:o); };
+      const up=()=>{ document.removeEventListener('pointermove',mv); drag=null; x.classList.remove('drag'); g.classList.remove('dragging');
+        const order=[...g.querySelectorAll('.dbox[data-id]')].map(b=>b.dataset.id), L2=decksAll(); L2.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id)); decksSave(L2);
+        setTimeout(()=>{ x._dragged=false; drawList(); },50); };
+      document.addEventListener('pointermove',mv,{passive:false}); document.addEventListener('pointerup',up,{once:true}); document.addEventListener('pointercancel',up,{once:true}); }
   }
   tabBar(s,'deck'); setScreen(s); show(tab==='album'?'album':'build');
 }
