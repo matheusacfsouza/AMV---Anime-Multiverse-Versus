@@ -395,6 +395,28 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .rk2{font-size:34px;margin-top:6px}.rk2 b{color:#ffd84d}.rk3{font-size:28px;color:#ffb347;margin-top:6px}
 .rkcard{display:flex;align-items:center;gap:18px;margin-top:12px;font-size:30px;text-align:left}.rkcard .im{width:110px;height:154px;border-radius:8px;background-size:100% 100%}
 .dmode{display:flex;gap:0;background:#1d2129;border-radius:40px;padding:6px;margin:10px 0 6px}
+.dlist{width:100%}.dedit>*{width:100%;box-sizing:border-box}.dedit>.ddock{width:auto}.dedit>.gridwrap{display:flex;justify-content:center}.deinfo{flex:none;min-width:260px}.dename{min-width:0;width:100%}
+.dlhead{display:flex;align-items:center;gap:18px;margin:10px 4px 22px;font-size:52px;font-weight:900}.dlhead small{font-size:30px;color:#aab3c2;background:#ffffff14;border-radius:20px;padding:4px 16px}.dlhead .btn{margin-left:auto;font-size:30px;padding:12px 30px}
+.dboxes{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.dbox{position:relative;height:560px;border-radius:34px;background:linear-gradient(170deg,var(--dc,#3d9bd6) 0 22%,#1b2032 22.2%);border:4px solid #ffffff22;overflow:hidden;cursor:pointer;box-shadow:0 10px 26px #000a}
+.dbox.on{border-color:#ffd84d;box-shadow:0 0 0 3px #ffd84d66,0 10px 26px #000a}
+.dbox .dnum{position:absolute;left:24px;top:8px;font-size:96px;font-weight:900;color:#fff;text-shadow:0 4px 0 #0005;line-height:1}
+.dbox .dcase{position:absolute;left:50%;top:110px;transform:translateX(-50%);width:230px;height:300px;border-radius:16px;background:linear-gradient(90deg,var(--dc),#0006);box-shadow:14px 14px 0 #0004,0 10px 20px #000a;display:flex;align-items:center;justify-content:center}
+.dbox .dcv{width:190px;height:266px;border-radius:10px;background:center/100% 100%;box-shadow:0 4px 10px #000a}
+.dbox .dname{position:absolute;left:18px;right:18px;bottom:18px;background:#0d1120;border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.dbox .dname b{font-size:36px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dbox .dname small{font-size:24px;color:#aab3c2}.dbox .dname em{color:#ffb347;font-style:normal}
+.dbox .duse{position:absolute;right:16px;top:20px;background:#2ee66b;color:#062;font-weight:900;font-size:24px;border-radius:18px;padding:4px 14px;border:3px solid #fff}
+.dbox .ddel{position:absolute;right:14px;top:14px;width:70px;height:70px;border-radius:50%;background:#e8112d;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
+.dnew{background:#ffffff0c;border:4px dashed #ffffff40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}.dnew i{font-style:normal;font-size:140px;color:#ffffff66;line-height:1}.dnew b{font-size:36px;color:#aab3c2}
+.detop{display:flex;align-items:center;gap:20px;margin:6px 0 14px}.dename{flex:1;font:inherit;font-size:44px;font-weight:900;color:#fff;background:#ffffff10;border:3px solid #ffffff30;border-radius:20px;padding:10px 20px}
+.deinfo{font-size:28px;text-align:right}.deinfo b{font-size:40px}.deinfo .bad{color:#ffb347;font-size:24px}.deinfo .ok{color:#2ee66b;font-size:24px}
+.deacts{gap:12px;margin-bottom:14px}.deacts .btn{font-size:26px;padding:12px 20px}.deacts .btn.on{background:linear-gradient(180deg,#5dff8f,#16a34a);color:#062}
+.dkgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;background:#0b0e1a;border:3px solid #ffffff1a;border-radius:24px;padding:14px;min-height:150px}
+.dkc{aspect-ratio:5/7;border-radius:7px;background:center/100% 100%;cursor:pointer;box-shadow:0 3px 8px #000a}.dkc.cap{box-shadow:0 0 0 4px #ffd84d}.dkc.empty{background:none;border:2px dashed #ffffff30;cursor:default;box-shadow:none}
+.dehint{text-align:center;font-size:24px;color:#8f9ab0;margin:10px 0 14px}
+.decol .tile.inDeck .im{box-shadow:0 0 0 5px #3db6ff}.decol .din{position:absolute;left:8px;bottom:12px;background:#3db6ff;color:#001;border-radius:16px;padding:2px 12px;font-size:22px;font-weight:900}.decol .din:empty{display:none}
+.decol .dzoom{position:absolute;right:8px;top:44px;width:56px;height:56px;border-radius:50%;background:#000b;border:2px solid #fff;font-size:26px;z-index:2}
+.dmode.ddock{position:absolute;left:30px;right:30px;bottom:186px;z-index:7;margin:0;box-shadow:0 -6px 24px #000c,0 0 0 3px #2a3150}.ddock .dm{flex:1;text-align:center}
 .dm{padding:16px 44px;border-radius:34px;font-size:34px;font-weight:800;color:#aab3c2;cursor:pointer}.dm.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
 .dbuild,.dalbum{display:flex;flex-direction:column;align-items:center;flex:1;min-height:0;width:100%}
 .tile .own{position:absolute;left:8px;top:48px;background:#000c;border-radius:20px;padding:4px 12px;font-size:24px;font-weight:700}
@@ -894,7 +916,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-191216';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-210701';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -2554,15 +2576,17 @@ async function botTurn(){
 /* ============================================================
    TELAS: título, baralho, pedra-papel-tesoura
    ============================================================ */
-function loadDeck(){
-  try{
-    const s=JSON.parse(localStorage.getItem('amv_deck2')||'null');
-    if(s){ let gone=false; for(const id in s) if(!DEFS[id]){ delete s[id]; gone=true; }   // cartas retiradas do jogo saem do baralho
-      if(gone) saveDeck(s); if(Object.keys(s).length) return s; }
-  }catch(e){}
-  return Object.assign({},DEFAULT_DECK);
-}
-function saveDeck(c){ try{localStorage.setItem('amv_deck2',JSON.stringify(c));}catch(e){} }
+const DECKS_MAX=20;                                 // cada jogador guarda até 20 baralhos
+function decksSave(L){ try{ localStorage.setItem('amv_decks',JSON.stringify(L)); }catch(e){} }
+function decksAll(){
+  try{ const L=JSON.parse(localStorage.getItem('amv_decks')||'null'); if(Array.isArray(L)&&L.length) return L; }catch(e){}
+  let old=null; try{ old=JSON.parse(localStorage.getItem('amv_deck2')||'null'); }catch(e){}   // traz o baralho antigo (único) para a lista
+  const L=[{id:'d'+Date.now(),nome:'Baralho 1',cartas:old&&Object.keys(old).length?old:{...DEFAULT_DECK}}];
+  decksSave(L); try{ localStorage.setItem('amv_deck_on',L[0].id); }catch(e){} return L; }
+function deckOnId(){ const L=decksAll(); let id=null; try{ id=localStorage.getItem('amv_deck_on'); }catch(e){} return (L.find(d=>d.id===id)||L[0]).id; }
+function deckClean(c){ const o={}; for(const id in c) if(DEFS[id] && (c[id]|0)>0) o[id]=c[id]|0; return o; }   // cartas retiradas do jogo saem do baralho
+function loadDeck(){ const L=decksAll(), d=L.find(x=>x.id===deckOnId()); const c=deckClean(d&&d.cartas||{}); return Object.keys(c).length?c:Object.assign({},DEFAULT_DECK); }
+function saveDeck(c, nome){ const L=decksAll(), d=L.find(x=>x.id===deckOnId()); if(!d) return; d.cartas=deckClean(c); if(nome) d.nome=nome; decksSave(L); }
 function validDeck(c){
   let t=0, ch=0;
   let five=0;
@@ -2852,7 +2876,7 @@ async function checkStarter(){                       // conta nova escolhe 1 dos
   const ok=btn('Escolher este baralho','',async()=>{ if(sel<0) return; ok.disabled=true;
     const {data:r,error}=await SB.rpc('choose_starter',{p_idx:sel});
     if(error||!r||!r.ok){ ok.disabled=false; toast(r&&r.reason==='ja_escolheu'?'Você já escolheu seu baralho.':'Não foi possível escolher agora.'); if(r&&r.reason==='ja_escolheu') closeModal(); return; }
-    const deck={}; for(const k in r.cartas) if(DEFS[k]) deck[k]=r.cartas[k]|0; saveDeck(deck);
+    const deck={}; for(const k in r.cartas) if(DEFS[k]) deck[k]=r.cartas[k]|0; saveDeck(deck, data.baralhos[sel].nome);
     closeModal(); await loadCollection(); vib([30,40,60]); sfx('heal'); toast(`${data.baralhos[sel].nome||'Baralho'} é seu!`); accChip(); });
   ok.disabled=true;
   data.baralhos.forEach((dk,i)=>{ const it=el('div','stdeck'); const av=el('div','stav'); if(DEFS[dk.avatar]) av.appendChild(avatarEl(dk.avatar)); it.appendChild(av);
@@ -3016,64 +3040,90 @@ function titleScreen(){
   setScreen(s); accChip(); guardHome(); loadNews(); loadGifts();
 }
 
-function deckScreen(){
+const EL_COR={agua:'#3d9bd6',fogo:'#ff6b3d',raio:'#f5c518',escuridao:'#7b5cff',grama:'#32bf0b',terra:'#b07a3a',ar:'#8fd3e8',divino:'#ffd84d',metal:'#9aa3ad'};
+function deckMainEl(c){ const n={}; for(const id in c){ const d=DEFS[id]; if(d&&d.kind==='char'&&d.el) n[d.el]=(n[d.el]|0)+(c[id]|0); } return Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||'agua'; }
+function deckCover(dk){ const c=deckClean(dk.cartas||{}); if(dk.capa && c[dk.capa]) return dk.capa; return Object.keys(c).map(Number).sort((a,b)=>(DEFS[b].kind==='char')-(DEFS[a].kind==='char')||(STARS[b]||1)-(STARS[a]||1))[0]; }
+function deckScreen(tab){
   if(!history.state || history.state.s!=='deck') nav('deck');
+  CUR_TAB='deck'; DECK_LEAVE=null;
+  const s=el('div','scr'); s.style.padding='30px 30px 300px';
+  const mt=el('div','dmode ddock'); const mb1=el('div','dm'+(tab==='album'?'':' on'),'Montar baralho'), mb2=el('div','dm'+(tab==='album'?' on':''),'Álbum'); mt.appendChild(mb2); mt.appendChild(mb1); s.appendChild(mt);   // embaixo: Álbum à esquerda, Montar baralho à direita
+  const list=el('div','dlist'), alb=el('div','dalbum'); s.appendChild(list); s.appendChild(alb);
+  let editing=false;
+  const show=k=>{ mb1.classList.toggle('on',k!=='album'); mb2.classList.toggle('on',k==='album'); list.style.display=k==='album'?'none':''; alb.style.display=k==='album'?'':'none'; if(k==='album') albumView(alb,()=>drawList()); else drawList(); };
+  mb1.onclick=()=>{ sfx('click'); show('build'); }; mb2.onclick=()=>{ sfx('click'); show('album'); };
+  function drawList(){
+    const L=decksAll(), on=deckOnId(); list.replaceChildren();
+    const hd=el('div','dlhead',`<span>Meus baralhos</span><small>${L.length}/${DECKS_MAX}</small>`); const ed=btn(editing?'Pronto':'Editar','sec',()=>{ editing=!editing; drawList(); }); hd.appendChild(ed); list.appendChild(hd);
+    const g=el('div','dboxes'); list.appendChild(g);
+    const nw=el('div','dbox dnew','<i>+</i><b>Montar novo</b>');
+    nw.onclick=()=>{ if(L.length>=DECKS_MAX){ toast(`Você já tem ${DECKS_MAX} baralhos. Apague um para montar outro.`); return; }
+      const d={id:'d'+Date.now(),nome:`Baralho ${L.length+1}`,cartas:{}}; L.push(d); decksSave(L); sfx('click'); deckEdit(d.id,true); }; g.appendChild(nw);
+    L.forEach((dk,i)=>{ const c=deckClean(dk.cartas||{}), t=Object.values(c).reduce((a,b)=>a+b,0), cor=EL_COR[deckMainEl(c)], cv=deckCover(dk), bad=validDeck(c);
+      const x=el('div','dbox'+(dk.id===on?' on':'')); x.style.setProperty('--dc',cor);
+      x.appendChild(el('div','dnum',String(i+1).padStart(2,'0')));
+      const bx=el('div','dcase'); if(cv){ const im=el('div','dcv'); im.style.backgroundImage=`url("${DEFS[cv].mini}")`; bx.appendChild(im); } x.appendChild(bx);
+      x.appendChild(el('div','dname',`<b>${esc(dk.nome||'Baralho')}</b><small>${t}/${DECK_MAX}${bad?' · <em>incompleto</em>':''}</small>`));
+      if(dk.id===on) x.appendChild(el('div','duse','✓ Em uso'));
+      if(editing && L.length>1){ const del=el('button','ddel','✕'); del.onclick=e=>{ e.stopPropagation(); confirmBox(`Apagar o baralho "${esc(dk.nome)}"?`,'Apagar',()=>{ const L2=decksAll().filter(z=>z.id!==dk.id); decksSave(L2); if(dk.id===on) try{ localStorage.setItem('amv_deck_on',L2[0].id); }catch(e2){} drawList(); }); }; x.appendChild(del); }
+      x.onclick=()=>{ if(editing) return; sfx('click'); deckEdit(dk.id); }; g.appendChild(x); });
+  }
+  tabBar(s,'deck'); setScreen(s); show(tab==='album'?'album':'build');
+}
+function confirmBox(msg, ok, fn){ const box=el('div','mbox'); box.appendChild(el('div','xres',`<b>${msg}</b>`)); const r=el('div','row'); r.appendChild(btn('Cancelar','sec',closeModal)); r.appendChild(btn(ok,'',()=>{ closeModal(); fn(); })); box.appendChild(r); showModal(box); }
+function deckEdit(id, isNew){                         // montagem: cartas do baralho em cima, coleção embaixo (toque para pôr / tirar)
   CUR_TAB='deck';
-  const counts=loadDeck(); for(const id in DEFS) counts[id]=counts[id]|0;
-  const s=el('div','scr'); s.style.padding='30px 30px 200px';
-  s.appendChild(el('div','',`<div style="font-size:64px;font-weight:900;margin-top:10px">BARALHOS</div>`));
-  const mt=el('div','dmode'); const mb1=el('div','dm on','Montar baralho'), mb2=el('div','dm','Álbum'); mt.appendChild(mb1); mt.appendChild(mb2); s.appendChild(mt);
-  const build=el('div','dbuild'), alb=el('div','dalbum'); alb.style.display='none';
-  mb1.onclick=()=>{ mb1.classList.add('on'); mb2.classList.remove('on'); build.style.display=''; alb.style.display='none'; sfx('click'); };
-  mb2.onclick=()=>{ mb2.classList.add('on'); mb1.classList.remove('on'); build.style.display='none'; alb.style.display=''; sfx('click'); albumView(alb,()=>{ applyView(); upd(); }); };
-  s.appendChild(build); s.appendChild(alb);
-  const info=el('div','big'); info.style.margin='6px'; info.style.fontSize='44px'; build.appendChild(info);
-  const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView));
-  tools.appendChild(fb); tools.appendChild(ob);
+  const L=decksAll(), dk=L.find(x=>x.id===id); if(!dk){ deckScreen(); return; }
+  const counts=deckClean(dk.cartas||{}); for(const k in DEFS) counts[k]=counts[k]|0; let nome=dk.nome||'Baralho', capa=dk.capa||null;
+  const s=el('div','scr dedit'); s.style.padding='26px 26px 300px';
+  const top=el('div','detop'); s.appendChild(top);
+  const nm=el('input','dename'); nm.value=nome; nm.maxLength=24; nm.oninput=()=>{ nome=nm.value; }; top.appendChild(nm);
+  const info=el('div','deinfo'); top.appendChild(info);
+  const acts=el('div','row deacts'); s.appendChild(acts);
+  const useB=btn('','sec',()=>{ try{ localStorage.setItem('amv_deck_on',id); }catch(e){} sfx('click'); upd(); }); acts.appendChild(useB);
+  acts.appendChild(btn('🖼️ Capa','sec',()=>{ const ids=Object.keys(counts).filter(k=>counts[k]>0); if(!ids.length){ toast('Ponha cartas no baralho primeiro.'); return; }
+    const box=el('div','mbox'); box.appendChild(el('div','xres','<b>Escolha a capa</b>')); const g=el('div','pkrow'); ids.forEach(k=>{ const c=el('div','pc'); const im=el('div','pim'); im.style.backgroundImage=`url("${DEFS[k].mini}")`; c.appendChild(im); if(+k===+capa) c.classList.add('sel'); c.onclick=()=>{ capa=+k; closeModal(); upd(); }; g.appendChild(c); }); box.appendChild(g); box.appendChild(btn('Fechar','sec',closeModal)); showModal(box); }));
+  acts.appendChild(btn('Baralho padrão','sec',()=>{ for(const k in DEFS) counts[k]=Math.min(DEFAULT_DECK[k]|0, owned(k)); upd(); }));
+  const dg=el('div','dkgrid'); s.appendChild(dg);
+  s.appendChild(el('div','dehint','Toque numa carta de cima para tirar · toque na coleção para pôr'));
   const dtabs=el('div','dtabs'); const TT=[['','Todos'],['char','Personagens'],['item','Itens'],['tool','Ferramentas'],['support','Apoiadores'],['field','Campos']];
   const tabOn=()=>{ const one=DV.cat.size===1?[...DV.cat][0]:(DV.cat.size?null:''); dtabs.querySelectorAll('.dtab').forEach(t=>t.classList.toggle('on',t.dataset.k===one)); };
   TT.forEach(([k,n])=>{ const t=el('div','dtab',n); t.dataset.k=k; t.onclick=()=>{ DV.cat=new Set(k?[k]:[]); sfx('click'); applyView(); }; dtabs.appendChild(t); });
-  build.appendChild(dtabs); build.appendChild(tools);
-  const grid=el('div','grid'); const gw=el('div','gridwrap'); gw.appendChild(grid); build.appendChild(gw);
-  const nums={}, tiles={};
-  Object.values(DEFS).forEach(d=>{
-    const t=el('div','tile'); tiles[d.id]=t; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>cardModalView(d,applyView);
+  const tools=el('div','dtool'); const fb=btn('','sec',()=>filterSheet(DV,applyView)), ob=btn('','sec',()=>sortSheet(DV,applyView)); tools.appendChild(fb); tools.appendChild(ob);
+  s.appendChild(dtabs); s.appendChild(tools);
+  const grid=el('div','grid decol'); const gw=el('div','gridwrap'); gw.appendChild(grid); s.appendChild(gw);
+  const add=k=>{ const sd=STARS[k]||1, cap=STAR_CAP[sd];
+    if(cap && starTotal(counts,sd)>=cap){ toast(`Só pode ter ${cap} cartas de ${sd} estrelas no baralho.`); return; }
+    if(counts[k]>=owned(k)){ toast(`Você tem só ${owned(k)} cópia(s) desta carta. Compre mais na Loja.`); return; }
+    if(counts[k]>=maxCopies(k)){ toast(`Máximo de ${maxCopies(k)} cópia(s) desta carta.`); return; }
+    if(Object.values(counts).reduce((a,b)=>a+b,0)>=DECK_MAX){ toast(`O baralho pode ter no máximo ${DECK_MAX} cartas.`); return; }
+    counts[k]++; sfx('click'); upd(); };
+  const tiles={};
+  Object.values(DEFS).forEach(d=>{ const t=el('div','tile'); tiles[d.id]=t; const im=el('div','im'); im.style.backgroundImage=`url("${d.mini}")`; im.onclick=()=>add(d.id); t.appendChild(im);
     t.appendChild(el('div','stars',`<img src="Icones/16.png" alt="">×${STARS[d.id]||1}`));
-    const ctl=el('div','ctl'); const nb=el('b','',counts[d.id]); nums[d.id]=nb;
-    ctl.appendChild(btn('−','sec',()=>{ if(counts[d.id]>0){counts[d.id]--;upd();} }));
-    ctl.appendChild(nb);
-    ctl.appendChild(btn('+','',()=>{ const sd=STARS[d.id]||1, cap=STAR_CAP[sd];
-      if(cap && starTotal(counts,sd)>=cap) toast(`Só pode ter ${cap} cartas de ${sd} estrelas no baralho.`);
-      else if(counts[d.id]>=owned(d.id)) toast(`Você tem só ${owned(d.id)} cópia(s) desta carta. Compre mais na Loja.`);
-      else if(counts[d.id]<maxCopies(d.id)){counts[d.id]++;upd();} else toast(`Máximo de ${maxCopies(d.id)} cópia(s) desta carta.`); }));
-    t.appendChild(el('div','own',`Possui ${owned(d.id)}`));
-    t.appendChild(im); t.appendChild(ctl);
-  });
-  function applyView(){
-    const list=deckView(DV).filter(d=>owned(d.id)>0||counts[d.id]>0); grid.replaceChildren(...list.map(d=>{ const t=tiles[d.id]; const f=t.querySelector('.fav'); if(f) f.remove(); if(favs().includes(d.id)) t.appendChild(el('div','fav','❤️')); return t; }));
+    const z=el('button','dzoom','🔍'); z.onclick=e=>{ e.stopPropagation(); cardModalView(d,applyView); }; t.appendChild(z);
+    t.appendChild(el('div','own',`Possui ${owned(d.id)}`)); t.appendChild(el('div','din')); });
+  function applyView(){ const list=deckView(DV).filter(d=>owned(d.id)>0||counts[d.id]>0); grid.replaceChildren(...list.map(d=>tiles[d.id]));
     if(!list.length) grid.appendChild(el('div','',`<span style="font-size:36px;color:#aaa">Nenhuma carta com esses filtros.</span>`));
-    tabOn(); const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`;
-  }
-  applyView();
+    tabOn(); const n=filterCount(DV); fb.innerHTML=`🔍 Filtro${n?` <b>(${n})</b>`:''}`; ob.innerHTML=`⇅ Organizar: <b>${SORTS.find(o=>o.k===DV.sort).n}</b>`; }
   // verso do baralho
-  let back=myBack();
-  const bw=el('div','backs'); bw.appendChild(el('span','',`Verso do baralho:`));
+  let back=myBack(); const bw=el('div','backs'); bw.appendChild(el('span','',`Verso do baralho:`));
   BACKS.forEach((b,i)=>{ const t=el('div','bk'+(i===back?' sel':'')+(ownBack(i)?'':' lock')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
     t.onclick=()=>{ if(!ownBack(i)){ toast(`Verso ${b.n}: compre na Loja → Cosméticos.`); return; } back=i; bw.querySelectorAll('.bk').forEach((x,k)=>x.classList.toggle('sel',k===i)); }; bw.appendChild(t); });
-  build.appendChild(bw);
-  const foot=el('div','row'); foot.style.marginTop='18px';
-  const save=btn('Salvar e voltar','',()=>{ saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} goHome(); });
-  foot.appendChild(btn('Baralho padrão','sec',()=>{ for(const id in DEFS) counts[id]=Math.min(DEFAULT_DECK[id]|0, owned(id)); upd(); }));
-  foot.appendChild(save); build.appendChild(foot);
-  function upd(){
-    let t=0; for(const id in DEFS){ nums[id].textContent=counts[id]; t+=counts[id]; }
-    const v=validDeck(counts);
-    info.innerHTML=`${t} / ${DECK_MAX} cartas (mín. ${DECK_MIN})` + (v?`<br><span style="color:#ffb347;font-size:34px">${v}</span>`:'<br><span style="color:#2ee66b;font-size:34px">Baralho válido</span>');
-    save.disabled=!!v;
-  }
-  DECK_LEAVE=()=>{ if(validDeck(counts)){ toast('Baralho inválido: ajuste antes de sair.'); return false; } saveDeck(counts); try{localStorage.setItem('amv_back',back);}catch(e){} return true; };
-  tabBar(s,'deck');
-  upd(); setScreen(s);
+  s.appendChild(bw);
+  const dock=el('div','dmode ddock'); const cancel=el('div','dm','Cancelar'), save=el('div','dm on','Salvar'); dock.appendChild(cancel); dock.appendChild(save); s.appendChild(dock);
+  const doSave=()=>{ const L2=decksAll(), d2=L2.find(x=>x.id===id); if(!d2) return; d2.cartas=deckClean(counts); d2.nome=(nome||'').trim()||'Baralho'; if(capa) d2.capa=capa; else delete d2.capa; decksSave(L2); try{ localStorage.setItem('amv_back',back); }catch(e){} };
+  cancel.onclick=()=>{ sfx('click'); if(isNew && !Object.values(counts).some(v=>v>0)) decksSave(decksAll().filter(x=>x.id!==id)); DECK_LEAVE=null; deckScreen(); };
+  save.onclick=()=>{ doSave(); sfx('heal'); const v=validDeck(deckClean(counts)); toast(v?`Salvo, mas ainda incompleto: ${v}`:'Baralho salvo!'); DECK_LEAVE=null; deckScreen(); };
+  DECK_LEAVE=()=>{ doSave(); return true; };                                                // sair pela barra de baixo também salva
+  function upd(){ const t=Object.values(counts).reduce((a,b)=>a+b,0), v=validDeck(deckClean(counts));
+    info.innerHTML=`<b>${t}</b> / ${DECK_MAX} cartas (mín. ${DECK_MIN})`+(v?`<br><span class="bad">${v}</span>`:'<br><span class="ok">Baralho válido</span>');
+    const on=deckOnId()===id; useB.innerHTML=on?'✓ Em uso nas batalhas':'Usar nas batalhas'; useB.classList.toggle('on',on);
+    const ids=Object.keys(counts).filter(k=>counts[k]>0).map(Number).sort((a,b)=>(DEFS[b].kind==='char')-(DEFS[a].kind==='char')||(STARS[b]||1)-(STARS[a]||1)||DEFS[a].name.localeCompare(DEFS[b].name,'pt'));
+    dg.replaceChildren(); ids.forEach(k=>{ for(let i=0;i<counts[k];i++){ const c=el('div','dkc'+(+k===+capa?' cap':'')); c.style.backgroundImage=`url("${DEFS[k].mini}")`; c.onclick=()=>{ counts[k]--; sfx('click'); upd(); }; dg.appendChild(c); } });
+    for(let i=t;i<DECK_MIN;i++) dg.appendChild(el('div','dkc empty'));
+    for(const k in tiles){ const n=counts[k]|0, b=tiles[k].querySelector('.din'); b.textContent=n?`${n} no baralho`:''; tiles[k].classList.toggle('inDeck',n>0); } }
+  tabBar(s,'deck'); setScreen(s); applyView(); upd();
 }
 function albumView(box, onChange){                  // Álbum: todas as cartas; as que faltam aparecem como silhueta
   const all=Object.values(DEFS).sort((a,b)=>(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));
