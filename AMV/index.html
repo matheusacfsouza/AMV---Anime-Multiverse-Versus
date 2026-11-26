@@ -416,6 +416,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .dkgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;background:#0b0e1a;border:3px solid #ffffff1a;border-radius:24px;padding:14px;min-height:150px}
 .dkc{aspect-ratio:5/7;border-radius:7px;background:center/100% 100%;cursor:pointer;box-shadow:0 3px 8px #000a}.dkc.cap{box-shadow:0 0 0 4px #ffd84d}.dkc.empty{background:none;border:2px dashed #ffffff30;cursor:default;box-shadow:none}
 .dehint{text-align:center;font-size:24px;color:#8f9ab0;margin:10px 0 14px}
+.grid.decol{gap:20px;grid-template-columns:repeat(4,236px)}.decol .tile{gap:0}
 .decol .tile.inDeck .im{box-shadow:0 0 0 5px #3db6ff}.decol .din{position:absolute;left:8px;bottom:12px;background:#3db6ff;color:#001;border-radius:16px;padding:2px 12px;font-size:22px;font-weight:900}.decol .din:empty{display:none}
 .decol .dzoom{position:absolute;right:8px;top:44px;width:56px;height:56px;border-radius:50%;background:#000b;border:2px solid #fff;font-size:26px;z-index:2}
 .dmode.ddock{position:absolute;left:30px;right:30px;bottom:186px;z-index:7;margin:0;box-shadow:0 -6px 24px #000c,0 0 0 3px #2a3150}.ddock .dm{flex:1;text-align:center}
@@ -918,7 +919,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-224311';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261125-230926';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
