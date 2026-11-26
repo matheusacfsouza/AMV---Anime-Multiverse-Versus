@@ -407,6 +407,11 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .dbox .dname{position:absolute;left:18px;right:18px;bottom:18px;background:#0d1120;border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:2px}
 .dbox .dname.inuse{background:linear-gradient(180deg,#5dff8f,#16a34a 60%,#0b6b2e);box-shadow:inset 0 3px 0 #ffffff60,0 5px 0 #064d20}.dbox .dname.inuse b{color:#fff;text-shadow:0 2px 0 #0007}.dbox .dname.inuse small{color:#eafff0}
 .dbox .dcopy{position:absolute;right:16px;top:98px;width:66px;height:66px;border-radius:50%;background:#3d9bd6;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
+.dbox.unav .dnum,.dbox.unav .dcase,.dbox.unav .dname{opacity:.35;filter:grayscale(.7)}.dbox .dunav{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);white-space:nowrap;background:#3a4256f0;color:#fff;font-size:28px;font-weight:800;border-radius:30px;padding:10px 24px;border:2px solid #ffffff40;z-index:2}
+.deacts{display:flex;width:100%}.deacts .btn{flex:1;font-size:32px!important;padding:20px 10px!important;white-space:nowrap}.deacts .btn:first-child{flex:1.6}
+.pickgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;width:900px;max-height:1050px;overflow-y:auto;background:#0b0e1a;border:3px solid #ffffff22;border-radius:28px;padding:24px;box-sizing:border-box}
+.pickgrid .pk{aspect-ratio:5/7;border-radius:12px;background:center/100% 100% no-repeat;cursor:pointer;box-shadow:0 6px 14px #000a;position:relative}
+.pickgrid .pk.sel{box-shadow:0 0 0 6px #ffd84d,0 0 30px 8px #ffd84dcc}.pickgrid .pk.lock{filter:brightness(.35)}.pickgrid .pk.lock::after{content:'🔒';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:60px}
 .dbox .dname b{font-size:36px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dbox .dname small{font-size:24px;color:#aab3c2}.dbox .dname em{color:#ffb347;font-style:normal}
 .dbox .duse{position:absolute;right:16px;top:20px;background:#2ee66b;color:#062;font-weight:900;font-size:24px;border-radius:18px;padding:4px 14px;border:3px solid #fff}
 .dbox .ddel{position:absolute;right:14px;top:14px;width:70px;height:70px;border-radius:50%;background:#e8112d;color:#fff;font-size:34px;font-weight:900;border:4px solid #fff;z-index:2}
@@ -419,7 +424,7 @@ html,body{margin:0;height:100%;background:#050505;overflow:hidden;touch-action:m
 .dehint{text-align:center;font-size:24px;color:#8f9ab0;margin:10px 0 14px}
 .grid.decol{gap:20px;grid-template-columns:repeat(4,236px)}.decol .tile{gap:0}
 .tile .sq.cnt{position:absolute;top:-10px;right:-10px;background:#e8112d;border:3px solid #fff;border-radius:50%;min-width:50px;height:50px;padding:0 6px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;z-index:3;box-shadow:0 3px 8px #000a}
-.decol .tile.inDeck .im{box-shadow:0 0 0 5px #3db6ff}.decol .din{position:absolute;left:8px;bottom:12px;background:#3db6ff;color:#001;border-radius:16px;padding:2px 12px;font-size:22px;font-weight:900}.decol .din:empty{display:none}
+.decol .tile.inDeck .im{box-shadow:0 0 0 5px #ffd84d,0 0 26px 6px #ffd84daa;filter:brightness(.62)}.decol .din{position:absolute;left:0;right:0;top:0;height:330px;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#fff;font-size:60px;font-weight:900;text-shadow:0 3px 0 #000,0 0 16px #000}.decol .din b{font-size:100px}.decol .din:empty{display:none}
 .decol .dzoom{position:absolute;right:8px;top:44px;width:56px;height:56px;border-radius:50%;background:#000b;border:2px solid #fff;font-size:26px;z-index:2}
 .dmode.ddock{position:absolute;left:30px;right:30px;bottom:186px;z-index:7;margin:0;box-shadow:0 -6px 24px #000c,0 0 0 3px #2a3150}.ddock .dm{flex:1;text-align:center}
 .dm{padding:16px 44px;border-radius:34px;font-size:34px;font-weight:800;color:#aab3c2;cursor:pointer}.dm.on{background:linear-gradient(90deg,#3d9bd6,#2bc2d4);color:#fff}
@@ -921,7 +926,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261125-233352';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261126-000843';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -3069,7 +3074,7 @@ function deckScreen(tab){
       const x=el('div','dbox'+(dk.id===on?' on':'')); x.style.setProperty('--dc',cor);
       x.appendChild(el('div','dnum',String(i+1).padStart(2,'0')));
       const bx=el('div','dcase'); if(cv){ const im=el('div','dcv'); im.style.backgroundImage=`url("${DEFS[cv].mini}")`; bx.appendChild(im); } x.appendChild(bx);
-      x.appendChild(el('div','dname'+(dk.id===on?' inuse':''),`<b>${esc(dk.nome||'Baralho')}</b><small>${t}/${DECK_MAX}${bad?' · <em>incompleto</em>':''}</small>`));
+      x.appendChild(el('div','dname'+(dk.id===on?' inuse':''),`<b>${esc(dk.nome||'Baralho')}</b>`)); if(bad){ x.classList.add('unav'); x.appendChild(el('div','dunav','Indisponível para uso')); }   // baralho incompleto: apagado
       if(editing && L.length>1){ const del=el('button','ddel','✕'); del.onclick=e=>{ e.stopPropagation(); confirmBox(`Apagar o baralho "${esc(dk.nome)}"?`,'Apagar',()=>{ const L2=decksAll().filter(z=>z.id!==dk.id); decksSave(L2); if(dk.id===on) try{ localStorage.setItem('amv_deck_on',L2[0].id); }catch(e2){} drawList(); }); }; x.appendChild(del); }
       if(editing && L.length<DECKS_MAX){ const cp=el('button','dcopy','⧉'); cp.title='Copiar baralho'; cp.onclick=e=>{ e.stopPropagation(); const L2=decksAll(); if(L2.length>=DECKS_MAX){ toast(`Você já tem ${DECKS_MAX} baralhos.`); return; }
         L2.splice(L2.findIndex(z=>z.id===dk.id)+1,0,{...JSON.parse(JSON.stringify(dk)),id:'d'+Date.now(),nome:((dk.nome||'Baralho')+' (cópia)').slice(0,24)}); decksSave(L2); sfx('heal'); toast('Baralho copiado!'); drawList(); }; x.appendChild(cp); }   // copiar: só se ainda houver espaço
@@ -3100,14 +3105,14 @@ function deckEdit(id, isNew){                         // montagem: cartas do bar
   const info=el('div','deinfo'); top.appendChild(info);
   const acts=el('div','row deacts'); s.appendChild(acts);
   const useB=btn('','sec',()=>{ try{ localStorage.setItem('amv_deck_on',id); }catch(e){} sfx('click'); upd(); }); acts.appendChild(useB);
-  acts.appendChild(btn('🖼️ Capa','sec',()=>{ const ids=Object.keys(counts).filter(k=>counts[k]>0); if(!ids.length){ toast('Ponha cartas no baralho primeiro.'); return; }
-    const box=el('div','mbox'); box.appendChild(el('div','xres','<b>Escolha a capa</b>')); const g=el('div','pkrow'); ids.forEach(k=>{ const c=el('div','pc'); const im=el('div','pim'); im.style.backgroundImage=`url("${DEFS[k].mini}")`; c.appendChild(im); if(+k===+capa) c.classList.add('sel'); c.onclick=()=>{ capa=+k; closeModal(); upd(); }; g.appendChild(c); }); box.appendChild(g); box.appendChild(btn('Fechar','sec',closeModal)); showModal(box); }));
+  const capaB=btn('🖼️ Capa','sec',()=>{ const ids=Object.keys(counts).filter(k=>counts[k]>0); if(!ids.length){ toast('Ponha cartas no baralho primeiro.'); return; }
+    const box=el('div','mbox'); box.appendChild(el('div','xres','<b>Escolha a capa</b>')); const g=el('div','pickgrid'); ids.forEach(k=>{ const c=el('div','pk'); c.style.backgroundImage=`url("${DEFS[k].mini}")`; if(+k===+(capa||deckCover({cartas:counts}))) c.classList.add('sel'); c.onclick=()=>{ capa=+k; closeModal(); upd(); }; g.appendChild(c); }); box.appendChild(g); box.appendChild(btn('Fechar','sec',closeModal)); showModal(box); });
   let back=myBack();
-  acts.appendChild(btn('🂠 Verso','sec',()=>{ const box=el('div','mbox'); box.appendChild(el('div','xres','<b>Verso do baralho</b>')); const bw=el('div','backs');
-    BACKS.forEach((b,i)=>{ const t=el('div','bk'+(i===back?' sel':'')+(ownBack(i)?'':' lock')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
+  acts.appendChild(btn('🂠 Verso','sec',()=>{ const box=el('div','mbox'); box.appendChild(el('div','xres','<b>Verso do baralho</b>')); const bw=el('div','pickgrid');
+    BACKS.forEach((b,i)=>{ const t=el('div','pk bkp'+(i===back?' sel':'')+(ownBack(i)?'':' lock')); t.style.backgroundImage=`url("${b.img}")`; t.title=b.n;
       t.onclick=()=>{ if(!ownBack(i)){ toast(`Verso ${b.n}: compre na Loja → Cosméticos.`); return; } back=i; closeModal(); sfx('click'); }; bw.appendChild(t); });
     box.appendChild(bw); box.appendChild(btn('Fechar','sec',closeModal)); showModal(box); }));
-  const fb=btn('','sec',()=>filterSheet(DV,applyView)); acts.appendChild(fb);
+  acts.appendChild(capaB); const fb=btn('','sec',()=>filterSheet(DV,applyView)); acts.appendChild(fb);
   const dg=el('div','dkgrid'); s.appendChild(dg);
   s.appendChild(el('div','dehint','Toque numa carta de cima para tirar · toque na coleção para pôr'));
   DV.sort='cat';                                                                            // mesma ordem de "Todas as cartas": personagens, poderes; estrelas; nome
@@ -3131,15 +3136,15 @@ function deckEdit(id, isNew){                         // montagem: cartas do bar
   DECK_LEAVE=()=>{ doSave(); return true; };                                                // sair pela barra de baixo também salva
   function upd(){ const t=Object.values(counts).reduce((a,b)=>a+b,0), v=validDeck(deckClean(counts));
     info.innerHTML=`<b>${t}</b> / ${DECK_MAX} cartas (mín. ${DECK_MIN})`+(v?`<br><span class="bad">${v}</span>`:'<br><span class="ok">Baralho válido</span>');
-    const on=deckOnId()===id; useB.innerHTML=on?'✓ Em uso nas batalhas':'Usar nas batalhas'; useB.classList.toggle('on',on);
+    const on=deckOnId()===id; useB.innerHTML=on?'✓ Em uso':'Usar'; useB.classList.toggle('on',on);
     const ids=Object.keys(counts).filter(k=>counts[k]>0).map(Number).sort((a,b)=>(DEFS[b].kind==='char')-(DEFS[a].kind==='char')||(STARS[b]||1)-(STARS[a]||1)||DEFS[a].name.localeCompare(DEFS[b].name,'pt'));
     dg.replaceChildren(); ids.forEach(k=>{ for(let i=0;i<counts[k];i++){ const c=el('div','dkc'+(+k===+capa?' cap':'')); c.style.backgroundImage=`url("${DEFS[k].mini}")`; c.onclick=()=>{ counts[k]--; sfx('click'); upd(); }; dg.appendChild(c); } });
     for(let i=t;i<DECK_MIN;i++) dg.appendChild(el('div','dkc empty'));
-    for(const k in tiles){ const n=counts[k]|0, b=tiles[k].querySelector('.din'); b.textContent=n?`${n} no baralho`:''; tiles[k].classList.toggle('inDeck',n>0); } }
+    for(const k in tiles){ const n=counts[k]|0, b=tiles[k].querySelector('.din'); b.innerHTML=n?`<b>${n}</b>/${maxCopies(k)}`:''; tiles[k].classList.toggle('inDeck',n>0); } }   // n/máx de cópias no baralho
   tabBar(s,'deck'); setScreen(s); applyView(); upd();
 }
 function albumView(box, onChange){                  // Álbum: todas as cartas; as que faltam aparecem como silhueta
-  const all=Object.values(DEFS).sort((a,b)=>(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));
+  const KO={char:0,field:1,support:2,tool:3,item:4}, all=Object.values(DEFS).sort((a,b)=>(KO[a.kind]??9)-(KO[b.kind]??9)||(STARS[b.id]||1)-(STARS[a.id]||1)||a.name.localeCompare(b.name,'pt'));   // personagens, campo, apoiador, ferramenta, item; estrelas; nome
   const have=all.filter(d=>owned(d.id)>0).length;
   box.replaceChildren();
   box.appendChild(el('div','ahead',`Coleção: <b>${have}</b> / ${all.length} cartas`));
