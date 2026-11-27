@@ -778,10 +778,11 @@ const DEFS = {   // arquivos com nome, pasta Cartas
   39:{id:39,name:'Blaze Baller',kind:'char',atk:1400,arq:['Atirador'],el:'fogo',img:'Cartas/Blaze Baller.jpg'},
   40:{id:40,name:'Muhriqa - Velha Guarda',kind:'char',atk:1500,arq:['Elemental','Mestre'],el:'fogo',img:'Cartas/Muhriqa - Velha Guarda.jpg'},
   41:{id:41,name:'Napoleão',kind:'char',atk:1300,arq:['Besta','Líder'],el:'fogo',img:'Cartas/Napoleão.jpg'},
-  42:{id:42,name:'Tronco Queimado',kind:'char',atk:1800,arq:['Planta'],el:'fogo',img:'Cartas/Tronco Queimado.jpg'}
+  42:{id:42,name:'Tronco Queimado',kind:'char',atk:1800,arq:['Planta'],el:'fogo',img:'Cartas/Tronco Queimado.jpg'},
+  43:{id:43,name:'Goldberg',kind:'char',atk:2200,arq:['Besta'],el:'agua',img:'Cartas/Goldberg.jpg'}
 };
 /* estrelas: 1 a 3 = até 3 cópias, 4 = 1 cópia, 5 = só 1 carta de 5 estrelas no baralho inteiro */
-const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1};   // estrelas = as da carta (não dependem do número de habilidades)
+const STARS={1:2,2:1,3:1,4:2,5:1,6:1,7:2,8:2,9:2,10:1,11:2,12:2,13:3,14:4,15:3,16:3,17:3,18:3,19:3,20:2,21:4,22:3,23:4,24:2,25:4,26:2,27:2,28:4,29:4,30:3,31:1,32:2,33:4,34:4,35:5,36:2,38:5,39:2,40:4,41:3,42:1,43:3};   // estrelas = as da carta (não dependem do número de habilidades)
 const maxCopies=id=>{ const st=STARS[id]||1; return st>=4?2:3; };
 const STAR_CAP={5:2,4:8};   // máximo de cartas no baralho por estrela
 const starTotal=(c,st)=>Object.keys(c).reduce((t,k)=>t+((STARS[k]||1)===st?(c[k]|0):0),0);
@@ -926,7 +927,7 @@ const SCENARIOS=['Cenários/Cenário - Batalha contra os saiyajins.jpg','Cenári
 /* todas as artes são JPG leves: carregadas e decodificadas antes de entrar na tela */
 const KEEP=[];
 function preload(src, onfail){ const im=new Image(); im.decoding='async'; im.onload=()=>{ (im.decode?im.decode():Promise.resolve()).catch(()=>{}); }; if(onfail) im.onerror=onfail; im.src=src; KEEP.push(im); return im; }
-const APP_VER='20261126-000843';                                        // muda a cada versão publicada (igual ao version.json)
+const APP_VER='20261126-222601';                                        // muda a cada versão publicada (igual ao version.json)
 const vq=u=>u+(u.includes('?')?'&':'?')+'v='+APP_VER;           // imagens com a versão: carta re-exportada não fica presa no cache
 const miniPath=u=>u.replace('Cartas/','Cartas/Mini/');           // versão leve (460 px) para o campo e a mão: menos memória no celular
 for(const k in DEFS){ const d=DEFS[k]; d.mini=vq(miniPath(d.img)); d.img=vq(d.img); preload(d.mini); }
@@ -959,7 +960,7 @@ function newPlayer(counts){
   return {life:MAX_LIFE, deck:shuffle(ids.map(mk)), hand:[], chars:[null,null,null], powers:[null,null,null], field:null, void:[], turns:0, esf:false};
 }
 function atkOf(p, inst){
-  const intim = 300 * P(1-p).chars.filter(c=>c&&c.id===21).length;               // Zé do Trovão (Intimidador): -300 nos Personagens do oponente
+  const intim = 300 * P(1-p).chars.filter(c=>c&&(c.id===21||c.id===43)).length;   // Zé do Trovão e Goldberg (Intimidar): -300 nos Personagens do oponente
   if(inst.tmp!=null) return Math.max(0, inst.tmp - intim);                       // Autoescola: ATQ final até o fim do turno
   let a;
   {
